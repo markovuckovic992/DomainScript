@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from urllib import unquote
 from domain.models import RawLeads, Offer
 from basic_editing import main_filter
@@ -26,7 +25,7 @@ def runEditing(request):
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
         RawLeads.objects.filter(date=date).delete()
-        argument = "pypy /home/daset/DomainScript/basic_editing.py " 
+        argument = "pypy /home/marko/DomainScript/basic_editing.py " 
         argument += (com + " " + net + " " + org + " " + info + " ")
         argument += (redempt + " " + str(date))
         popen(argument)
@@ -155,18 +154,3 @@ def offers(request):
         date = datetime.now()
     raw_leads = Offer.objects.filter(date=date)
     return render(request, 'offers.html', {"raw_leads": raw_leads})
-
-@csrf_exempt
-def process_offer(request):
-    base_id = request.POST['base_id']
-    amount = request.POST['amount']
-    Offer.objects.filter(base_id=base_id).update(amount=amount, date_resp=datetime.now().date())
-    return HttpResponse('{"status": "success"}', content_type="application/json")
-
-@csrf_exempt
-def contact(request):
-    contact = request.POST['contact']
-    email = request.POST['email']
-    hash_base_id = request.POST['hash']
-    Offer.objects.filter(hash_base_id=hash_base_id).update(contact=contact, email=email, response=1)
-    return HttpResponse('{"status": "success"}', content_type="application/json")

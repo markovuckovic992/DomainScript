@@ -4,16 +4,15 @@
 {% endblock %}
 {% block content %}
     {% csrf_token %}
-   Date: <input type="text" id="datepicker" onchange="load_offers()">
+   Date: <input type="text" id="datepicker" onchange="load_offers()"> 
    <table class="sortable" style="margin-left: 10%; width: 100%;">
       <thead>
         <tr>
-          <th>Activated lead</th>
-          <th>Dropping domains</th>
-          <th>Offer</th>
+          <th>Zone</th>
+          <th>Lead</th>
+          <th>Amount</th>
           <th>Date of sending</th>
           <th>Date of responding</th>
-          <th>Date of redemption</th>
         </tr>
       </thead>
       <tbody>
@@ -24,29 +23,17 @@
           <td>{{entry.amount}}</td>
           <td>{{entry.date}}</td>
           <td>{{entry.date_resp}}</td>
-          {% if entry.redemption_period %}
-            <td>{{entry.redemption_period}}</td>
-          {% else %}
-            <td>Pending delete</td>
-          {% endif %}
         </tr>
-        {% endfor %}
+        {% endfor %}        
       </tbody>
-    </table>
-    <table style="margin-left: 10%; width: 100%;">
-      <tbody>
-        <tr>
-          <td align="center"><input type="button" onclick="check_offer_status()" value="Send Mail"/></td>
-        </tr>
-      </tbody>
-    </table>
-    <script type="text/javascript">
+    </table>    
+    <script type="text/javascript">     
       $( function() {
         var selected_date = (window.location.search).replace('?date=', '').split("-");
         var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);
         $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
         $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
-      } );
+      } ); 
       $("#Offer").addClass('active');
       $("#Base").removeClass();
     </script>
