@@ -18,7 +18,7 @@ from django.contrib import admin
 import domain.views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls), 
+    url(r'^admin/', admin.site.urls),
     #  editing
     url(r'^$', domain.views.editing),
     url(r'^run_script/', domain.views.runEditing),
@@ -37,4 +37,5 @@ urlpatterns = [
     url(r'^do_deleting/', domain.views.doDeleting),
     #  offers
     url(r'^offers/', domain.views.offers),
+    url(r'^check_offer_status/', domain.views.check_offer_status),
 ]

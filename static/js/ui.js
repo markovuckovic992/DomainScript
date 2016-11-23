@@ -56,7 +56,7 @@ function send_mails() {
             'X-CSRFToken': csrftoken
         },
 		success: function(msg){
-			$("#cover").fadeOut(100); 
+			$("#cover").fadeOut(100);
 			location.reload();
 		}
 	});
@@ -75,31 +75,31 @@ function run_script() {
 			alert("You have selected some domain list twice");
 		} else {
 			var r = confirm("Everything for selected date will be deleted");
-			if (r == true) {			    
+			if (r == true) {
 				$("#cover").fadeIn(100);
 				$.ajax({
 					type: "POST",
 					url: "/run_script/",
-					data: "org=" + org + "&net=" + net + 
-					"&com=" + com + "&info=" + info + 
+					data: "org=" + org + "&net=" + net +
+					"&com=" + com + "&info=" + info +
 					"&redempt=" + redempt + "&date=" + date,
 					headers: {
 			            'X-CSRFToken': csrftoken,
 			        },
-					success: function(msg) {	
+					success: function(msg) {
 						if (msg.status === "success") {
 							window.location='/filtering/'
 						} else {
 							alert('Something went wrong!')
 						}
-						$("#cover").fadeOut(100); 
+						$("#cover").fadeOut(100);
 					}
 				});
-			} 
+			}
 		}
 	} else {
 		alert("It's required to select at least one zone and redemption file");
-	}	
+	}
 }
 
 
@@ -114,10 +114,27 @@ function find_mails() {
             'X-CSRFToken': csrftoken
         },
 		success: function(msg){
-			$("#cover").fadeOut(100); 
+			$("#cover").fadeOut(100);
 			window.location='/sending/'
 		}
 	});
+}
+
+function check_offer_status () {
+    $("#cover").fadeIn(100);
+    var date = $("#datepicker").val();
+    $.ajax({
+        type: "POST",
+        url: "/check_offer_status/",
+        data: "date=" + date,
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function(msg){
+            $("#cover").fadeOut(100);
+            location.reload()
+        }
+    });
 }
 
 function add_zone() {
@@ -130,8 +147,8 @@ function add_zone() {
 		headers: {
             'X-CSRFToken': csrftoken,
         },
-		success: function(msg) {			
-			$("#cover").fadeOut(100); 
+		success: function(msg) {
+			$("#cover").fadeOut(100);
 			window.location='/filtering/'
 		}
 	});
@@ -158,8 +175,8 @@ function do_deleting() {
 		headers: {
             'X-CSRFToken': csrftoken,
         },
-		success: function(msg) {			
-			$("#cover").fadeOut(100); 
+		success: function(msg) {
+			$("#cover").fadeOut(100);
 			window.location='/sending/'
 		}
 	})
