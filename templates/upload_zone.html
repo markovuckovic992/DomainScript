@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block head %}
+   <title>Editing</title>
+{% endblock %}
+{% block content %}
+    {% csrf_token %}
+    <table class="table" style="margin-left: 20%; width: 60%;">
+      <thead>
+        <tr>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='zone_file_name' value=".org file"/></td>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);"></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: center; background: rgba(255,0,0,0.4);"><input type="button" onclick="add_zone()" name="" value="RUN"/></td>
+        <tr>
+      </thead>
+    </table>
+    <script type="text/javascript">
+      $("#Base").addClass('active');      
+      $("#Send").removeClass();
+      $("#Filt").removeClass();
+    </script>
+{% endblock %}

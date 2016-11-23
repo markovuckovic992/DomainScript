@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block head %}
+   <title>Filtering</title>
+{% endblock %}
+{% block content %}
+    {% csrf_token %}
+   Date: <input type="text" id="datepicker" onchange="load()"> 
+   <table class="sortable" style="margin-left: 20%; width: 70%;">
+      <thead>
+        <tr>
+          <th>Zone file domain</th>
+          <th>Domain to sell</th>
+          <th>Validation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in raw_leads %}
+        <tr>
+          <td>{{entry.name_zone}}</td>
+          <td>{{entry.name_redemption}}</td>
+           {% if entry.send_mail %}
+            <td><input type="checkbox" checked onclick="changestate('{{entry.id}}')" />
+           {% else %}
+            <td><input type="checkbox" onclick="changestate('{{entry.id}}')" /></td>
+           {% endif %}
+        </tr>
+        {% endfor %}        
+      </tbody>
+    </table>
+    <table style="margin-left: 20%; width: 60%;">
+      <tbody>
+        <tr>
+          <td colspan="3" align="center"><input type="button" onclick="find_mails()" value="Send Mail"/></td>
+        </tr>
+      </tbody>
+    </table>
+    <script type="text/javascript">     
+      $( function() {
+        var selected_date = (window.location.search).replace('?date=', '').split("-");
+        var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);
+        $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
+        $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
+      } ); 
+      $("#Filt").addClass('active');
+      $("#Base").removeClass();
+    </script>
+{% endblock %}

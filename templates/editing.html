@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block head %}
+   <title>Editing</title>
+{% endblock %}
+{% block content %}
+    {% csrf_token %}
+    <table class="table" style="margin-left: 20%; width: 60%;">
+      <thead>
+        <tr><td>
+          Date: <input type="text" id="datepicker">
+        </td></tr>
+        <tr>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='org_file_name' name=".org file"/></td>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
+        </tr>
+        <tr>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='com_file_name'  name=".com file"/></td>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
+        </tr>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='net_file_name'  name=".net file"/></td>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
+        <tr>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='info_file_name'  name=".info file"/></td>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
+        </tr>
+        <tr>
+          <td style="text-align: center; background: rgba(0,0,255,0.4);"><input type="file" id='red_file_name'  name="red file"/></td>
+          <td style="text-align: center; background: rgba(0,0,255,0.4);">redemption</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: center; background: rgba(255,0,0,0.4);"><input type="button" onclick="run_script()" name="" value="RUN"/></td>
+        <tr>
+      </thead>
+    </table>
+    <script type="text/javascript">
+      $( function() {
+        $( "#datepicker" ).datepicker();
+        $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
+      } );
+    </script>
+{% endblock %}
