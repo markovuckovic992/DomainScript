@@ -10,8 +10,10 @@ class RawLeads(models.Model):
     sent = models.SmallIntegerField(default=0)
     archive = models.SmallIntegerField(default=0)
     send_mail = models.SmallIntegerField(default=0)
+    to_archive = models.SmallIntegerField(default=0)
+    to_delete = models.SmallIntegerField(default=0)
     return_or_delete = models.SmallIntegerField(default=0)
-    
+
     blacklist = models.SmallIntegerField(default=0)
     mark_to_send = models.SmallIntegerField(default=0)
 
@@ -34,6 +36,7 @@ class Offer(models.Model):
     date = models.DateField(default=timezone.now)
     date_resp = models.DateField(blank=True, null=True)
 
+    status = models.CharField(max_length=50, blank=True, null=True)
+
     class Meta:
         db_table = 'ponude'
-

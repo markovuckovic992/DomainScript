@@ -1,18 +1,16 @@
 {% extends "layout.html" %}
 {% block head %}
-   <title>Offers</title>
+   <title>Sent</title>
 {% endblock %}
 {% block content %}
     {% csrf_token %}
-   Date: <input type="text" id="datepicker" onchange="load_offers()">
+   Date: <input type="text" id="datepicker" onchange="load_sent()">
    <table class="sortable" style="margin-left: 10%; width: 100%;">
       <thead>
         <tr>
           <th>Zone</th>
           <th>Lead</th>
-          <th>Amount</th>
           <th>Date of sending</th>
-          <th>Date of responding</th>
         </tr>
       </thead>
       <tbody>
@@ -36,6 +34,5 @@
       } );
       $("#Sent").addClass('active');
       $("#Base").removeClass();
-      setInterval("location.reload();", 60 * 1000 * 30);
     </script>
 {% endblock %}

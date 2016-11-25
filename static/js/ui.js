@@ -1,4 +1,18 @@
-function chkDuplicates(arr,justCheck=true){
+//filtering stuff
+function show (i) {
+    var min = (i - 1) * 50, max = i * 50 - 1
+    var $table = $('#mytable'),
+         $rows = $table.find('tbody tr');
+    min = min ? min - 1 : 0;
+    max = max ? max : $rows.length;
+    $rows.hide().slice(min, max).show();
+    $(".buttons").css({"background-color": "white"});
+    $("#button_" + i).css({"background-color": "LightGreen", "width": "24px", "height": "26px"});
+    return false;
+}
+//end of filtering stuff
+
+function chkDuplicates(arr,justCheck=true) {
 	var len = arr.length, tmp = {}, arrtmp = arr.slice(), dupes = [];
 	arrtmp.sort();
 	while(len--) {
@@ -45,6 +59,17 @@ function changestate(id) {
 	});
 }
 
+function mark_for_archive(id) {
+    $.ajax({
+        type: "POST",
+        url: "/mark_for_archive/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: "id=" + id,
+    });
+}
+
 function send_mails() {
 	$("#cover").fadeIn(100);
 	var date = $("#datepicker").val()
@@ -56,7 +81,7 @@ function send_mails() {
             'X-CSRFToken': csrftoken
         },
 		success: function(msg){
-			$("#cover").fadeOut(100); 
+			$("#cover").fadeOut(100);
 			location.reload();
 		}
 	});
@@ -75,31 +100,31 @@ function run_script() {
 			alert("You have selected some domain list twice");
 		} else {
 			var r = confirm("Everything for selected date will be deleted");
-			if (r == true) {			    
+			if (r == true) {
 				$("#cover").fadeIn(100);
 				$.ajax({
 					type: "POST",
 					url: "/run_script/",
-					data: "org=" + org + "&net=" + net + 
-					"&com=" + com + "&info=" + info + 
+					data: "org=" + org + "&net=" + net +
+					"&com=" + com + "&info=" + info +
 					"&redempt=" + redempt + "&date=" + date,
 					headers: {
 			            'X-CSRFToken': csrftoken,
 			        },
-					success: function(msg) {	
+					success: function(msg) {
 						if (msg.status === "success") {
-							window.location='/filtering/'
+							window.location='/raw_leads/'
 						} else {
 							alert('Something went wrong!')
 						}
-						$("#cover").fadeOut(100); 
+						$("#cover").fadeOut(100);
 					}
 				});
-			} 
+			}
 		}
 	} else {
 		alert("It's required to select at least one zone and redemption file");
-	}	
+	}
 }
 
 
@@ -114,8 +139,8 @@ function find_mails() {
             'X-CSRFToken': csrftoken
         },
 		success: function(msg){
-			$("#cover").fadeOut(100); 
-			window.location='/sending/'
+			$("#cover").fadeOut(100);
+			window.location='/active_leads/'
 		}
 	});
 }
@@ -130,9 +155,9 @@ function add_zone() {
 		headers: {
             'X-CSRFToken': csrftoken,
         },
-		success: function(msg) {			
-			$("#cover").fadeOut(100); 
-			window.location='/filtering/'
+		success: function(msg) {
+			$("#cover").fadeOut(100);
+			window.location='/raw_leads/'
 		}
 	});
 }
@@ -158,16 +183,16 @@ function do_deleting() {
 		headers: {
             'X-CSRFToken': csrftoken,
         },
-		success: function(msg) {			
-			$("#cover").fadeOut(100); 
-			window.location='/sending/'
+		success: function(msg) {
+			$("#cover").fadeOut(100);
+			window.location='/active_leads/'
 		}
 	})
 }
 
 function load() {
 	var date = $("#datepicker").val();
-	window.location.href=('/filtering/?date=' + date);
+	window.location.href=('/raw_leads/?date=' + date);
 }
 
 function load_send() {
@@ -177,12 +202,17 @@ function load_send() {
 
 function load_del() {
 	var date = $("#datepicker").val();
-	window.location.href=('/deleting/?date=' + date);
+	window.location.href=('/restore/?date=' + date);
 }
 
 function load_offers() {
 	var date = $("#datepicker").val();
 	window.location.href=('/offers/?date=' + date);
+}
+
+function load_sent() {
+    var date = $("#datepicker").val();
+    window.location.href=('/sent/?date=' + date);
 }
 
 function blacklist(id) {
@@ -194,6 +224,17 @@ function blacklist(id) {
         },
 		data: "id=" + id,
 	});
+}
+
+function to_delete(id) {
+    $.ajax({
+        type: "POST",
+        url: "/delete/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: "id=" + id,
+    });
 }
 
 function mark_to_send(id) {

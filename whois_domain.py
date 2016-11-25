@@ -7,8 +7,7 @@ from domain.models import RawLeads
 
 def main(date):
     usefull_data = []
-    print date
-    datas_to_move = RawLeads.objects.filter(send_mail=0, date=date).update(archive=1)
+    datas_to_move = RawLeads.objects.filter(to_archive=1, date=date).update(archive=1)
     datas = RawLeads.objects.filter(send_mail=1, mail__isnull=True)
     for data in datas:
         uslov = True
@@ -30,3 +29,27 @@ def main(date):
                     i += 1
         if email:
             RawLeads.objects.filter(id=data.id).update(mail=email)
+
+
+def main_status(date):
+    datas = Offer.objects.filter(date=date)
+    for data in datas:
+        uslov = True
+        i = 0
+        status = None
+        while uslov:
+            try:
+                tube = popen("whois '" + str(
+                    (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Status'",
+                             'r')
+                status = tube.read()
+                status = status.replace('Status: ', '').replace('\n', '').replace('\r', '')
+                tube.close()
+                break
+            except:
+                if i > 5:
+                    uslov = False
+                else:
+                    i += 1
+        if status:
+            Offer.objects.filter(id=data.id).update(status=status)

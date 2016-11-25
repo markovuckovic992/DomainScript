@@ -1,10 +1,14 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
+from Tkinter import *
+import ttk
+from ttk import *
+
 from copy import deepcopy
 from nltk.corpus import brown, words as wd
 import progressbar as pb
-from math import log
-import threading, re, time
+from math import log, ceil
+import threading, re, time, thread
 import csv, sys, gc, os, django
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
@@ -39,6 +43,17 @@ class progress_timer:
     def finish(self):
         self.timer.finish()
 
+
+def bar(tk, progress, v):
+    all_globals = globals()
+    value = all_globals['value']
+    text = all_globals['text']
+    progress['value'] = ceil(value)
+
+    v.set(text)
+    tk.update_idletasks()
+    tk.update()
+    tk.after(1, bar, tk, progress, v)
 
 freq_words = open("words-by-frequency.txt").read().split()
 wordcost = dict((k, log((i + 1) * log(len(freq_words)))) for i, k in enumerate(freq_words))
@@ -146,7 +161,7 @@ all_domains = set()
 
 
 def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
-    global result_list, all_domains, link
+    global result_list, all_domains, link, value, text
 
     usefull_data = []
     with open(redemption_path, 'r') as csvfile:
@@ -155,15 +170,18 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
             teemp = (row[0], row[33], row[34])
             usefull_data.append(teemp)
         usefull_data.pop(0)
-
+    increment = (100.0/len(usefull_data))
+    text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
     for domain_data in usefull_data:
-        t = threading.Thread(target=fcn, args=(domain_data, pt,))
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
+        value += increment
+        fcn(domain_data, pt)
+        # t = threading.Thread(target=fcn, args=(domain_data, pt))
+        # threads.append(t)
+        # t.start()
+    # for t in threads:
+    #     t.join()
     usefull_data = None
     pt = None
     gc.collect()
@@ -175,8 +193,12 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         all_domains = set(file.readlines())
         file.close()
         pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list))
+        increment = (100.0/len(result_list))
+        value = 0
+        text = 'phase 2 '
         for result in result_list:
             fcn2(result, pt2, all_domains, date)
+            value += increment
             #t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
             #threads.append(t)
             #t.start()
@@ -236,7 +258,20 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         print 'skipping phase 5...\n'
 
 
+def threadmain():
+    global value
+    tk = Tk()
+    progress = Progressbar(tk, orient=HORIZONTAL, length=100, mode='determinate')
+    v = StringVar()
+    Label(tk, textvariable=v).pack()
+    progress.pack()
+    tk.after(1, bar, tk, progress, v)
+    tk.mainloop()
+
+
 if __name__ == '__main__':
-    print sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]
+    value = 0.0
+    text = ''
+    thread.start_new_thread(threadmain, ())
     main_filter(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
     print '\n', '---END---', int(time.time() - start_time), some_variable, '\n'
