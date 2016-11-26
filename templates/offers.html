@@ -11,8 +11,8 @@
           <th>Zone</th>
           <th>Lead</th>
           <th>Amount</th>
-          <th>Date of sending</th>
           <th>Date of responding</th>
+          <th>status</th>
         </tr>
       </thead>
       <tbody>
@@ -21,8 +21,8 @@
           <td>{{entry.zone}}</td>
           <td>{{entry.lead}}</td>
           <td>{{entry.amount}}</td>
-          <td>{{entry.date}}</td>
           <td>{{entry.date_resp}}</td>
+          <td>{{entry.status}}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -34,7 +34,7 @@
         $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
         $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
       } );
-      $("#Sent").addClass('active');
+      $("#Offer").addClass('active');
       $("#Base").removeClass();
       setInterval("location.reload();", 60 * 1000 * 30);
     </script>

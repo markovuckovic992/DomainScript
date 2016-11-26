@@ -3,7 +3,7 @@ from os import popen
 import os, django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads
+from domain.models import RawLeads, Offer
 
 def main(date):
     usefull_data = []
@@ -40,7 +40,7 @@ def main_status(date):
         while uslov:
             try:
                 tube = popen("whois '" + str(
-                    (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Status'",
+                    (data.zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Status'",
                              'r')
                 status = tube.read()
                 status = status.replace('Status: ', '').replace('\n', '').replace('\r', '')

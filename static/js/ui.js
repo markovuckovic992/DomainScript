@@ -7,7 +7,7 @@ function show (i) {
     max = max ? max : $rows.length;
     $rows.hide().slice(min, max).show();
     $(".buttons").css({"background-color": "white"});
-    $("#button_" + i).css({"background-color": "LightGreen", "width": "24px", "height": "26px"});
+    $("#button_" + i).css({"background-color": "LightGreen", "height": "26px"});
     return false;
 }
 //end of filtering stuff

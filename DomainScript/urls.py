@@ -43,5 +43,5 @@ urlpatterns = [
     url(r'^offers/', domain.views.offers),
     url(r'^contact/', domain.views.contact),
     url(r'^process_offer/', domain.views.process_offer),
-    url(r'^find_status/', domain.views.find_status),
+    # url(r'^find_status/', domain.views.find_status),
 ]

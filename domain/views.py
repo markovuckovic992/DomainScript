@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from urllib import unquote
-from domain.models import RawLeads, Offer
+from domain.models import RawLeads, Offer, BlackList
 from basic_editing import main_filter
 from whois_domain import main, main_status
 from django.core.mail import send_mail
@@ -19,11 +19,11 @@ def editing(request):
 
 def runEditing(request):
     try:
-        com = request.POST['com']
-        net = request.POST['net']
-        org = request.POST['org']
-        info = request.POST['info']
-        redempt = request.POST['redempt']
+        com = request.POST['com'].replace('C:\\fakepath\\', '')
+        net = request.POST['net'].replace('C:\\fakepath\\', '')
+        org = request.POST['org'].replace('C:\\fakepath\\', '')
+        info = request.POST['info'].replace('C:\\fakepath\\', '')
+        redempt = request.POST['redempt'].replace('C:\\fakepath\\', '')
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
         RawLeads.objects.filter(date=date).delete()
@@ -32,6 +32,9 @@ def runEditing(request):
         argument += (redempt + " " + str(date))
         popen(argument)
         # main_filter(com, net, org, info, redempt, date)
+        blacklist = BlackList.objects.all()
+        for item in blacklist:
+            RawLeads.objects.filter(name_zone=item.lead).delete()
         return HttpResponse('{"status": "success"}', content_type="application/json")
     except:
         print traceback.format_exc(), argument
@@ -73,6 +76,13 @@ def send_mails(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
     delete = RawLeads.objects.filter(to_delete=1).delete()
+    blacklists = RawLeads.objects.filter(blacklist=1)
+    for blacklist in blacklists:
+        entry = BlackList.objects.filter(lead=blacklist.name_zone)
+        if not entry.exists():
+            new = BlackList(lead=blacklist.name_zone)
+            new.save()
+    RawLeads.objects.filter(blacklist=1).delete()
     potential_profits = RawLeads.objects.filter(send_mail=1, sent=0, archive=0, date=date, mark_to_send=1)
     for potential_profit in potential_profits:
         # Form a link

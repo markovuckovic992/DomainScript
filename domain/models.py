@@ -36,7 +36,14 @@ class Offer(models.Model):
     date = models.DateField(default=timezone.now)
     date_resp = models.DateField(blank=True, null=True)
 
-    status = models.CharField(max_length=50, blank=True, null=True)
+    status = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        db_table = 'ponude'
+        db_table = 'offers'
+
+
+class BlackList(models.Model):
+    lead = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'blacklist'
