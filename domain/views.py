@@ -54,7 +54,7 @@ def filtering(request):
     else:
         date = datetime.now()
     raw_leads = RawLeads.objects.filter(archive=0, date=date, send_mail=0)
-    return render(request, 'filtering.html', {"raw_leads": raw_leads, 'range': range(1, int(ceil(len(raw_leads) / 50)) + 1)})
+    return render(request, 'filtering.html', {"raw_leads": raw_leads, 'range': range(1, int(ceil(len(raw_leads) / 1000)) + 2)})
 
 def reverse_state(request):
     raw_leads_id = int(unquote(request.POST['id']))
@@ -141,7 +141,7 @@ def deleting(request):
     else:
         date = datetime.now()
     archive = RawLeads.objects.filter(archive=1, date=date)
-    return render(request, 'deleting.html', {"archive": archive, 'range': range(1, int(ceil(len(archive) / 50)) + 1)})
+    return render(request, 'deleting.html', {"archive": archive, 'range': range(1, int(ceil(len(archive) / 1000)) + 2)})
 
 def doDeleting(request):
     date = request.POST['date']

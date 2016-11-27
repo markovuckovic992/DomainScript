@@ -1,6 +1,6 @@
 //filtering stuff
 function show (i) {
-    var min = (i - 1) * 50, max = i * 50 - 1
+    var min = (i - 1) * 1000, max = i * 1000 - 1
     var $table = $('#mytable'),
          $rows = $table.find('tbody tr');
     min = min ? min - 1 : 0;

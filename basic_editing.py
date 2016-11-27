@@ -1,5 +1,5 @@
-#!/usr/bin/python2.7
-# -*- coding: utf-8 -*-
+#!/usr/bin/pypy
+
 from Tkinter import *
 import ttk
 from ttk import *
@@ -10,7 +10,7 @@ import progressbar as pb
 from math import log, ceil
 import threading, re, time, thread
 import csv, sys, gc, os, django
-
+os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 from domain.models import RawLeads
@@ -167,7 +167,8 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
     with open(redemption_path, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-            teemp = (row[0], row[33], row[34])
+	    domain = row[0].strip('"')
+            teemp = (domain, )
             usefull_data.append(teemp)
         usefull_data.pop(0)
     increment = (100.0/len(usefull_data))
@@ -272,6 +273,9 @@ def threadmain():
 if __name__ == '__main__':
     value = 0.0
     text = ''
-    thread.start_new_thread(threadmain, ())
+    # try:
+    #     thread.start_new_thread(threadmain, ())
+    # except:
+    # 	  pass
     main_filter(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
     print '\n', '---END---', int(time.time() - start_time), some_variable, '\n'
