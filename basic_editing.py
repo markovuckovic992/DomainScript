@@ -131,13 +131,11 @@ def fcn(domain_data, pt):
     return 1
 
 
-def fcn2(domain_dict, pt, all_domains, date):
+def fcn2(domain_dict, pt, file, date):
     global some_variable, link
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
-    print all_domains
-    print domain
-    time.sleep(5)
+    all_domains = generator(file)
     some_variable += 1
     keywords = sorted(keywords, key=len, reverse=True)
     ready_to_write = True
@@ -203,8 +201,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         value = 0
         text = 'phase 2 '
         for result in result_list:
-            all_domains = generator(file)
-            fcn2(result, pt2, all_domains, date)
+            fcn2(result, pt2, file, date)
             value += increment
         file.close()
         gc.collect()
@@ -215,8 +212,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         file = open(net_path, "r")
         pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list))
         for result in result_list:
-            all_domains = generator(file)
-            fcn2(result, pt2, all_domains, date)
+            fcn2(result, pt2, file, date)
         file.close()
         gc.collect()
     else:
@@ -226,8 +222,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         file = open(info_path, "r")
         pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list))
         for result in result_list:
-            all_domains = generator(file)
-            fcn2(result, pt2, all_domains, date)
+            fcn2(result, pt2, file, date)
         all_domains = None
         pt2 = None
         file.close()
@@ -239,8 +234,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         file = open(com_path, "r")
         pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list))
         for result in result_list:
-            all_domains = generator(file)
-            fcn2(result, pt2, all_domains, date)
+            fcn2(result, pt2, file, date)
         all_domains = None
         pt2 = None
         file.close()
