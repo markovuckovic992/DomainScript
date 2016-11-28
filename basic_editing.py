@@ -150,11 +150,11 @@ def fcn2(domain_dict, pt, file, date):
                     data_to_compare = local_data.lower()
                     if keyword in data_to_compare:
                         matched_lines.append(data_to_compare)
+                    log = open('log.txt', 'a')
+                    log.write(data_to_compare)
+                    log.close
             except:
-                msg =  traceback.format_exc()
-                log = open('log.txt', 'a')
-                log.write(msg)
-                log.close
+                pass
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
