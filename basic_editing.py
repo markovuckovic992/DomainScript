@@ -146,9 +146,10 @@ def fcn2(domain_dict, pt, all_domains, date):
             try:
                 while True:
                     local_data = all_domains.next()
-                    if keyword in local_data.lower():
-                        matched_lines.append(local_data.lower())
-                        print local_data.lower()
+                    data_to_compare = local_data.lower()
+                    if keyword in data_to_compare:
+                        matched_lines.append(data_to_compare)
+                        print data_to_compare
             except:
                 pass
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
@@ -205,7 +206,6 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
             value += increment
         file.close()
         gc.collect()
-        print '\n'
     else:
         print 'skipping phase 2...\n'
 
@@ -217,9 +217,8 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
             fcn2(result, pt2, all_domains, date)
         file.close()
         gc.collect()
-        print '\n'
     else:
-        print 'skipping phase 3...\n'
+        print 'skipping phase 3...'
 
     if info_path:
         file = open(info_path, "r")
@@ -231,9 +230,8 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         pt2 = None
         file.close()
         gc.collect()
-        print '\n'
     else:
-        print 'skipping phase 4...\n'
+        print 'skipping phase 4...'
 
     if com_path:
         file = open(com_path, "r")
@@ -245,9 +243,8 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         pt2 = None
         file.close()
         gc.collect()
-        print '\n'
     else:
-        print 'skipping phase 5...\n'
+        print 'skipping phase 5...'
 
 
 def threadmain():
