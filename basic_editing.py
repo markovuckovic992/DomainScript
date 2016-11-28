@@ -148,9 +148,8 @@ def fcn2(domain_dict, pt, file, date):
                 while True:
                     local_data = all_domains.next()
                     data_to_compare = local_data.lower()
-                    try:
-                        if keyword in data_to_compare:
-                            matched_lines.append(data_to_compare)
+                    if keyword in data_to_compare:
+                        matched_lines.append(data_to_compare)
                     log = open('log.txt', 'a')
                     log.write(data_to_compare)
                     log.close
