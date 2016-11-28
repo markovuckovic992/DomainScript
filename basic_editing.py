@@ -151,7 +151,10 @@ def fcn2(domain_dict, pt, file, date):
                     if keyword in data_to_compare:
                         matched_lines.append(data_to_compare)
             except:
-                print traceback.format_exc()
+                msg =  traceback.format_exc()
+                log = open('log.txt', 'a')
+                log.write(msg)
+                log.close
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
