@@ -22,6 +22,10 @@ start_time = time.time()
 word_man = ['online']
 bad_keywords_list = 'aaaaaaaaaaaabbbbbbbbbasdaaasdffdsa-abbabc'
 
+def generator(file):
+    for line in file:
+        yield line
+
 
 class progress_timer:
     def __init__(self, n_iter, description="Something"):
@@ -139,7 +143,13 @@ def fcn2(domain_dict, pt, all_domains, date):
     matched_lines_copy = []
     for keyword in keywords:
         if len(matched_lines) == 0 and condition:
-            matched_lines = [line.lower() for line in all_domains if keyword in line.lower()]
+            try:
+                while True:
+                    local_data = all_domains.next()
+                    if keyword in local_data.lower():
+                        matched_lines.append(local_data.lower())
+            except:
+                pass
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
@@ -149,7 +159,7 @@ def fcn2(domain_dict, pt, all_domains, date):
         for matched_domain in matched_lines:
             entry = RawLeads(
                 name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                name_redemption=(domain).replace('\n', '').replace('\r', ''), 
+                name_redemption=(domain).replace('\n', '').replace('\r', ''),
                 date=date
             )
             entry.save()
@@ -167,22 +177,17 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
     with open(redemption_path, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-	    domain = row[0].strip('"')
+            domain = row[0].strip('"')
             teemp = (domain, )
             usefull_data.append(teemp)
         usefull_data.pop(0)
-    increment = (100.0/len(usefull_data))
+    increment = (100.0 / len(usefull_data))
     text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
     for domain_data in usefull_data:
         value += increment
         fcn(domain_data, pt)
-        # t = threading.Thread(target=fcn, args=(domain_data, pt))
-        # threads.append(t)
-        # t.start()
-    # for t in threads:
-    #     t.join()
     usefull_data = None
     pt = None
     gc.collect()
@@ -191,18 +196,15 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
     threads = []
     if org_path:
         file = open(org_path, "r")
-        all_domains = set(file.readlines())
         file.close()
         pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list))
-        increment = (100.0/len(result_list))
+        increment = (100.0 / len(result_list))
         value = 0
         text = 'phase 2 '
         for result in result_list:
+            all_domains = generator(file)
             fcn2(result, pt2, all_domains, date)
             value += increment
-            #t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
-            #threads.append(t)
-            #t.start()
         gc.collect()
         print '\n'
     else:
@@ -210,14 +212,11 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
 
     if net_path:
         file = open(net_path, "r")
-        all_domains = set(file.readlines())
         file.close()
         pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list))
         for result in result_list:
+            all_domains = generator(file)
             fcn2(result, pt2, all_domains, date)
-            # t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
-            # threads.append(t)
-            # t.start()
         gc.collect()
         print '\n'
     else:
@@ -225,14 +224,11 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
 
     if info_path:
         file = open(info_path, "r")
-        all_domains = set(file.readlines())
         file.close()
         pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list))
         for result in result_list:
+            all_domains = generator(file)
             fcn2(result, pt2, all_domains, date)
-            # t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
-            # threads.append(t)
-            # t.start()
         all_domains = None
         pt2 = None
         gc.collect()
@@ -242,15 +238,11 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
 
     if com_path:
         file = open(com_path, "r")
-        all_domains = set(file.readlines())
         file.close()
         pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list))
         for result in result_list:
+            all_domains = generator(file)
             fcn2(result, pt2, all_domains, date)
-            # t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
-            # threads.append(t)
-            # t.start()
-
         all_domains = None
         pt2 = None
         gc.collect()
