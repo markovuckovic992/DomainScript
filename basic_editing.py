@@ -135,6 +135,9 @@ def fcn2(domain_dict, pt, all_domains, date):
     global some_variable, link
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
+    print all_domains
+    print domain
+    time.sleep(5)
     some_variable += 1
     keywords = sorted(keywords, key=len, reverse=True)
     ready_to_write = True
@@ -147,8 +150,6 @@ def fcn2(domain_dict, pt, all_domains, date):
                 while True:
                     local_data = all_domains.next()
                     data_to_compare = local_data.lower()
-                    print data_to_compare, keyword
-                    time.sleep(5)
                     if keyword in data_to_compare:
                         matched_lines.append(data_to_compare)
             except:
