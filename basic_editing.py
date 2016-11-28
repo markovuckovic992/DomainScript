@@ -147,9 +147,10 @@ def fcn2(domain_dict, pt, all_domains, date):
                 while True:
                     local_data = all_domains.next()
                     data_to_compare = local_data.lower()
+                    print data_to_compare, keyword
+                    time.sleep(5)
                     if keyword in data_to_compare:
                         matched_lines.append(data_to_compare)
-                        print data_to_compare
             except:
                 pass
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
@@ -266,4 +267,3 @@ if __name__ == '__main__':
     # except:
     # 	  pass
     main_filter(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
-    print '\n', '---END---', int(time.time() - start_time), some_variable, '\n'
