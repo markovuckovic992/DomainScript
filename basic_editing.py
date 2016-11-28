@@ -167,11 +167,9 @@ def fcn2(domain_dict, pt, all_domains, date):
 
 
 result_list = []
-all_domains = set()
-
 
 def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
-    global result_list, all_domains, link, value, text
+    global result_list, link, value, text
 
     usefull_data = []
     with open(redemption_path, 'r') as csvfile:
