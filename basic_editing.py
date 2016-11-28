@@ -142,6 +142,7 @@ def fcn2(domain_dict, pt, file, date):
     condition = True
     matched_lines = []
     matched_lines_copy = []
+    log = open('log.txt', 'a')
     for keyword in keywords:
         if len(matched_lines) == 0 and condition:
             try:
@@ -150,15 +151,14 @@ def fcn2(domain_dict, pt, file, date):
                     data_to_compare = local_data.lower()
                     if keyword in data_to_compare:
                         matched_lines.append(data_to_compare)
-                    log = open('log.txt', 'a')
                     log.write(data_to_compare)
-                    log.close
             except:
                 pass
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
             matched_lines_copy = [line for line in matched_lines_copy if keyword in line[0]]
+    log.close
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
