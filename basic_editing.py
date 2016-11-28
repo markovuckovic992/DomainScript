@@ -196,7 +196,6 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
     threads = []
     if org_path:
         file = open(org_path, "r")
-        file.close()
         pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list))
         increment = (100.0 / len(result_list))
         value = 0
@@ -205,6 +204,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
             all_domains = generator(file)
             fcn2(result, pt2, all_domains, date)
             value += increment
+        file.close()
         gc.collect()
         print '\n'
     else:
@@ -212,11 +212,11 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
 
     if net_path:
         file = open(net_path, "r")
-        file.close()
         pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list))
         for result in result_list:
             all_domains = generator(file)
             fcn2(result, pt2, all_domains, date)
+        file.close()
         gc.collect()
         print '\n'
     else:
@@ -224,13 +224,13 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
 
     if info_path:
         file = open(info_path, "r")
-        file.close()
         pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list))
         for result in result_list:
             all_domains = generator(file)
             fcn2(result, pt2, all_domains, date)
         all_domains = None
         pt2 = None
+        file.close()
         gc.collect()
         print '\n'
     else:
@@ -238,13 +238,13 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
 
     if com_path:
         file = open(com_path, "r")
-        file.close()
         pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list))
         for result in result_list:
             all_domains = generator(file)
             fcn2(result, pt2, all_domains, date)
         all_domains = None
         pt2 = None
+        file.close()
         gc.collect()
         print '\n'
     else:
