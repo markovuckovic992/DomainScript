@@ -148,6 +148,7 @@ def fcn2(domain_dict, pt, all_domains, date):
                     local_data = all_domains.next()
                     if keyword in local_data.lower():
                         matched_lines.append(local_data.lower())
+                        print local_data.lower()
             except:
                 pass
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
