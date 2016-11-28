@@ -6,7 +6,7 @@ from ttk import *
 
 from copy import deepcopy
 from nltk.corpus import brown, words as wd
-import progressbar as pb
+import progressbar as pb, traceback
 from math import log, ceil
 import threading, re, time, thread
 import csv, sys, gc, os, django
@@ -151,7 +151,7 @@ def fcn2(domain_dict, pt, file, date):
                     if keyword in data_to_compare:
                         matched_lines.append(data_to_compare)
             except:
-                pass
+                print traceback.format_exc()
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
