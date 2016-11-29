@@ -4,11 +4,9 @@ from Tkinter import *
 import ttk
 from ttk import *
 
-from multiprocessing import Pool
-
 from copy import deepcopy
 from nltk.corpus import brown, words as wd
-import progressbar as pb, traceback
+import progressbar as pb
 from math import log, ceil
 import threading, re, time, thread
 import csv, sys, gc, os, django
@@ -23,10 +21,6 @@ file_size = 0
 start_time = time.time()
 word_man = ['online']
 bad_keywords_list = 'aaaaaaaaaaaabbbbbbbbbasdaaasdffdsa-abbabc'
-
-def generator(file):
-    for line in file:
-        yield line
 
 
 class progress_timer:
@@ -133,11 +127,10 @@ def fcn(domain_data, pt):
     return 1
 
 
-def fcn2(domain_dict, pt, file, date):
+def fcn2(domain_dict, pt, all_domains, date):
     global some_variable, link
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
-    all_domains = generator(file)
     some_variable += 1
     keywords = sorted(keywords, key=len, reverse=True)
     ready_to_write = True
@@ -146,14 +139,7 @@ def fcn2(domain_dict, pt, file, date):
     matched_lines_copy = []
     for keyword in keywords:
         if len(matched_lines) == 0 and condition:
-            try:
-                while True:
-                    local_data = all_domains.next()
-                    data_to_compare = local_data.lower()
-                    if keyword in data_to_compare:
-                        matched_lines.append(data_to_compare)
-            except:
-                pass
+            matched_lines = [line.lower() for line in all_domains if keyword in line.lower()]
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
@@ -163,90 +149,114 @@ def fcn2(domain_dict, pt, file, date):
         for matched_domain in matched_lines:
             entry = RawLeads(
                 name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                name_redemption=(domain).replace('\n', '').replace('\r', ''), 
                 date=date
             )
             entry.save()
     pt.update()
 
-def fcn3(path, pt, date):
-    global result_list
-    file = open(path, "r")
-    for result in result_list:
-        file.seek(0, 0)
-        fcn2(result, pt, file, date)   
-    file.close()
 
 result_list = []
+all_domains = set()
+
 
 def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
-    global result_list, link, value, text
-    paths = [com_path, net_path, org_path, info_path]
+    global result_list, all_domains, link, value, text
+
     usefull_data = []
     with open(redemption_path, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-            domain = row[0].strip('"')
+	    domain = row[0].strip('"')
             teemp = (domain, )
             usefull_data.append(teemp)
         usefull_data.pop(0)
-    increment = (100.0 / len(usefull_data))
+    increment = (100.0/len(usefull_data))
     text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
     for domain_data in usefull_data:
         value += increment
         fcn(domain_data, pt)
+        # t = threading.Thread(target=fcn, args=(domain_data, pt))
+        # threads.append(t)
+        # t.start()
+    # for t in threads:
+    #     t.join()
     usefull_data = None
     pt = None
     gc.collect()
     print '\n'
 
     threads = []
-    increment = (100.0 / len(result_list))
-    value = 0
-    pt = progress_timer(description='process : ', n_iter=(len(result_list) * 4))
-    for path in paths:
-        if path:   
-            fcn3(path, pt, date)        
-        else:
-            print 'skipping phase ...'
-    # if net_path:
-    #     file = open(net_path, "r")
-    #     pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list))
-    #     for result in result_list:
-    #         file.seek(0, 0)
-    #         fcn2(result, pt2, file, date)
-    #     file.close()
-    #     gc.collect()
-    # else:
-    #     print 'skipping phase 3...'
+    if org_path:
+        file = open(org_path, "r")
+        all_domains = set(file.readlines())
+        file.close()
+        pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list))
+        increment = (100.0/len(result_list))
+        value = 0
+        text = 'phase 2 '
+        for result in result_list:
+            fcn2(result, pt2, all_domains, date)
+            value += increment
+            #t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
+            #threads.append(t)
+            #t.start()
+        gc.collect()
+        print '\n'
+    else:
+        print 'skipping phase 2...\n'
 
-    # if info_path:
-    #     file = open(info_path, "r")
-    #     pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list))
-    #     for result in result_list:
-    #         file.seek(0, 0)
-    #         fcn2(result, pt2, file, date)
-    #     file.close()
-    #     all_domains = None
-    #     pt2 = None
-    #     gc.collect()
-    # else:
-    #     print 'skipping phase 4...'
+    if net_path:
+        file = open(net_path, "r")
+        all_domains = set(file.readlines())
+        file.close()
+        pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list))
+        for result in result_list:
+            fcn2(result, pt2, all_domains, date)
+            # t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
+            # threads.append(t)
+            # t.start()
+        gc.collect()
+        print '\n'
+    else:
+        print 'skipping phase 3...\n'
 
-    # if com_path:
-    #     file = open(com_path, "r")
-    #     pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list))
-    #     for result in result_list:
-    #         file.seek(0, 0)
-    #         fcn2(result, pt2, file, date)
-    #     file.close()
-    #     all_domains = None
-    #     pt2 = None
-    #     gc.collect()
-    # else:
-    #     print 'skipping phase 5...'
+    if info_path:
+        file = open(info_path, "r")
+        all_domains = set(file.readlines())
+        file.close()
+        pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list))
+        for result in result_list:
+            fcn2(result, pt2, all_domains, date)
+            # t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
+            # threads.append(t)
+            # t.start()
+        all_domains = None
+        pt2 = None
+        gc.collect()
+        print '\n'
+    else:
+        print 'skipping phase 4...\n'
+
+    if com_path:
+        file = open(com_path, "r")
+        all_domains = set(file.readlines())
+        file.close()
+        pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list))
+        for result in result_list:
+            fcn2(result, pt2, all_domains, date)
+            # t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
+            # threads.append(t)
+            # t.start()
+
+        all_domains = None
+        pt2 = None
+        gc.collect()
+        print '\n'
+    else:
+        print 'skipping phase 5...\n'
 
 
 def threadmain():
@@ -268,3 +278,4 @@ if __name__ == '__main__':
     # except:
     # 	  pass
     main_filter(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+    print '\n', '---END---', int(time.time() - start_time), some_variable, '\n'
