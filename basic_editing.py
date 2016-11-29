@@ -200,7 +200,10 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
     usefull_data = None
     pt = None
     gc.collect()
-    print '\n'
+    file = open('log.txt', 'a')
+    file.write('date: ' + str(datetime.now()))
+    file.write('redemption length: ' + str(len(result_list)))
+    file.close()
 
     threads = []
     increment = (100.0 / len(result_list))
@@ -211,43 +214,11 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
             fcn3(path, pt, date)        
         else:
             print 'skipping phase ...'
-    # if net_path:
-    #     file = open(net_path, "r")
-    #     pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list))
-    #     for result in result_list:
-    #         file.seek(0, 0)
-    #         fcn2(result, pt2, file, date)
-    #     file.close()
-    #     gc.collect()
-    # else:
-    #     print 'skipping phase 3...'
-
-    # if info_path:
-    #     file = open(info_path, "r")
-    #     pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list))
-    #     for result in result_list:
-    #         file.seek(0, 0)
-    #         fcn2(result, pt2, file, date)
-    #     file.close()
-    #     all_domains = None
-    #     pt2 = None
-    #     gc.collect()
-    # else:
-    #     print 'skipping phase 4...'
-
-    # if com_path:
-    #     file = open(com_path, "r")
-    #     pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list))
-    #     for result in result_list:
-    #         file.seek(0, 0)
-    #         fcn2(result, pt2, file, date)
-    #     file.close()
-    #     all_domains = None
-    #     pt2 = None
-    #     gc.collect()
-    # else:
-    #     print 'skipping phase 5...'
-
+    duration = int(time.time() - start_time)
+    file = open('log.txt', 'a')
+    file.write('duration: ' + str(duration))
+    file.write('----------------------------')
+    file.close()
 
 def threadmain():
     global value
