@@ -197,7 +197,7 @@ function load() {
 
 function load_send() {
 	var date = $("#datepicker").val();
-	window.location.href=('/sending/?date=' + date);
+	window.location.href=('/active_leads/?date=' + date);
 }
 
 function load_del() {
