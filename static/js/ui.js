@@ -1,34 +1,21 @@
-//filtering stuff
-function show (i) {
-    var min = (i - 1) * 1000, max = i * 1000 - 1
-    var $table = $('#mytable'),
-         $rows = $table.find('tbody tr');
-    min = min ? min - 1 : 0;
-    max = max ? max : $rows.length;
-    $rows.hide().slice(min, max).show();
-    $(".buttons").css({"background-color": "white"});
-    $("#button_" + i).css({"background-color": "LightGreen", "height": "26px"});
-    return false;
-}
-//end of filtering stuff
-
+//COMMON
 function chkDuplicates(arr,justCheck=true) {
-	var len = arr.length, tmp = {}, arrtmp = arr.slice(), dupes = [];
-	arrtmp.sort();
-	while(len--) {
-	var val = arrtmp[len];
-	if (val) {
-	   if (/nul|nan|infini/i.test(String(val))){
-	     val = String(val);
-	    }
-	    if (tmp[JSON.stringify(val)]){
-	       if (justCheck) {return true;}
-	       dupes.push(val);
-	    }
-	    tmp[JSON.stringify(val)] = true;
-	  }
-	}
-	return justCheck ? false : dupes.length ? dupes : null;
+    var len = arr.length, tmp = {}, arrtmp = arr.slice(), dupes = [];
+    arrtmp.sort();
+    while(len--) {
+    var val = arrtmp[len];
+    if (val) {
+       if (/nul|nan|infini/i.test(String(val))){
+         val = String(val);
+        }
+        if (tmp[JSON.stringify(val)]) {
+           if (justCheck) {return true;}
+           dupes.push(val);
+        }
+        tmp[JSON.stringify(val)] = true;
+      }
+    }
+    return justCheck ? false : dupes.length ? dupes : null;
 }
 
 function getCookie(name) {
@@ -47,22 +34,50 @@ function getCookie(name) {
     return cookieValue;
 }
 var csrftoken = getCookie('csrftoken');
-
+//BASE
+function run_script() {
+    var org = $("#org_file_name").val()
+    var com = $("#com_file_name").val()
+    var net = $("#net_file_name").val()
+    var info = $("#info_file_name").val()
+    var redempt = $("#red_file_name").val()
+    var date = $("#datepicker").val()
+    if ((org || com || net || info) && redempt) {
+        if (chkDuplicates([org, net, com, info, redempt])) {
+            alert("You have selected some domain list twice");
+        } else {
+            var r = confirm("Everything for selected date will be deleted");
+            if (r == true) {
+                $("#cover").fadeIn(100);
+                $.ajax({
+                    type: "POST",
+                    url: "/run_script/",
+                    data: "org=" + org + "&net=" + net +
+                    "&com=" + com + "&info=" + info +
+                    "&redempt=" + redempt + "&date=" + date,
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                    },
+                    success: function(msg) {
+                        if (msg.status === "success") {
+                            window.location='/raw_leads/'
+                        } else {
+                            alert('Something went wrong!')
+                        }
+                        $("#cover").fadeOut(100);
+                    }
+                });
+            }
+        }
+    } else {
+        alert("It's required to select at least one zone and redemption file");
+    }
+}
+//RAW LEADS
 function changestate(id) {
     $.ajax({
-		type: "POST",
-		url: "/reverse_state/",
-		headers: {
-            'X-CSRFToken': csrftoken
-        },
-		data: "id=" + id,
-	});
-}
-
-function mark_for_archive(id) {
-    $.ajax({
         type: "POST",
-        url: "/mark_for_archive/",
+        url: "/reverse_state/",
         headers: {
             'X-CSRFToken': csrftoken
         },
@@ -70,160 +85,112 @@ function mark_for_archive(id) {
     });
 }
 
-function send_mails() {
-	$("#cover").fadeIn(100);
-	var date = $("#datepicker").val()
-    $.ajax({
-		type: "POST",
-		url: "/send_mails/",
-		data: "date=" + date,
-		headers: {
-            'X-CSRFToken': csrftoken
-        },
-		success: function(msg){
-			$("#cover").fadeOut(100);
-			location.reload();
-		}
-	});
+function load() {
+    var date = $("#datepicker").val();
+    window.location.href=('/raw_leads/?date=' + date);
 }
 
-
-function run_script() {
-	var org = $("#org_file_name").val()
-	var com = $("#com_file_name").val()
-	var net = $("#net_file_name").val()
-	var info = $("#info_file_name").val()
-	var redempt = $("#red_file_name").val()
-	var date = $("#datepicker").val()
-	if ((org || com || net || info) && redempt) {
-		if (chkDuplicates([org, net, com, info, redempt])) {
-			alert("You have selected some domain list twice");
-		} else {
-			var r = confirm("Everything for selected date will be deleted");
-			if (r == true) {
-				$("#cover").fadeIn(100);
-				$.ajax({
-					type: "POST",
-					url: "/run_script/",
-					data: "org=" + org + "&net=" + net +
-					"&com=" + com + "&info=" + info +
-					"&redempt=" + redempt + "&date=" + date,
-					headers: {
-			            'X-CSRFToken': csrftoken,
-			        },
-					success: function(msg) {
-						if (msg.status === "success") {
-							window.location='/raw_leads/'
-						} else {
-							alert('Something went wrong!')
-						}
-						$("#cover").fadeOut(100);
-					}
-				});
-			}
-		}
-	} else {
-		alert("It's required to select at least one zone and redemption file");
-	}
+function show (i) {
+    var $table = $('#mytable'),
+        $rows_show = $table.find('tbody tr.raw_leads_raw' + i),
+        $rows = $table.find('tbody tr');
+    $rows.hide();
+    $rows_show.show();
+    $(".buttons").css({"background-color": "white"});
+    $("#button_" + i).css({"background-color": "LightGreen", "height": "26px"});
+    if ($rows_show.length == 0) {
+        $("#empty_page").show();
+    } else {
+        $("#empty_page").hide();
+    }
+    return false;
 }
 
+function select_all(range) {
+    var active_page = 0, iter = range.length, date = $("#datepicker").val(), boxes;
+    while (iter--) {
+        if ($("#button_" + i).css("background-color") === "LightGreen") {
+            $.ajax({
+                type: "POST",
+                url: "/select_all/",
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+                data: "page=" + iter + "&date=" + date,
+            });
+            boxes = $(".check_" + iter).checked(true);
+            break;
+        }
+    }
+}
 
 function find_mails() {
-	$("#cover").fadeIn(100);
-	var date = $("#datepicker").val();
-    $.ajax({
-		type: "POST",
-		url: "/find_mails/",
-		data: "date=" + date,
-		headers: {
-            'X-CSRFToken': csrftoken
-        },
-		success: function(msg){
-			$("#cover").fadeOut(100);
-			window.location='/active_leads/'
-		}
-	});
-}
-
-function add_zone() {
-	var zone = $("#zone_file_name").val();
-	$("#cover").fadeIn(100);
-	$.ajax({
-		type: "POST",
-		url: "/add_zone/",
-		data: "zone=" + zone,
-		headers: {
-            'X-CSRFToken': csrftoken,
-        },
-		success: function(msg) {
-			$("#cover").fadeOut(100);
-			window.location='/raw_leads/'
-		}
-	});
-}
-
-function return_from_archive(id) {
-    $.ajax({
-		type: "POST",
-		url: "/return_from_archive/",
-		headers: {
-            'X-CSRFToken': csrftoken
-        },
-		data: "id=" + id,
-	});
-}
-
-function do_deleting() {
-	$("#cover").fadeIn(100);
-	var date = $("#datepicker").val();
-	$.ajax({
-		type: "POST",
-		url: "/do_deleting/",
-		data: "date=" + date,
-		headers: {
-            'X-CSRFToken': csrftoken,
-        },
-		success: function(msg) {
-			$("#cover").fadeOut(100);
-			window.location='/active_leads/'
-		}
-	})
-}
-
-function load() {
-	var date = $("#datepicker").val();
-	window.location.href=('/raw_leads/?date=' + date);
-}
-
-function load_send() {
-	var date = $("#datepicker").val();
-	window.location.href=('/active_leads/?date=' + date);
-}
-
-function load_del() {
-	var date = $("#datepicker").val();
-	window.location.href=('/restore/?date=' + date);
-}
-
-function load_offers() {
-	var date = $("#datepicker").val();
-	window.location.href=('/offers/?date=' + date);
-}
-
-function load_sent() {
+    $("#cover").fadeIn(100);
     var date = $("#datepicker").val();
-    window.location.href=('/sent/?date=' + date);
+    $.ajax({
+        type: "POST",
+        url: "/find_mails/",
+        data: "date=" + date,
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function(msg){
+            $("#cover").fadeOut(100);
+            window.location='/active_leads/'
+        }
+    });
+}
+
+function truncate() {
+    var passwd = prompt("Enter Password : ", "your password here");
+    if (passwd == 2011) {
+        var date = $("#datepicker").val();
+        $.ajax({
+            type: "POST",
+            url: "/truncate/",
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: "date=" + date,
+            success: function (msg) {
+                alert("It's Done!")
+                window.location.href=('/raw_leads/?date=' + date);
+            }
+        });
+    } else {
+        alert('Incorrect password');
+    }
+}
+
+function add_this_name(name_redemption, page) {
+    var date = $("#datepicker").val();
+    $.ajax({
+        type: "POST",
+        url: "/add_this_name/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: "redemption=" + name_redemption + "&page=" + page + "&date=" + date,
+        success: function (msg) {
+            $(".r_" + name_redemption).checked(true);
+        }
+    });
+}
+//ACTIVE LEADS
+function load_send() {
+    var date = $("#datepicker").val();
+    window.location.href=('/active_leads/?date=' + date);
 }
 
 function blacklist(id) {
-	$.ajax({
-		type: "POST",
-		url: "/blacklist/",
-		headers: {
+    $.ajax({
+        type: "POST",
+        url: "/blacklist/",
+        headers: {
             'X-CSRFToken': csrftoken
         },
-		data: "id=" + id,
-	});
+        data: "id=" + id,
+    });
 }
 
 function to_delete(id) {
@@ -238,12 +205,59 @@ function to_delete(id) {
 }
 
 function mark_to_send(id) {
-	$.ajax({
-		type: "POST",
-		url: "/mark_to_send/",
-		headers: {
+    $.ajax({
+        type: "POST",
+        url: "/mark_to_send/",
+        headers: {
             'X-CSRFToken': csrftoken
         },
-		data: "id=" + id,
-	});
+        data: "id=" + id,
+    });
+}
+
+function send_mails() {
+    $("#cover").fadeIn(100);
+    var date = $("#datepicker").val()
+    $.ajax({
+        type: "POST",
+        url: "/send_mails/",
+        data: "date=" + date,
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function(msg){
+            $("#cover").fadeOut(100);
+            location.reload();
+        }
+    });
+}
+
+function add_mail_man(id) {
+    var email = $("#mail_entry_" + id).val();
+    $.ajax({
+        type: "POST",
+        url: "/add_mail_man/",
+        data: "id=" + id + "&email=" + email,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            $("#mail_field_" + id).html(email)
+        }
+    });
+}
+
+function rem_mail(id) {
+    var html = 'email not found <input type="text" id="mail_entry_' + id + '"/><button onclick="add_mail_man(' + id + ')">Add</button>';
+    $.ajax({
+        type: "POST",
+        url: "/rem_mail/",
+        data: "id=" + id,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            $("#mail_field_" + id).html(html)
+        }
+    });
 }

@@ -1,10 +1,10 @@
 #cover {
-	position:fixed;
-	padding:0;
-	margin:0;
+	position: fixed;
+	padding: 0;
+	margin: 0;
 
-	top:0;
-	left:0;
+	top: 0;
+	left: 0;
 	right: 0;
 	bottom: 0;
 
@@ -17,6 +17,10 @@
 	display: none;
 }
 
+.hide {
+    display: none;
+}
+
 /* Sortable tables */
 table.sortable thead {
     background-color:#eee;
@@ -27,4 +31,5 @@ table.sortable thead {
 
 table.sortable > tbody > tr > td {
 	padding-left: 10px;
+    border-bottom: 1px solid #000;
 }

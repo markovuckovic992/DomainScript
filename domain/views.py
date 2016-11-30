@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from urllib import unquote
-from domain.models import RawLeads, Offer, BlackList
+from domain.models import RawLeads, Offer, BlackList, Log
 from basic_editing import main_filter
 from whois_domain import main, main_status
 from django.core.mail import send_mail
@@ -14,6 +14,7 @@ from os import popen
 import requests, hashlib, traceback
 
 
+# EDITING
 def editing(request):
     return render(request, 'editing.html', {})
 
@@ -40,84 +41,49 @@ def runEditing(request):
         print traceback.format_exc(), argument
         return HttpResponse('{"status": "failed"}', content_type="application/json")
 
-def sending(request):
+# RAW LEADS
+def rawLeads(request):
     if 'date' in request.GET.keys():
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
         date = datetime.now()
-    raw_leads = RawLeads.objects.filter(send_mail=1, archive=0, date=date, sent=0)
-    return render(request, 'sending.html', {"raw_leads": raw_leads})
-
-def filtering(request):
-    if 'date' in request.GET.keys():
-        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
-    else:
-        date = datetime.now()
-    raw_leads = RawLeads.objects.filter(archive=0, date=date, send_mail=0)
-    return render(request, 'filtering.html', {"raw_leads": raw_leads, 'range': range(1, int(ceil(len(raw_leads) / 1000)) + 2)})
+    raw_leads = RawLeads.objects.filter(date=date, activated=0)
+    try:
+        log = Log.objects.get(date=date)
+    except LogDoesNotExist:
+        log = None
+    return render(
+        request,
+        'raw_leads.html',
+        {
+            "raw_leads": raw_leads,
+            'range': range(1, int(ceil(len(raw_leads) / 5000)) + 2),
+            'log': log,
+            'total_r': len(raw_leads),
+            'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
+        })
 
 def reverse_state(request):
     raw_leads_id = int(unquote(request.POST['id']))
-    send_mail = RawLeads.objects.get(id=raw_leads_id).send_mail
-    send_mail += 1
-    send_mail %= 2
-    RawLeads.objects.filter(id=raw_leads_id).update(send_mail=send_mail)
+    mark = RawLeads.objects.get(id=raw_leads_id).mark
+    mark += 1
+    mark %= 2
+    RawLeads.objects.filter(id=raw_leads_id).update(mark=mark)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-def mark_for_archive(request):
-    raw_leads_id = int(unquote(request.POST['id']))
-    to_archive = RawLeads.objects.get(id=raw_leads_id).to_archive
-    to_archive += 1
-    to_archive %= 2
-    RawLeads.objects.filter(id=raw_leads_id).update(to_archive=to_archive)
-    return HttpResponse('{"status": "success"}', content_type="application/json")
-
-def send_mails(request):
+def select_all(request):
+    page = request.POST['page']
     date = request.POST['date']
-    date = datetime.strptime(date, '%d-%m-%Y').date()
-    delete = RawLeads.objects.filter(to_delete=1).delete()
-    blacklists = RawLeads.objects.filter(blacklist=1)
-    for blacklist in blacklists:
-        entry = BlackList.objects.filter(lead=blacklist.name_zone)
-        if not entry.exists():
-            new = BlackList(lead=blacklist.name_zone)
-            new.save()
-    RawLeads.objects.filter(blacklist=1).delete()
-    potential_profits = RawLeads.objects.filter(send_mail=1, sent=0, archive=0, date=date, mark_to_send=1)
-    for potential_profit in potential_profits:
-        # Form a link
+    raw_leads = RawLeads.objects.filter(page=page, date=date)
+    raw_leads.update(mark=1)
+    return HttpResponse('{"status": "success"}', content_type="application/json")
 
-        hash = hashlib.md5()
-        hash.update(str(potential_profit.id))
-        hash_base_id = hash.hexdigest()
-        link = ('http://localhost:8001/offer/?id=' + str(hash_base_id))
-        requests.post(
-            "http://localhost:8001/add_offer/",
-            data={
-                'base_id': potential_profit.id,
-                'lead': potential_profit.name_redemption,
-                'hash_base_id': hash_base_id,
-            }
-        )
-        offer = Offer(
-            base_id=potential_profit.id,
-            lead=potential_profit.name_redemption,
-            zone=potential_profit.name_zone,
-            hash_base_id=hash_base_id
-        )
-        offer.save()
-        try:
-            send_mail(
-                "Domain offer",  # Title
-                potential_profit.name_zone,  # Body
-                settings.EMAIL_HOST_USER,
-                [potential_profit.mail],
-                fail_silently=True,
-                html_message="<a href='" + str(link) + "'>Link</a>",
-            )
-            RawLeads.objects.filter(id=potential_profit.id).delete()
-        except:
-            pass
+def add_this_name(request):
+    redemption = request.POST['redemption']
+    page = request.POST['page']
+    date = request.POST['date']
+    raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date)
+    raw_leads.update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def find_mails(request):
@@ -126,39 +92,33 @@ def find_mails(request):
     main(date)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-def returnFromArchive(request):
-    raw_leads_id = int(unquote(request.POST['id']))
-    return_or_delete = RawLeads.objects.get(id=raw_leads_id).return_or_delete
-    return_or_delete += 1
-    return_or_delete %= 2
-    RawLeads.objects.filter(id=raw_leads_id).update(return_or_delete=return_or_delete)
+def truncate(request):
+    date = request.POST['date']
+    raw_leads = RawLeads.objects.filter(archive=0, date=date)
+    raw_leads.delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
-def deleting(request):
+# ACTIVE LEADS
+def activeLeads(request):
     if 'date' in request.GET.keys():
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
         date = datetime.now()
-    archive = RawLeads.objects.filter(archive=1, date=date)
-    return render(request, 'deleting.html', {"archive": archive, 'range': range(1, int(ceil(len(archive) / 1000)) + 2)})
-
-def doDeleting(request):
-    date = request.POST['date']
-    date = datetime.strptime(date, '%d-%m-%Y').date()
-    to_delete = RawLeads.objects.filter(return_or_delete=0, date=date, archive=1)
-    to_delete.delete()
-    RawLeads.objects.filter(archive=1, date=date).update(archive=0, send_mail=1, to_archive=0)
-    main(date)
-    return HttpResponse('{"status": "success"}', content_type="application/json")
-
-def mark_to_send(request):
-    leads_id = int(unquote(request.POST['id']))
-    mark_to_send = RawLeads.objects.get(id=leads_id).mark_to_send
-    mark_to_send += 1
-    mark_to_send %= 2
-    RawLeads.objects.filter(id=leads_id).update(mark_to_send=mark_to_send)
-    return HttpResponse('{"status": "success"}', content_type="application/json")
+    raw_leads = RawLeads.objects.filter(activated=1, date=date)
+    try:
+        log = Log.objects.get(date=date)
+    except LogDoesNotExist:
+        log = None
+    return render(
+        request,
+        'active_leads.html',
+        {
+            "raw_leads": raw_leads,
+            'range': range(1, int(ceil(len(raw_leads) / 5000)) + 2),
+            'log': log,
+            'total_r': len(RawLeads.objects.filter(activated=0, date=date)),
+            'total_a': len(raw_leads),
+        })
 
 def blacklist(request):
     leads_id = int(unquote(request.POST['id']))
@@ -176,14 +136,74 @@ def delete(request):
     RawLeads.objects.filter(id=leads_id).update(to_delete=to_delete)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-def sent(request):
-    if 'date' in request.GET.keys():
-        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
-    else:
-        date = datetime.now()
-    raw_leads = Offer.objects.filter(date=date)
-    return render(request, 'sent.html', {"raw_leads": raw_leads})
+def mark_to_send(request):
+    leads_id = int(unquote(request.POST['id']))
+    mark_to_send = RawLeads.objects.get(id=leads_id).mark_to_send
+    mark_to_send += 1
+    mark_to_send %= 2
+    RawLeads.objects.filter(id=leads_id).update(mark_to_send=mark_to_send)
+    return HttpResponse('{"status": "success"}', content_type="application/json")
 
+def add_mail_man(request):
+    email = request.POST['email']
+    lead_id = request.POST['id']
+    RawLeads.objects.filter(id=lead_id).update(email=email)
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def rem_mail(request):
+    lead_id = request.POST['id']
+    RawLeads.objects.filter(id=lead_id).update(email=None)
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def send_mails(request):
+    date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()
+    delete = RawLeads.objects.filter(to_delete=1).delete()
+    blacklists = RawLeads.objects.filter(blacklist=1)
+    for blacklist in blacklists:
+        entry = BlackList.objects.filter(lead=blacklist.name_zone)
+        if not entry.exists():
+            new = BlackList(lead=blacklist.name_zone)
+            new.save()
+    RawLeads.objects.filter(blacklist=1).delete()
+    potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1)
+    for potential_profit in potential_profits:
+        # Form a link
+        hash = hashlib.md5()
+        hash.update(str(potential_profit.id))
+        hash_base_id = hash.hexdigest()
+        link = ('http://localhost:8001/offer/?id=' + str(hash_base_id))
+        try:
+            send_mail(
+                "Domain offer",  # Title
+                potential_profit.name_zone,  # Body
+                settings.EMAIL_HOST_USER,
+                [potential_profit.mail],
+                fail_silently=True,
+                html_message="<a href='" + str(link) + "'>Link</a>",
+            )
+
+            requests.post(
+                "http://localhost:8001/add_offer/",
+                data={
+                    'base_id': potential_profit.id,
+                    'lead': potential_profit.name_redemption,
+                    'hash_base_id': hash_base_id,
+                }
+            )
+            offer = Offer(
+                base_id=potential_profit.id,
+                lead=potential_profit.name_redemption,
+                zone=potential_profit.name_zone,
+                hash_base_id=hash_base_id
+            )
+            offer.save()
+
+            RawLeads.objects.filter(id=potential_profit.id).delete()
+        except:
+            pass
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+# HEROKU
 @csrf_exempt
 def process_offer(request):
     base_id = request.POST['base_id']
@@ -198,12 +218,3 @@ def contact(request):
     hash_base_id = request.POST['hash']
     Offer.objects.filter(hash_base_id=hash_base_id).update(contact=contact, email=email, response=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
-
-def offers(request):
-    if 'date' in request.GET.keys():
-        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
-    else:
-        date = datetime.now()
-    main_status(date)
-    raw_leads = Offer.objects.filter(date=date)
-    return render(request, 'offers.html', {"raw_leads": raw_leads})

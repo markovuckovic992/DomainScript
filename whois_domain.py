@@ -7,8 +7,8 @@ from domain.models import RawLeads, Offer
 
 def main(date):
     usefull_data = []
-    datas_to_move = RawLeads.objects.filter(to_archive=1, date=date).update(archive=1)
-    datas = RawLeads.objects.filter(send_mail=1, mail__isnull=True)
+    RawLeads.objects.filter(mark=1).update(activated=1)
+    datas = RawLeads.objects.filter(activated=1, mail__isnull=True)
     for data in datas:
         uslov = True
         i = 0

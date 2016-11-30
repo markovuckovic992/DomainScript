@@ -3,36 +3,39 @@
    <title>Filtering</title>
 {% endblock %}
 {% block content %}
+    <h1 id="empty_page" class="hide">This page is empty</h1>
     {% csrf_token %}
    Date: <input type="text" id="datepicker" onchange="load()">
+   <button onclick="truncate()">Truncate</button>
    Show page:
    {% for i in range %}
         <button id="button_{{i}}" class="buttons" onclick="show({{i}})">{{ i }}</button>
    {% endfor %}
    <table id="mytable" class="sortable" style="margin-left: 20%; width: 70%;">
+      <tbody>
+        <tr>
+          <th>' + '&nbsp' + '</th>
+          <th><input type="checkbox" id="master_chbox" onclick="select_all({{range}})" /></th>
+          <th>' + '&nbsp' + '</th>
+        </tr>
+      </tbody>
       <thead>
         <tr>
           <th>Zone file domain</th>
-          <th>Domain to sell</th>
           <th>Mark as good</th>
-          <th>Mark as bad</th>
+          <th>Domain to sell</th>
         </tr>
       </thead>
       <tbody>
         {% for entry in raw_leads %}
-        <tr>
+        <tr class="raw_leads_raw{{entry.page}}">
           <td>{{entry.name_zone}}</td>
-          <td>{{entry.name_redemption}}</td>
-           {% if entry.send_mail %}
-            <td><input type="checkbox" checked onclick="changestate('{{entry.id}}')" />
-           {% else %}
-            <td><input type="checkbox" onclick="changestate('{{entry.id}}')" /></td>
-           {% endif %}
-           {% if entry.to_archive %}
-            <td><input type="checkbox" checked onclick="mark_for_archive('{{entry.id}}')" />
-           {% else %}
-            <td><input type="checkbox" onclick="mark_for_archive('{{entry.id}}')" /></td>
-           {% endif %}
+          {% if entry.mark %}
+            <td><input type="checkbox" class="check_{{entry.page}} r_{{entry.name_redemption}}" checked onclick="changestate('{{entry.id}}')" />
+          {% else %}
+            <td><input type="checkbox" class="check_{{entry.page}} r_{{entry.name_redemption}}" onclick="changestate('{{entry.id}}')" /></td>
+          {% endif %}
+          <td onclick="add_this_name({{entry.name_redemption}}, {{entry.page}})">{{entry.name_redemption}}</td>
         </tr>
         {% endfor %}
       </tbody>

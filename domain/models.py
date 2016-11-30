@@ -6,16 +6,13 @@ class RawLeads(models.Model):
     name_zone = models.CharField(max_length=100)
     name_redemption = models.CharField(max_length=100)
     mail = models.CharField(max_length=100, blank=True, null=True)
+    page = models.SmallIntegerField(default=1)
 
-    sent = models.SmallIntegerField(default=0)
-    archive = models.SmallIntegerField(default=0)
-    send_mail = models.SmallIntegerField(default=0)
-    to_archive = models.SmallIntegerField(default=0)
-    to_delete = models.SmallIntegerField(default=0)
-    return_or_delete = models.SmallIntegerField(default=0)
-
-    blacklist = models.SmallIntegerField(default=0)
+    activated = models.SmallIntegerField(default=0)
+    mark = models.SmallIntegerField(default=0)
     mark_to_send = models.SmallIntegerField(default=0)
+    to_delete = models.SmallIntegerField(default=0)
+    blacklist = models.SmallIntegerField(default=0)
 
     date = models.DateField(default=timezone.now)
 
@@ -41,6 +38,11 @@ class Offer(models.Model):
     class Meta:
         db_table = 'offers'
 
+class Log(models.Model):
+    date = models.DateField(default=timezone.now)
+    number_of_redemption = models.IntegerField(default=0)
+    number_of_all = models.IntegerField(default=0)
+    duration = models.IntegerField(default=0)
 
 class BlackList(models.Model):
     lead = models.CharField(max_length=100, blank=True, null=True)

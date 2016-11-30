@@ -19,7 +19,13 @@
         {% for entry in raw_leads %}
         <tr>
           <td>{{entry.name_zone}}</td>
-          <td>{%if entry.mail%}{{entry.mail}}{%else%} email not found {%endif%}</td>
+          <td id="mail_field_{{entry.id}}">
+            {%if entry.mail %}
+                {{entry.mail}}<button onclick="rem_mail({{entry.id}})">Rewrite</button>
+            {%else%}
+                email not found <input type="text" id="mail_entry_{{entry.id}}"/><button onclick="add_mail_man({{entry.id}})">Add</button>
+            {%endif%}
+        </td>
           {% if entry.mark_to_send %}
             <td><input type="checkbox" checked onclick="mark_to_send('{{entry.id}}')" />
            {% else %}
@@ -37,7 +43,6 @@
            {% else %}
             <td><input type="checkbox" onclick="to_delete('{{entry.id}}')" /></td>
           {% endif %}
-
         </tr>
         {% endfor %}
       </tbody>

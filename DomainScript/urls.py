@@ -22,25 +22,22 @@ urlpatterns = [
     #  editing
     url(r'^$', domain.views.editing),
     url(r'^run_script/', domain.views.runEditing),
-    #  sending
-    url(r'^active_leads/', domain.views.sending),
+    #  raw leads
+    url(r'^raw_leads/', domain.views.rawLeads),
+    url(r'^reverse_state/', domain.views.reverse_state),
+    url(r'^find_mails/', domain.views.find_mails),
+    url(r'^truncate/', domain.views.truncate),
+    url(r'^select_all/', domain.views.select_all),
+    url(r'^add_this_name/', domain.views.add_this_name),
+    #  active leads
+    url(r'^active_leads/', domain.views.activeLeads),
     url(r'^blacklist/', domain.views.blacklist),
     url(r'^mark_to_send/', domain.views.mark_to_send),
-    #  filtering
-    url(r'^raw_leads/', domain.views.filtering),
-    url(r'^reverse_state/', domain.views.reverse_state),
-    url(r'^mark_for_archive/', domain.views.mark_for_archive),
-    url(r'^send_mails/', domain.views.send_mails),
-    url(r'^find_mails/', domain.views.find_mails),
-    #  deleting
-    url(r'^restore/', domain.views.deleting),
     url(r'^delete/', domain.views.delete),
-    url(r'^return_from_archive/', domain.views.returnFromArchive),
-    url(r'^do_deleting/', domain.views.doDeleting),
-    #  sent
-    url(r'^sent/', domain.views.sent),
-    #  offer
-    url(r'^offers/', domain.views.offers),
+    url(r'^send_mails/', domain.views.send_mails),
+    url(r'^add_mail_man/', domain.views.add_mail_man),
+    url(r'^rem_mail/', domain.views.rem_mail),
+    #  heroku
     url(r'^contact/', domain.views.contact),
     url(r'^process_offer/', domain.views.process_offer),
     # url(r'^find_status/', domain.views.find_status),

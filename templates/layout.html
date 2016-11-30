@@ -75,10 +75,21 @@
 </nav>
 <div class="container-fluid text-center">
   <div class="row content">
-    <div class="col-sm-8 text-left"  style="width: 90%;" align="center">
+    <div class="col-sm-8 text-left"  style="width: 90%; float: left;" align="center">
     {% block content %}
 
     {% endblock %}
+    </div>
+    <div style="width: 10%; float: left;">
+        {% if log %}
+            <p>Date: {{log.date}}</p>
+            <p>Number of dropping domains :{{log.number_of_redemption}} out of {{log.number_of_all}}</p>
+            <p>Raw Leads: {{total_r}}}</p>
+            <p>Active Leads: {{total_a}}</p>
+            <p>Script render time [s]: {{log.duration}}</p>
+        {% else %}
+            <p>Script is not started yet</p>
+        {% endif %}
     </div>
   </div>
 </div>
