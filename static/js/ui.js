@@ -108,6 +108,7 @@ function show (i) {
 
 function select_all(range) {
     var active_page = 0, iter = range.length, date = $("#datepicker").val(), boxes;
+    var boxes;
     while (iter--) {
         if ($("#button_" + i).css("background-color") === "LightGreen") {
             $.ajax({
@@ -118,7 +119,10 @@ function select_all(range) {
                 },
                 data: "page=" + iter + "&date=" + date,
             });
-            boxes = $(".check_" + iter).checked(true);
+            boxes = document.getElementsByClassName("check_" + iter)
+            for (i = 0; i < boxes.length; i += 1) {
+    			boxes[i].checked = true;
+        	}	
             break;
         }
     }
@@ -163,7 +167,8 @@ function truncate() {
 }
 
 function add_this_name(name_redemption, page) {
-    var date = $("#datepicker").val();
+    var date = $("#datepicker").val(), i;
+    var items = document.getElementsByClassName("r_" + name_redemption);
     $.ajax({
         type: "POST",
         url: "/add_this_name/",
@@ -172,7 +177,9 @@ function add_this_name(name_redemption, page) {
         },
         data: "redemption=" + name_redemption + "&page=" + page + "&date=" + date,
         success: function (msg) {
-            $(".r_" + name_redemption).checked(true);
+        	for (i = 0; i < items.length; i += 1) {
+    			items[i].checked = true;
+        	}	
         }
     });
 }
@@ -234,6 +241,7 @@ function send_mails() {
 
 function add_mail_man(id) {
     var email = $("#mail_entry_" + id).val();
+    var html = email + '<button onclick="rem_mail(' + id + ')">Rewrite</button>'
     $.ajax({
         type: "POST",
         url: "/add_mail_man/",
@@ -242,7 +250,7 @@ function add_mail_man(id) {
             'X-CSRFToken': csrftoken,
         },
         success: function(msg){
-            $("#mail_field_" + id).html(email)
+            $("#mail_field_" + id).html(html)
         }
     });
 }

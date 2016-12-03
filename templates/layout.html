@@ -63,9 +63,6 @@
         <li id="Base" class="active"><a href="/">Base</a></li>
         <li id="Filt" ><a href="/raw_leads/">Raw Leads</a></li>
         <li id="Send" ><a href="/active_leads/">Active Leads</a></li>
-        <li id="Del" ><a href="/restore/">Restore</a></li>
-        <li id="Sent" ><a href="/sent/">Sent</a></li>
-        <li id="Offer" ><a href="/offers/">Offers</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
@@ -84,7 +81,7 @@
         {% if log %}
             <p>Date: {{log.date}}</p>
             <p>Number of dropping domains :{{log.number_of_redemption}} out of {{log.number_of_all}}</p>
-            <p>Raw Leads: {{total_r}}}</p>
+            <p>Raw Leads: {{total_r}}</p>
             <p>Active Leads: {{total_a}}</p>
             <p>Script render time [s]: {{log.duration}}</p>
         {% else %}

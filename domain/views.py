@@ -50,7 +50,7 @@ def rawLeads(request):
     raw_leads = RawLeads.objects.filter(date=date, activated=0)
     try:
         log = Log.objects.get(date=date)
-    except LogDoesNotExist:
+    except Log.DoesNotExist:
         log = None
     return render(
         request,
@@ -74,6 +74,7 @@ def reverse_state(request):
 def select_all(request):
     page = request.POST['page']
     date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(page=page, date=date)
     raw_leads.update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -82,6 +83,7 @@ def add_this_name(request):
     redemption = request.POST['redemption']
     page = request.POST['page']
     date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date)
     raw_leads.update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -94,7 +96,8 @@ def find_mails(request):
 
 def truncate(request):
     date = request.POST['date']
-    raw_leads = RawLeads.objects.filter(archive=0, date=date)
+    date = datetime.strptime(date, '%d-%m-%Y').date()
+    raw_leads = RawLeads.objects.filter(activated=0, date=date)
     raw_leads.delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -107,7 +110,7 @@ def activeLeads(request):
     raw_leads = RawLeads.objects.filter(activated=1, date=date)
     try:
         log = Log.objects.get(date=date)
-    except LogDoesNotExist:
+    except Log.DoesNotExist:
         log = None
     return render(
         request,
@@ -145,14 +148,14 @@ def mark_to_send(request):
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def add_mail_man(request):
-    email = request.POST['email']
+    mail = request.POST['email']
     lead_id = request.POST['id']
-    RawLeads.objects.filter(id=lead_id).update(email=email)
+    RawLeads.objects.filter(id=lead_id).update(mail=mail)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def rem_mail(request):
     lead_id = request.POST['id']
-    RawLeads.objects.filter(id=lead_id).update(email=None)
+    RawLeads.objects.filter(id=lead_id).update(mail=None)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def send_mails(request):

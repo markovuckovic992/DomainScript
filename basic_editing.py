@@ -16,6 +16,7 @@ os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 from domain.models import RawLeads, Log
+from datetime import datetime
 
 fname = 'No Path selected'
 fname2 = 'No Path selected'
@@ -133,8 +134,8 @@ def fcn(domain_data, pt):
     return 1
 
 
-def fcn2(domain_dict, pt, file, date, iterno):
-    global some_variable, link
+def fcn2(domain_dict, pt, file, date):
+    global some_variable, link, iterno
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
     all_domains = generator(file)
@@ -161,7 +162,8 @@ def fcn2(domain_dict, pt, file, date, iterno):
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
-            page = floor(iterno % 5000) + 1
+            iterno += 1
+            page = floor(iterno / 5000) + 1
             entry = RawLeads(
                 name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
                 name_redemption=(domain).replace('\n', '').replace('\r', ''),
@@ -172,12 +174,11 @@ def fcn2(domain_dict, pt, file, date, iterno):
     pt.update()
 
 def fcn3(path, pt, date):
-    global result_list, iterno
+    global result_list
     file = open(path, "r")
     for result in result_list:
-        iterno += 1
         file.seek(0, 0)
-        fcn2(result, pt, file, date, iterno)
+        fcn2(result, pt, file, date)
     file.close()
 
 result_list = []
@@ -195,7 +196,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
             usefull_data.append(teemp)
         usefull_data.pop(0)
     increment = (100.0 / len(usefull_data))
-    Log.filter(date=datetime.now().date()).update(number_of_all=len(usefull_data))
+    Log.objects.filter(date=datetime.now().date()).update(number_of_all=len(usefull_data))
     text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
@@ -205,7 +206,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
     usefull_data = None
     pt = None
     gc.collect()
-    Log.filter(date=datetime.now().date()).update(number_of_redemption=len(result_list))
+    Log.objects.filter(date=datetime.now().date()).update(number_of_redemption=len(result_list))
     threads = []
     increment = (100.0 / len(result_list))
     value = 0
@@ -234,9 +235,9 @@ if __name__ == '__main__':
     #     thread.start_new_thread(threadmain, ())
     # except:
     # 	  pass
-    if not Log.filter(date=datetime.now().date()).exists():
+    if not Log.objects.filter(date=datetime.now().date()).exists():
         entry = Log(date=datetime.now().date())
         entry.save()
     main_filter(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
     duration = int(time.time() - start_time)
-    Log.filter(date=datetime.now().date()).update(duration=duration)
+    Log.objects.filter(date=datetime.now().date()).update(duration=duration)
