@@ -42,7 +42,9 @@ function run_script() {
     var info = $("#info_file_name").val()
     var redempt = $("#red_file_name").val()
     var date = $("#datepicker").val()
-    if ((org || com || net || info) && redempt) {
+    var len  = date.split("-").length;
+    console.log(len);
+    if (org && com && net && info && redempt && (len === 3)) {
         if (chkDuplicates([org, net, com, info, redempt])) {
             alert("You have selected some domain list twice");
         } else {
