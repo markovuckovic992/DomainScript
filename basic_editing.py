@@ -196,7 +196,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
             usefull_data.append(teemp)
         usefull_data.pop(0)
     increment = (100.0 / len(usefull_data))
-    Log.objects.filter(date=datetime.now().date()).update(number_of_all=len(usefull_data))
+    Log.objects.filter(date=sys.argv[6]).update(number_of_all=len(usefull_data))
     text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
@@ -206,7 +206,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
     usefull_data = None
     pt = None
     gc.collect()
-    Log.objects.filter(date=datetime.now().date()).update(number_of_redemption=len(result_list))
+    Log.objects.filter(date=sys.argv[6]).update(number_of_redemption=len(result_list))
     threads = []
     increment = (100.0 / len(result_list))
     value = 0
@@ -240,4 +240,4 @@ if __name__ == '__main__':
         entry.save()
     main_filter(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
     duration = int(time.time() - start_time)
-    Log.objects.filter(date=datetime.now().date()).update(duration=duration)
+    Log.objects.filter(date=sys.argv[6]).update(duration=duration)
