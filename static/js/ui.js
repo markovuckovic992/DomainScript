@@ -259,9 +259,10 @@ function send_mails() {
     });
 }
 
-function add_mail_man(id) {
-    var email = $("#mail_entry_" + id).val();
-    var html = email + '<button onclick="rem_mail(' + id + ')">Rewrite</button>'
+function add_mail_man(id, name_zone) {
+    var email = $("#mail_entry_" + id).val(), i;
+    var zone = "'" + name_zone + "'"
+    var html = email + '<button onclick="rem_mail(' + id + ', ' + zone + ')">Rewrite</button>'
     $.ajax({
         type: "POST",
         url: "/add_mail_man/",
@@ -270,13 +271,16 @@ function add_mail_man(id) {
             'X-CSRFToken': csrftoken,
         },
         success: function(msg){
-            $("#mail_field_" + id).html(html)
+            for (i = 0; i < msg.ids.length; i += 1) {
+                $("#mail_field_" + msg.ids[i]).html(html);
+            }
         }
     });
 }
 
-function rem_mail(id) {
-    var html = 'email not found <input type="text" id="mail_entry_' + id + '"/><button onclick="add_mail_man(' + id + ')">Add</button>';
+function rem_mail(id, name_zone) {
+    var zone = "'" + name_zone + "'"
+    var html = 'email not found <input type="text" id="mail_entry_' + id + '"/><button onclick="add_mail_man(' + id + ', ' + zone + ')">Add</button>';
     $.ajax({
         type: "POST",
         url: "/rem_mail/",
@@ -285,7 +289,10 @@ function rem_mail(id) {
             'X-CSRFToken': csrftoken,
         },
         success: function(msg){
-            $("#mail_field_" + id).html(html)
+            for (i = 0; i < msg.ids.length; i += 1) {
+                $("#mail_field_" + msg.ids[i]).html(html + '<a href="http://bgp.he.net/dns/' + name_zone + '#_whois" target="_blank">bgd.he.net</a>'
+);
+            }
         }
     });
 }

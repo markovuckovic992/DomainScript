@@ -11,7 +11,8 @@ from django.db import connection
 from datetime import datetime
 from math import ceil
 from os import popen
-import requests, hashlib, traceback
+from operator import attrgetter 
+import requests, hashlib, traceback, json
 
 # EDITING
 def editing(request):
@@ -150,13 +151,23 @@ def mark_to_send(request):
 def add_mail_man(request):
     mail = request.POST['email']
     lead_id = request.POST['id']
-    RawLeads.objects.filter(id=lead_id).update(mail=mail)
-    return HttpResponse('{"status": "success"}', content_type="application/json")
+    name_zone = RawLeads.objects.get(id=lead_id).name_zone
+    RawLeads.objects.filter(name_zone=name_zone).update(mail=mail)
+    ids = map(attrgetter('id'), RawLeads.objects.filter(name_zone=name_zone))
+    response = {
+        'ids': ids,
+    }
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 def rem_mail(request):
     lead_id = request.POST['id']
-    RawLeads.objects.filter(id=lead_id).update(mail=None)
-    return HttpResponse('{"status": "success"}', content_type="application/json")
+    name_zone = RawLeads.objects.get(id=lead_id).name_zone
+    RawLeads.objects.filter(name_zone=name_zone).update(mail=None)
+    ids = map(attrgetter('id'), RawLeads.objects.filter(name_zone=name_zone))
+    response = {
+        'ids': ids,
+    }
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 def send_mails(request):
     date = request.POST['date']

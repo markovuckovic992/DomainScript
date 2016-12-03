@@ -44,9 +44,9 @@
           </td>       
           <td id="mail_field_{{entry.id}}">
             {%if entry.mail %}
-                {{entry.mail}}<button onclick="rem_mail({{entry.id}})">Rewrite</button>
+                {{entry.mail}}<button onclick="rem_mail({{entry.id}}, '{entry.name_zone}}')">Rewrite</button>
             {%else%}
-                email not found <input type="text" id="mail_entry_{{entry.id}}"/><button onclick="add_mail_man({{entry.id}})">Add</button>
+                email not found <input type="text" id="mail_entry_{{entry.id}}"/><button onclick="add_mail_man({{entry.id}}, '{{entry.name_zone}}')">Add</button>
                 <a href="http://bgp.he.net/dns/{{entry.name_zone}}#_whois" target="_blank">bgd.he.net</a>
             {%endif%}
           </td>
