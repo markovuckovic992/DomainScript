@@ -73,7 +73,7 @@ function run_script() {
             }
         }
     } else {
-        alert("It's required to select at least one zone and redemption file");
+        alert("Something is wrong, check entries!");
     }
 }
 //RAW LEADS
