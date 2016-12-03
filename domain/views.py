@@ -13,13 +13,13 @@ from math import ceil
 from os import popen
 import requests, hashlib, traceback
 
-
 # EDITING
 def editing(request):
     return render(request, 'editing.html', {})
 
 def runEditing(request):
     try:
+        path = settings.BASE_DIR
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
         org = request.POST['org'].replace('C:\\fakepath\\', '')
@@ -28,7 +28,7 @@ def runEditing(request):
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
         RawLeads.objects.filter(date=date).delete()
-        argument = "pypy /home/marko/DomainScript/basic_editing.py "
+        argument = "pypy " + path + "/basic_editing.py "
         argument += (com + " " + net + " " + org + " " + info + " ")
         argument += (redempt + " " + str(date))
         popen(argument)

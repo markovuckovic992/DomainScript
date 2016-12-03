@@ -5,27 +5,23 @@
 {% block content %}
     {% csrf_token %}
     Date: <input type="text" id="datepicker" onchange="load_send()">
+    <button onclick="find_mails_again()">Run whois scipt again</button>
    <table class="sortable" style="margin-left: 1%; width: 70%;">
       <thead>
         <tr>
-          <th>Zone file domain</th>
-          <th>Register mail</th>
+          <th colspan="2">Dropping domain</th>
           <th>Mark to send</th>
           <th>Blacklist</th>
           <th>Delete</th>
+          <th>Zone file domain</th>
+          <th>Registrant mail</th>
         </tr>
       </thead>
       <tbody>
         {% for entry in raw_leads %}
-        <tr>
-          <td>{{entry.name_zone}}</td>
-          <td id="mail_field_{{entry.id}}">
-            {%if entry.mail %}
-                {{entry.mail}}<button onclick="rem_mail({{entry.id}})">Rewrite</button>
-            {%else%}
-                email not found <input type="text" id="mail_entry_{{entry.id}}"/><button onclick="add_mail_man({{entry.id}})">Add</button>
-            {%endif%}
-        </td>
+        <tr>     
+          <td>{{forloop.counter}}</td>     
+          <td>{{entry.name_redemption}}</td> 
           {% if entry.mark_to_send %}
             <td><input type="checkbox" checked onclick="mark_to_send('{{entry.id}}')" />
            {% else %}
@@ -42,7 +38,18 @@
             <td><input type="checkbox" checked onclick="to_delete('{{entry.id}}')" />
            {% else %}
             <td><input type="checkbox" onclick="to_delete('{{entry.id}}')" /></td>
-          {% endif %}
+          {% endif %}            
+          <td>
+            <a href="http://{{entry.name_zone}}" target="_blank">{{entry.name_zone}}</a>
+          </td>       
+          <td id="mail_field_{{entry.id}}">
+            {%if entry.mail %}
+                {{entry.mail}}<button onclick="rem_mail({{entry.id}})">Rewrite</button>
+            {%else%}
+                email not found <input type="text" id="mail_entry_{{entry.id}}"/><button onclick="add_mail_man({{entry.id}})">Add</button>
+                <a href="http://bgp.he.net/dns/{{entry.name_zone}}#_whois" target="_blank">bgd.he.net</a>
+            {%endif%}
+          </td>
         </tr>
         {% endfor %}
       </tbody>

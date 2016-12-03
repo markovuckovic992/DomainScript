@@ -145,6 +145,23 @@ function find_mails() {
     });
 }
 
+function find_mails_again() {
+    $("#cover").fadeIn(100);
+    var date = $("#datepicker").val();
+    $.ajax({
+        type: "POST",
+        url: "/find_mails/",
+        data: "date=" + date,
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function(msg){
+            $("#cover").fadeOut(100);
+            location.reload();
+        }
+    });
+}
+
 function truncate() {
     var passwd = prompt("Enter Password : ", "your password here");
     if (passwd == 2011) {

@@ -21,7 +21,7 @@
       </tbody>
       <thead>
         <tr>
-          <th>Zone file domain</th>
+          <th colspan="2">Zone file domain</th>
           <th>Mark as good</th>
           <th>Domain to sell</th>
         </tr>
@@ -29,6 +29,7 @@
       <tbody>
         {% for entry in raw_leads %}
         <tr class="raw_leads_raw{{entry.page}}">
+          <td>{{forloop.counter}}</td> 
           <td>{{entry.name_zone}}</td>
           {% if entry.mark %}
             <td><input type="checkbox" class="check_{{entry.page}} r_{{entry.name_redemption}}" checked onclick="changestate('{{entry.id}}')" />
