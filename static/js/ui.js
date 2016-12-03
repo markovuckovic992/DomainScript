@@ -60,11 +60,12 @@ function run_script() {
                     },
                     success: function(msg) {
                         if (msg.status === "success") {
+                            $("#cover").fadeOut(100);
                             window.location='/raw_leads/'
                         } else {
+                            $("#cover").fadeOut(100);
                             alert('Something went wrong!')
                         }
-                        $("#cover").fadeOut(100);
                     }
                 });
             }
