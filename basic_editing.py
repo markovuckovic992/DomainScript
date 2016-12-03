@@ -235,8 +235,8 @@ if __name__ == '__main__':
     #     thread.start_new_thread(threadmain, ())
     # except:
     # 	  pass
-    if not Log.objects.filter(date=datetime.now().date()).exists():
-        entry = Log(date=datetime.now().date())
+    if not Log.objects.filter(date=sys.argv[6]).exists():
+        entry = Log(date=sys.argv[6])
         entry.save()
     main_filter(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
     duration = int(time.time() - start_time)
