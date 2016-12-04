@@ -255,6 +255,7 @@ function send_mails() {
         success: function(msg){
             $("#cover").fadeOut(100);
             location.reload();
+            $('input:checkbox').removeAttr('checked');
         }
     });
 }

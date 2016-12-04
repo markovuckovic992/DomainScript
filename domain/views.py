@@ -201,34 +201,21 @@ def send_mails(request):
                 "http://localhost:8001/add_offer/",
                 data={
                     'base_id': potential_profit.id,
-                    'lead': potential_profit.name_redemption,
+                    'drop': potential_profit.name_redemption,
+                    'lead': potential_profit.name_zone,
                     'hash_base_id': hash_base_id,
                 }
             )
-            offer = Offer(
-                base_id=potential_profit.id,
-                lead=potential_profit.name_redemption,
-                zone=potential_profit.name_zone,
-                hash_base_id=hash_base_id
-            )
-            offer.save()
+
+            # offer = Offer(
+            #     base_id=potential_profit.id,
+            #     lead=potential_profit.name_redemption,
+            #     zone=potential_profit.name_zone,
+            #     hash_base_id=hash_base_id
+            # )
+            # offer.save()
 
             RawLeads.objects.filter(id=potential_profit.id).delete()
         except:
-            pass
-    return HttpResponse('{"status": "success"}', content_type="application/json")
-# HEROKU
-@csrf_exempt
-def process_offer(request):
-    base_id = request.POST['base_id']
-    amount = request.POST['amount']
-    Offer.objects.filter(base_id=base_id).update(amount=amount, date_resp=datetime.now().date())
-    return HttpResponse('{"status": "success"}', content_type="application/json")
-
-@csrf_exempt
-def contact(request):
-    contact = request.POST['contact']
-    email = request.POST['email']
-    hash_base_id = request.POST['hash']
-    Offer.objects.filter(hash_base_id=hash_base_id).update(contact=contact, email=email, response=1)
+            print traceback.format_exc()
     return HttpResponse('{"status": "success"}', content_type="application/json")

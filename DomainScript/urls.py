@@ -37,8 +37,4 @@ urlpatterns = [
     url(r'^send_mails/', domain.views.send_mails),
     url(r'^add_mail_man/', domain.views.add_mail_man),
     url(r'^rem_mail/', domain.views.rem_mail),
-    #  heroku
-    url(r'^contact/', domain.views.contact),
-    url(r'^process_offer/', domain.views.process_offer),
-    # url(r'^find_status/', domain.views.find_status),
 ]
