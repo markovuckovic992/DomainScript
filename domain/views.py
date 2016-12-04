@@ -186,7 +186,7 @@ def send_mails(request):
         hash = hashlib.md5()
         hash.update(str(potential_profit.id))
         hash_base_id = hash.hexdigest()
-        link = ('http://localhost:8001/offer/?id=' + str(hash_base_id))
+        link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
         try:
             send_mail(
                 "Domain offer",  # Title
@@ -198,7 +198,7 @@ def send_mails(request):
             )
 
             requests.post(
-                "http://localhost:8001/add_offer/",
+                "http://www.webdomainexpert.pw/add_offer/",
                 data={
                     'base_id': potential_profit.id,
                     'drop': potential_profit.name_redemption,

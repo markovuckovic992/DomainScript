@@ -15,7 +15,7 @@ class CronJobs:
 
     def deleteOldData(self):
         requests.post(
-            "http://localhost:8001/zakazani_delete_for_old_datas__/",
+            "http://www.webdomainexpert.pw/zakazani_delete_for_old_datas__/",
         )
 
 
