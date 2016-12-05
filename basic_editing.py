@@ -127,7 +127,7 @@ def fcn(domain_data, pt):
                             tmp = deepcopy(super_tmp)
                         else:
                             break
-                    if len(part) > 3:
+                    elif len(part) > 3:
                         keywords.append(part)
                         super_tmp = tmp.replace(part, ' ')
                         tmp = deepcopy(super_tmp)
