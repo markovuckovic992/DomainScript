@@ -95,18 +95,9 @@ function load() {
 
 function show (i) {
     var date = $("#datepicker").val();
-    $.ajax({
-        type: "GET",
-        url: "/raw_leads/",
-        data: "date=" + date + "&page=" + i,
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        success: function(msg) {                    
-            $(".buttons").css({"background-color": "white"});
-            $("#button_" + i).css({"background-color": "LightGreen", "height": "26px"});
-        }
-    });
+    window.location.href=('/raw_leads/?date=' + date + '&page=' + i);             
+    $(".buttons").css({"background-color": "white"});
+    $("#button_" + i).css({"background-color": "LightGreen", "height": "26px"});
 }
 
 function select_all(range) {
