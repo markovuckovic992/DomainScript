@@ -66,6 +66,7 @@ def rawLeads(request):
             'log': log,
             'total_r': len(raw_leads),
             'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
+            'page': page,
         })
 
 def reverse_state(request):

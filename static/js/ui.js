@@ -95,9 +95,7 @@ function load() {
 
 function show (i) {
     var date = $("#datepicker").val();
-    window.location.href=('/raw_leads/?date=' + date + '&page=' + i);             
-    $(".buttons").css({"background-color": "white"});
-    $("#button_" + i).css({"background-color": "LightGreen", "height": "26px"});
+    window.location.href=('/raw_leads/?date=' + date + '&page=' + i);           
 }
 
 function select_all(range) {

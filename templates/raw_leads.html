@@ -50,6 +50,7 @@
     </table>
     <script type="text/javascript">
       $( function() {
+        $("#button_{{page}}").css({"background-color": "LightGreen"})
         var selected_date = (window.location.search).replace('?date=', '').split("-");
         var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);
         $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
