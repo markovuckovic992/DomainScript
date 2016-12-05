@@ -5,7 +5,7 @@ from django.utils import timezone
 class RawLeads(models.Model):
     name_zone = models.CharField(max_length=100)
     name_redemption = models.CharField(max_length=100)
-    mail = models.CharField(max_length=100, blank=True, null=True)
+    mail = models.CharField(max_length=320, blank=True, null=True)
     page = models.SmallIntegerField(default=1)
 
     activated = models.SmallIntegerField(default=0)
@@ -26,7 +26,7 @@ class Offer(models.Model):
     amount = models.FloatField(blank=True, null=True)
     base_id = models.IntegerField()
     hash_base_id = models.CharField(max_length=32, unique=True)
-    email = models.CharField(max_length=50, blank=True, null=True)
+    email = models.CharField(max_length=320, blank=True, null=True)
     contact = models.CharField(max_length=50, blank=True, null=True)
     response = models.SmallIntegerField(default=0)
 
