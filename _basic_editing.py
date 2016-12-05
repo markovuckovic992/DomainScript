@@ -88,16 +88,14 @@ link = set()
 words = set(list(wd.words()) + list(brown.words()) + word_man)
 some_variable = 0
 
-some_shit = open('log.txt', 'a')
 def fcn(domain_data, pt):
-    global words, link, some_variable, result_list, some_shit
+    global words, link, some_variable, result_list
     domain = domain_data[0]
     if domain.split(".")[1] not in ["com\n", "net\n ", "com\r\n", "net\r\n", "com", "net"]:
         pass
     elif len(domain) >= 60:
         pass
     else:
-        some_shit.write(domain)
         keywords = []
         bad_keywords = []
         tmp = domain.split(".")[0]
@@ -105,7 +103,6 @@ def fcn(domain_data, pt):
         tmp = temp.split(".")[0]
         parts1 = [w for w in re.split(r'[`\-=~!@#$%^&*()_+\[\]{};\'\\:"|<,./<>?]', tmp)]
         parts = []        
-        some_shit.write(str(parts1))
         if len(parts1) <= 3:            
             if len(parts1) != 1:
                 for part in parts1:                    
@@ -115,8 +112,6 @@ def fcn(domain_data, pt):
                 parts = parts1
             parts_no_numbers = [x for x in parts if not x.isdigit()]
             digits = [x for x in parts if x.isdigit()]
-            some_shit.write(str(parts_no_numbers))
-            some_shit.write(str(digits))
             if len(parts_no_numbers) <= 3 and len(digits) <= 0:
                 super_tmp = ''
                 for part in parts_no_numbers:                    
@@ -135,7 +130,6 @@ def fcn(domain_data, pt):
 
         if len(keywords) and len(bad_keywords) <= 0:
             result_list.append({'domain': domain, 'keywords': keywords})
-    some_shit.write('------------')
     pt.update()
     return 1
 
