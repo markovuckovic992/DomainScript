@@ -119,9 +119,14 @@ def fcn(domain_data, pt):
             digits = [x for x in parts if x.isdigit()]
             if len(parts_no_numbers) <= 3 and len(digits) <= 0:
                 super_tmp = ''
-                for part in parts_no_numbers:
+                for part in parts_no_numbers:                    
                     if part not in words:
-                        break
+                        if (4 < len(part) < 11) and len(parts_no_numbers) == 1:
+                            keywords.append(part)
+                            super_tmp = tmp.replace(part, ' ')
+                            tmp = deepcopy(super_tmp)
+                        else:
+                            break
                     if len(part) > 3:
                         keywords.append(part)
                         super_tmp = tmp.replace(part, ' ')

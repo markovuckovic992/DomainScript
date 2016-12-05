@@ -6,15 +6,16 @@
     {% csrf_token %}
     Date: <input type="text" id="datepicker" onchange="load_send()">
     <button onclick="find_mails_again()">Run whois scipt again</button>
-   <table class="sortable" style="margin-left: 1%; width: 70%;">
+   <table id="mytable" class="sortable" style="margin-left: 1%; width: 70%;">
       <thead>
         <tr>
-          <th colspan="2">Dropping domain</th>
+          <th>&nbsp;</th>
+          <th>Dropping domain</th>
           <th>Mark to send</th>
-          <th>Blacklist</th>
-          <th>Delete</th>
           <th>Zone file domain</th>
           <th>Registrant mail</th>
+          <th>Blacklist</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -27,18 +28,7 @@
            {% else %}
             <td><input type="checkbox" onclick="mark_to_send('{{entry.id}}')" /></td>
           {% endif %}
-
-          {% if entry.blacklist %}
-            <td><input type="checkbox" checked onclick="blacklist('{{entry.id}}')" />
-           {% else %}
-            <td><input type="checkbox" onclick="blacklist('{{entry.id}}')" /></td>
-          {% endif %}
-
-          {% if entry.to_delete %}
-            <td><input type="checkbox" checked onclick="to_delete('{{entry.id}}')" />
-           {% else %}
-            <td><input type="checkbox" onclick="to_delete('{{entry.id}}')" /></td>
-          {% endif %}            
+                 
           <td>
             <a href="http://{{entry.name_zone}}" target="_blank">{{entry.name_zone}}</a>
           </td>       
@@ -50,6 +40,19 @@
                 <a href="http://bgp.he.net/dns/{{entry.name_zone}}#_whois" target="_blank">bgd.he.net</a>
             {%endif%}
           </td>
+
+          {% if entry.blacklist %}
+            <td style="background: black; color: white;"><input type="checkbox" checked onclick="blacklist('{{entry.id}}')" />
+           {% else %}
+            <td style="background: black; color: white;"><input type="checkbox" onclick="blacklist('{{entry.id}}')" /></td>
+          {% endif %}
+
+          {% if entry.to_delete %}
+            <td style="background: red; color: white;" ><input type="checkbox" checked onclick="to_delete('{{entry.id}}')" />
+           {% else %}
+            <td style="background: red; color: white;" ><input type="checkbox" onclick="to_delete('{{entry.id}}')" /></td>
+          {% endif %}     
+
         </tr>
         {% endfor %}
       </tbody>
@@ -63,6 +66,13 @@
     </table>
     <script type="text/javascript">
       $( function() {
+        $('#mytable').DataTable({
+          "iDisplayLength": 5000
+        });
+        $('#mytable_length').css( 'display', 'none' );
+        $('#mytable_paginate').css( 'display', 'none' );
+        $('#mytable_info').css( 'display', 'none' );
+        $('.dataTables_empty').css( 'display', 'none' );
         var selected_date = (window.location.search).replace('?date=', '').split("-");
         var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);
         $( "#datepicker" ).datepicker().datepicker("setDate", new_date);

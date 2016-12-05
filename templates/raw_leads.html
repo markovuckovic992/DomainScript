@@ -12,31 +12,40 @@
         <button id="button_{{i}}" class="buttons" onclick="show({{i}})">{{ i }}</button>
    {% endfor %}
    <table id="mytable" class="sortable" style="margin-left: 1%; width: 70%;">
-      <tbody>
-        <tr>
-          <th>&nbsp;</th>
-          <th><input type="checkbox" id="master_chbox" onclick="select_all({{range}})" /></th>
-          <th>&nbsp;</th>
-        </tr>
-      </tbody>
       <thead>
         <tr>
-          <th colspan="2">Zone file domain</th>
-          <th>Mark as good</th>
-          <th>Domain to sell</th>
+          <th>
+            &nbsp;
+          </th>
+          <th>
+            Zone file domain
+          </th>
+          <th>
+            Mark as good
+          </th>
+          <th>
+            Domain to sell
+          </th>
         </tr>
       </thead>
       <tbody>
         {% for entry in raw_leads %}
         <tr class="raw_leads_raw{{entry.page}}">
           <td>{{forloop.counter}}</td> 
-          <td>{{entry.name_zone}}</td>
+          <td class="zone"><a href="http://{{entry.name_zone}}" target="_blank">{{entry.name_zone}}</a></td>
           {% if entry.mark %}
             <td><input type="checkbox" class="check_{{entry.page}} r_{{entry.name_redemption}}" checked onclick="changestate('{{entry.id}}')" />
           {% else %}
             <td><input type="checkbox" class="check_{{entry.page}} r_{{entry.name_redemption}}" onclick="changestate('{{entry.id}}')" /></td>
           {% endif %}
-          <td onclick="add_this_name('{{entry.name_redemption}}', {{entry.page}})">{{entry.name_redemption}}</td>
+          <td class="sell">
+            {{entry.name_redemption}} ||
+            <span style="color: green;" onclick="add_this_name('{{entry.name_redemption}}', {{entry.page}})">   Select
+            </span>
+            ||
+            <span style="color: red;" onclick="rem_this_name('{{entry.name_redemption}}', {{entry.page}})">   Unselect
+            </span>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -50,6 +59,13 @@
     </table>
     <script type="text/javascript">
       $( function() {
+        $('#mytable').DataTable({
+          "iDisplayLength": 5000
+        });
+        $('#mytable_length').css( 'display', 'none' );
+        $('#mytable_paginate').css( 'display', 'none' );
+        $('#mytable_info').css( 'display', 'none' );
+        $('.dataTables_empty').css( 'display', 'none' );
         $("#button_{{page}}").css({"background-color": "LightGreen"})
         var selected_date = (window.location.search).replace('?date=', '').split("-");
         var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);

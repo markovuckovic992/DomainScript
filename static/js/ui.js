@@ -35,7 +35,7 @@ function getCookie(name) {
 }
 var csrftoken = getCookie('csrftoken');
 //BASE
-function run_script() {
+function run_script(arg) {
     var org = $("#org_file_name").val()
     var com = $("#com_file_name").val()
     var net = $("#net_file_name").val()
@@ -56,7 +56,7 @@ function run_script() {
                     url: "/run_script/",
                     data: "org=" + org + "&net=" + net +
                     "&com=" + com + "&info=" + info +
-                    "&redempt=" + redempt + "&date=" + date,
+                    "&redempt=" + redempt + "&date=" + date + "&arg=" + arg,
                     headers: {
                         'X-CSRFToken': csrftoken,
                     },
@@ -189,6 +189,24 @@ function add_this_name(name_redemption, page) {
         	for (i = 0; i < items.length; i += 1) {
     			items[i].checked = true;
         	}	
+        }
+    });
+}
+
+function rem_this_name(name_redemption, page) {
+    var date = $("#datepicker").val(), i;
+    var items = document.getElementsByClassName("r_" + name_redemption);
+    $.ajax({
+        type: "POST",
+        url: "/rem_this_name/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: "redemption=" + name_redemption + "&page=" + page + "&date=" + date,
+        success: function (msg) {
+            for (i = 0; i < items.length; i += 1) {
+                items[i].checked = false;
+            }   
         }
     });
 }

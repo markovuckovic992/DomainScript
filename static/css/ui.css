@@ -59,3 +59,8 @@ table.sortable > tbody {
 table.sortable > tbody > tr {
     counter-increment: rowNumber;
 }
+
+input[type="checkbox"] {
+  margin: 0 auto;    
+  display:block;
+}

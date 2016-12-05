@@ -21,6 +21,11 @@ def editing(request):
 def runEditing(request):
     try:
         path = settings.BASE_DIR
+        arg = request.POST['arg']
+        if int(arg) == 1:
+            script = '_basic_editing'
+        else:
+            script =  'basic_editing'
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
         org = request.POST['org'].replace('C:\\fakepath\\', '')
@@ -29,7 +34,7 @@ def runEditing(request):
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
         RawLeads.objects.filter(date=date).delete()
-        argument = "pypy " + path + "/basic_editing.py "
+        argument = "pypy " + path + "/" + script + ".py "
         argument += (com + " " + net + " " + org + " " + info + " ")
         argument += (redempt + " " + str(date))
         popen(argument)
@@ -92,6 +97,15 @@ def add_this_name(request):
     date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date)
     raw_leads.update(mark=1)
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def rem_this_name(request):
+    redemption = request.POST['redemption']
+    page = request.POST['page']
+    date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()
+    raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date)
+    raw_leads.update(mark=0)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def find_mails(request):
