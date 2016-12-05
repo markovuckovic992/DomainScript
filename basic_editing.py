@@ -220,7 +220,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         if path:
             fcn3(path, pt, date)
         else:
-            print 'skipping phase ...'
+            pass
 
 def threadmain():
     global value
