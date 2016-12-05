@@ -44,10 +44,14 @@ def runEditing(request):
 
 # RAW LEADS
 def rawLeads(request):
-    if 'date' in request.GET.keys():
+    if 'date' in request.GET.keys() and len(request.GET['date']) > 6:
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
         date = datetime.now()
+    if 'page' in request.GET.keys():
+        page = int(request.GET['page'])
+    else:
+        page = 1
     raw_leads = RawLeads.objects.filter(date=date, activated=0)
     try:
         log = Log.objects.get(date=date)
@@ -57,7 +61,7 @@ def rawLeads(request):
         request,
         'raw_leads.html',
         {
-            "raw_leads": raw_leads,
+            "raw_leads": raw_leads[(page - 1) * 5000: page * 5000 - 1],
             'range': range(1, int(ceil(len(raw_leads) / 5000)) + 2),
             'log': log,
             'total_r': len(raw_leads),

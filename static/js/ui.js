@@ -94,19 +94,19 @@ function load() {
 }
 
 function show (i) {
-    var $table = $('#mytable'),
-        $rows_show = $table.find('tbody tr.raw_leads_raw' + i),
-        $rows = $table.find('tbody tr');
-    $rows.hide();
-    $rows_show.show();
-    $(".buttons").css({"background-color": "white"});
-    $("#button_" + i).css({"background-color": "LightGreen", "height": "26px"});
-    if ($rows_show.length == 0) {
-        $("#empty_page").show();
-    } else {
-        $("#empty_page").hide();
-    }
-    return false;
+    var date = $("#datepicker").val();
+    $.ajax({
+        type: "GET",
+        url: "/raw_leads/",
+        data: "date=" + date + "&page=" + i,
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function(msg) {                    
+            $(".buttons").css({"background-color": "white"});
+            $("#button_" + i).css({"background-color": "LightGreen", "height": "26px"});
+        }
+    });
 }
 
 function select_all(range) {
