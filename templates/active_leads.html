@@ -6,6 +6,7 @@
     {% csrf_token %}
     Date: <input type="text" id="datepicker" onchange="load_send()">
     <button onclick="find_mails_again()">Run whois scipt again</button>
+    <button onclick="select_all()">Select all</button>
    <table id="mytable" class="sortable" style="margin-left: 1%; width: 70%;">
       <thead>
         <tr>
@@ -24,9 +25,9 @@
           <td>{{forloop.counter}}</td>     
           <td>{{entry.name_redemption}}</td> 
           {% if entry.mark_to_send %}
-            <td><input type="checkbox" checked onclick="mark_to_send('{{entry.id}}')" />
+            <td><input type="checkbox" class="prim" checked onclick="mark_to_send('{{entry.id}}')" />
            {% else %}
-            <td><input type="checkbox" onclick="mark_to_send('{{entry.id}}')" /></td>
+            <td><input type="checkbox" class="prim" onclick="mark_to_send('{{entry.id}}')" /></td>
           {% endif %}
                  
           <td>
@@ -42,9 +43,9 @@
           </td>
 
           {% if entry.blacklist %}
-            <td style="background: black; color: white;"><input type="checkbox" checked onclick="blacklist('{{entry.id}}')" />
+            <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" checked onclick="blacklist('{{entry.id}}')" />
            {% else %}
-            <td style="background: black; color: white;"><input type="checkbox" onclick="blacklist('{{entry.id}}')" /></td>
+            <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" onclick="blacklist('{{entry.id}}')" /></td>
           {% endif %}
 
           {% if entry.to_delete %}

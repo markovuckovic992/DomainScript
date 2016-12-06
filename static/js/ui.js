@@ -217,13 +217,19 @@ function load_send() {
 }
 
 function blacklist(id) {
+    var date = $("#datepicker").val();
     $.ajax({
         type: "POST",
         url: "/blacklist/",
         headers: {
             'X-CSRFToken': csrftoken
         },
-        data: "id=" + id,
+        data: "id=" + id + "&date=" + date,
+        success: function (msg) {            
+            for (i = 0; i < msg.ids.length; i += 1) {
+                $("#blacklist_" + msg.ids[i]).prop('checked', msg.command);
+            }  
+        }
     });
 }
 
@@ -246,6 +252,21 @@ function mark_to_send(id) {
             'X-CSRFToken': csrftoken
         },
         data: "id=" + id,
+    });
+}
+
+function select_all() {
+    var date = $("#datepicker").val()
+    $.ajax({
+        type: "POST",
+        url: "/mark_to_send/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: "date=" + date,
+        success: function(msg){
+            $('input:checkbox.prim').prop('checked', true);
+        }
     });
 }
 

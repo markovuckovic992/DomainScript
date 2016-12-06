@@ -145,11 +145,19 @@ def activeLeads(request):
 
 def blacklist(request):
     leads_id = int(unquote(request.POST['id']))
+    date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()  
     blacklist = RawLeads.objects.get(id=leads_id).blacklist
     blacklist += 1
     blacklist %= 2
-    RawLeads.objects.filter(id=leads_id).update(blacklist=blacklist)
-    return HttpResponse('{"status": "success"}', content_type="application/json")
+    mail = RawLeads.objects.get(id=leads_id).mail
+    RawLeads.objects.filter(mail=mail, activated=1, date=date).update(blacklist=blacklist)
+    ids = map(attrgetter('id'), RawLeads.objects.filter(mail=mail, activated=1, date=date))
+    response = {
+        'ids': ids,
+        'command': True if blacklist else False
+    }
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 def delete(request):
     leads_id = int(unquote(request.POST['id']))
@@ -160,11 +168,16 @@ def delete(request):
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def mark_to_send(request):
-    leads_id = int(unquote(request.POST['id']))
-    mark_to_send = RawLeads.objects.get(id=leads_id).mark_to_send
-    mark_to_send += 1
-    mark_to_send %= 2
-    RawLeads.objects.filter(id=leads_id).update(mark_to_send=mark_to_send)
+    if 'id' in request.POST.keys():
+        leads_id = int(unquote(request.POST['id']))
+        mark_to_send = RawLeads.objects.get(id=leads_id).mark_to_send
+        mark_to_send += 1
+        mark_to_send %= 2
+        RawLeads.objects.filter(id=leads_id).update(mark_to_send=mark_to_send)
+    else:    
+        date = request.POST['date']
+        date = datetime.strptime(date, '%d-%m-%Y').date()            
+        RawLeads.objects.filter(date=date).update(mark_to_send=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def add_mail_man(request):
