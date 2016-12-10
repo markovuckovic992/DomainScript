@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+#!/usr/bin/python2.7
 import django
 import sys, requests
 from datetime import datetime, timedelta

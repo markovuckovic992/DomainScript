@@ -270,7 +270,6 @@ def super_blacklist(request):
         new_entry = SuperBlacklist(domain=domain)
         new_entry.save()
     exclude_email = '@' + str(domain)
-    print exclude_email, '--------'
     RawLeads.objects.filter(mail__endswith=exclude_email).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
