@@ -3,7 +3,7 @@ from os import popen
 import os, django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, Offer
+from domain.models import RawLeads, BlackList, SuperBlacklist
 
 def main(date):
     usefull_data = []
@@ -28,7 +28,15 @@ def main(date):
                 else:
                     i += 1
         if email:
-            RawLeads.objects.filter(id=data.id).update(mail=email)
+            blacklisted = BlackList.objects.filter(email=email)
+            domain = email.split('@', 1)[1]
+            super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
+            if blacklisted.exists():
+                RawLeads.objects.filter(id=data.id).delete()
+            elif super_blacklisted.exists():
+                RawLeads.objects.filter(id=data.id).delete()
+            else:
+                RawLeads.objects.filter(id=data.id).update(mail=email)
 
 
 def main_status(date):

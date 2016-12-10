@@ -7,6 +7,8 @@
     Date: <input type="text" id="datepicker" onchange="load_send()">
     <button onclick="find_mails_again()">Run whois scipt again</button>
     <button onclick="select_all()">Select all</button>
+    <button onclick="un_select_all()">Unselect all</button>
+    <button onclick="blacklist_selected()">Blacklist</button>
    <table id="mytable" class="sortable" style="margin-left: 1%; width: 70%;">
       <thead>
         <tr>
@@ -43,9 +45,9 @@
           </td>
 
           {% if entry.blacklist %}
-            <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" checked onclick="blacklist('{{entry.id}}')" />
+            <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" checked onclick="blacklist('{{entry.id}}')" class="blacklist"/>
            {% else %}
-            <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" onclick="blacklist('{{entry.id}}')" /></td>
+            <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" onclick="blacklist('{{entry.id}}')" class="blacklist"/></td>
           {% endif %}
 
           {% if entry.to_delete %}

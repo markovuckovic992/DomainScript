@@ -89,7 +89,7 @@ words = set(list(wd.words()) + list(brown.words()) + word_man)
 some_variable = 0
 
 def fcn(domain_data, pt):
-    global words, link, some_variable, result_list
+    global words, link, some_variable, result_list, result_list_b
     domain = domain_data[0]
     if domain.split(".")[1] not in ["com\n", "net\n ", "com\r\n", "net\r\n", "com", "net"]:
         pass
@@ -103,25 +103,17 @@ def fcn(domain_data, pt):
         tmp = temp.split(".")[0]
         parts1 = [w for w in re.split(r'[`\-=~!@#$%^&*()_+\[\]{};\'\\:"|<,./<>?]', tmp)]
         parts = []        
-        if len(parts1) <= 3:            
-            if len(parts1) != 1:
-                for part in parts1:                    
-                    temp = (infer_spaces(part).split())  
-                    parts += (temp)
-            else:
-                parts = parts1
+        if len(parts1) <= 3:     
+            for part in parts1:                    
+                temp = (infer_spaces(part).split())  
+                parts += (temp)
             parts_no_numbers = [x for x in parts if not x.isdigit()]
             digits = [x for x in parts if x.isdigit()]
             if len(parts_no_numbers) <= 3 and len(digits) <= 0:
                 super_tmp = ''
                 for part in parts_no_numbers:                    
                     if part not in words:
-                        if (4 < len(part) < 11) and len(parts_no_numbers) == 1:
-                            keywords.append(part)
-                            super_tmp = tmp.replace(part, ' ')
-                            tmp = deepcopy(super_tmp)
-                        else:
-                            break
+                        break
                     elif len(part) > 3:
                         keywords.append(part)
                         super_tmp = tmp.replace(part, ' ')
@@ -130,7 +122,47 @@ def fcn(domain_data, pt):
 
         if len(keywords) and len(bad_keywords) <= 0:
             result_list.append({'domain': domain, 'keywords': keywords})
-    pt.update()
+        else:
+            domain = domain_data[0]
+            if domain.split(".")[1] not in ["com\n", "com\r\n", "com"]:
+                pass
+            elif len(domain) >= 60:
+                pass
+            else:
+                keywords = []
+                bad_keywords = []
+                tmp = domain.split(".")[0]
+                temp = str(domain).lstrip('.')
+                tmp = temp.split(".")[0]
+                parts1 = [w for w in re.split(r'[`\-=~!@#$%^&*()_+\[\]{};\'\\:"|<,./<>?]', tmp)]
+                parts = []        
+                if len(parts1) <= 3:            
+                    if len(parts1) != 1:
+                        for part in parts1:                    
+                            temp = (infer_spaces(part).split())  
+                            parts += (temp)
+                    else:
+                        parts = parts1
+                    parts_no_numbers = [x for x in parts if not x.isdigit()]
+                    digits = [x for x in parts if x.isdigit()]
+                    if len(parts_no_numbers) <= 3 and len(digits) <= 0:
+                        super_tmp = ''
+                        for part in parts_no_numbers:                    
+                            if part not in words:
+                                if (4 < len(part) < 11) and len(parts_no_numbers) == 1:
+                                    keywords.append(part)
+                                    super_tmp = tmp.replace(part, ' ')
+                                    tmp = deepcopy(super_tmp)
+                                else:
+                                    break
+                            elif len(part) > 3:
+                                keywords.append(part)
+                                super_tmp = tmp.replace(part, ' ')
+                                tmp = deepcopy(super_tmp)
+                        bad_keywords = super_tmp.split()
+
+                if len(keywords) and len(bad_keywords) <= 0:
+                    result_list_b.append({'domain': domain, 'keywords': keywords})
     return 1
 
 
@@ -166,12 +198,45 @@ def fcn2(domain_dict, pt, all_domains, date):
     pt.update()
 
 
+def fcn3(domain_dict, pt, all_domains, date):
+    global some_variable, link, iterno
+    domain = domain_dict['domain']
+    keywords = domain_dict['keywords']
+    some_variable += 1
+    keywords = sorted(keywords, key=len, reverse=True)
+    ready_to_write = True
+    condition = True
+    matched_lines = []
+    matched_lines_copy = []
+    for keyword in keywords:
+        if len(matched_lines) == 0 and condition: 
+            matched_lines = [line.lower() for line in all_domains if line.lower().startswith(keyword) or line.lower().endswith(keyword)]
+            matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
+            condition = False
+        else:
+            matched_lines_copy = [line for line in matched_lines_copy if line[0].startswith(keyword) or line[0].endswith(keyword)]
+    matched_lines = [line[1] for line in matched_lines_copy]
+    if len(matched_lines) and ready_to_write:
+        for matched_domain in matched_lines:
+            iterno += 1
+            page = floor(iterno / 5000) + 1
+            entry = RawLeads(
+                name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                date=date,
+                page=page
+            )
+            entry.save()
+    pt.update()
+
+
 result_list = []
+result_list_b = []
 all_domains = set()
 iterno = 0
 
 def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
-    global result_list, all_domains, link, value, text
+    global result_list, result_list_b, all_domains, link, value, text
 
     usefull_data = []
     with open(redemption_path, 'r') as csvfile:
@@ -194,7 +259,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         # t.start()
     # for t in threads:
     #     t.join()    
-    Log.objects.filter(date=sys.argv[6]).update(number_of_redemption=len(result_list))
+    Log.objects.filter(date=sys.argv[6]).update(number_of_redemption=len(result_list + result_list_b))
     usefull_data = None
     pt = None
     gc.collect()
@@ -204,16 +269,11 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         file = open(org_path, "r")
         all_domains = set(file.readlines())
         file.close()
-        pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list))
-        increment = (100.0/len(result_list))
-        value = 0
-        text = 'phase 2 '
+        pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, all_domains, date)
-            value += increment
-            #t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
-            #threads.append(t)
-            #t.start()
+        for result in result_list_b:
+            fcn3(result, pt2, all_domains, date)
         gc.collect()
     else:
         pass
@@ -222,12 +282,11 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         file = open(net_path, "r")
         all_domains = set(file.readlines())
         file.close()
-        pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list))
+        pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, all_domains, date)
-            # t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
-            # threads.append(t)
-            # t.start()
+        for result in result_list_b:
+            fcn3(result, pt2, all_domains, date)
         gc.collect()
     else:
         pass
@@ -236,12 +295,11 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         file = open(info_path, "r")
         all_domains = set(file.readlines())
         file.close()
-        pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list))
+        pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, all_domains, date)
-            # t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
-            # threads.append(t)
-            # t.start()
+            fcn2(result, pt2, all_domains, date)            
+        for result in result_list_b:
+            fcn3(result, pt2, all_domains, date)
         all_domains = None
         pt2 = None
         gc.collect()
@@ -252,13 +310,11 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         file = open(com_path, "r")
         all_domains = set(file.readlines())
         file.close()
-        pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list))
+        pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, all_domains, date)
-            # t = threading.Thread(target=fcn2, args=(result, pt2, all_domains))
-            # threads.append(t)
-            # t.start()
-
+        for result in result_list_b:
+            fcn3(result, pt2, all_domains, date)
         all_domains = None
         pt2 = None
         gc.collect()
@@ -280,10 +336,6 @@ def threadmain():
 if __name__ == '__main__':
     value = 0.0
     text = ''
-    # try:
-    #     thread.start_new_thread(threadmain, ())
-    # except:
-    # 	  pass
     if not Log.objects.filter(date=sys.argv[6]).exists():
         entry = Log(date=sys.argv[6])
         entry.save()

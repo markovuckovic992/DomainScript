@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from urllib import unquote
-from domain.models import RawLeads, Offer, BlackList, Log
+from domain.models import RawLeads, SuperBlacklist, BlackList, Log
 from basic_editing import main_filter
 from whois_domain import main, main_status
 from django.core.mail import send_mail
@@ -34,14 +34,11 @@ def runEditing(request):
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
         RawLeads.objects.filter(date=date).delete()
-        argument = "pypy " + path + "/" + script + ".py "
+        argument = "python " + path + "/" + script + ".py "
         argument += (com + " " + net + " " + org + " " + info + " ")
         argument += (redempt + " " + str(date))
         popen(argument)
         # main_filter(com, net, org, info, redempt, date)
-        blacklist = BlackList.objects.all()
-        for item in blacklist:
-            RawLeads.objects.filter(name_zone=item.lead).delete()
         return HttpResponse('{"status": "success"}', content_type="application/json")
     except:
         print traceback.format_exc(), argument
@@ -89,6 +86,7 @@ def select_all(request):
     raw_leads = RawLeads.objects.filter(page=page, date=date)
     raw_leads.update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
 
 def add_this_name(request):
     redemption = request.POST['redemption']
@@ -159,6 +157,16 @@ def blacklist(request):
     }
     return HttpResponse(json.dumps(response), content_type="application/json")
 
+def blacklist_selected(request):
+    blacklists = RawLeads.objects.filter(blacklist=1)
+    for blacklist in blacklists:
+        entry = BlackList.objects.filter(email=blacklist.mail)
+        if not entry.exists():
+            new = BlackList(email=blacklist.mail)
+            new.save()
+    RawLeads.objects.filter(blacklist=1).delete()
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
 def delete(request):
     leads_id = int(unquote(request.POST['id']))
     to_delete = RawLeads.objects.get(id=leads_id).to_delete
@@ -179,6 +187,14 @@ def mark_to_send(request):
         date = datetime.strptime(date, '%d-%m-%Y').date()            
         RawLeads.objects.filter(date=date).update(mark_to_send=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
+
+def un_mark_to_send(request):
+    date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()            
+    RawLeads.objects.filter(date=date).update(mark_to_send=0)
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
 
 def add_mail_man(request):
     mail = request.POST['email']
@@ -214,19 +230,19 @@ def send_mails(request):
     RawLeads.objects.filter(blacklist=1).delete()
     potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1)
     for potential_profit in potential_profits:
-        # Form a link
         hash = hashlib.md5()
         hash.update(str(potential_profit.id))
         hash_base_id = hash.hexdigest()
         link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
+        unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))
         try:
             send_mail(
                 "Domain offer",  # Title
                 potential_profit.name_zone,  # Body
                 settings.EMAIL_HOST_USER,
                 [potential_profit.mail],
-                fail_silently=True,
-                html_message="<a href='" + str(link) + "'>Link</a>",
+                fail_silently=False,
+                html_message="<a href='" + str(link) + "'>Link</a><br/><a href='" + unsubscribe + "'>unsubscribe</a>",
             )
 
             requests.post(
@@ -239,15 +255,22 @@ def send_mails(request):
                 }
             )
 
-            # offer = Offer(
-            #     base_id=potential_profit.id,
-            #     lead=potential_profit.name_redemption,
-            #     zone=potential_profit.name_zone,
-            #     hash_base_id=hash_base_id
-            # )
-            # offer.save()
-
             RawLeads.objects.filter(id=potential_profit.id).delete()
         except:
             print traceback.format_exc()
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def blacklisting(request):
+    return render(request, 'super_blacklist.html', {})
+
+def super_blacklist(request):
+    domain = request.POST['domain']
+    entry = SuperBlacklist.objects.filter(domain=domain)
+    if not entry.exists():
+        new_entry = SuperBlacklist(domain=domain)
+        new_entry.save()
+    exclude_email = '@' + str(domain)
+    print exclude_email, '--------'
+    RawLeads.objects.filter(mail__endswith=exclude_email).delete()
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+

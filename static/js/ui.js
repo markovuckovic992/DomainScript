@@ -98,27 +98,6 @@ function show (i) {
     window.location.href=('/raw_leads/?date=' + date + '&page=' + i);           
 }
 
-function select_all(range) {
-    var active_page = 0, iter = range.length, date = $("#datepicker").val(), boxes;
-    var boxes;
-    while (iter--) {
-        if ($("#button_" + i).css("background-color") === "LightGreen") {
-            $.ajax({
-                type: "POST",
-                url: "/select_all/",
-                headers: {
-                    'X-CSRFToken': csrftoken,
-                },
-                data: "page=" + iter + "&date=" + date,
-            });
-            boxes = document.getElementsByClassName("check_" + iter)
-            for (i = 0; i < boxes.length; i += 1) {
-    			boxes[i].checked = true;
-        	}	
-            break;
-        }
-    }
-}
 
 function find_mails() {
     $("#cover").fadeIn(100);
@@ -233,6 +212,22 @@ function blacklist(id) {
     });
 }
 
+function blacklist_selected() {
+    $.ajax({
+        type: "POST",
+        url: "/blacklist_selected/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function (msg) { 
+            $(':checkbox.blacklist').each(function() {
+                this.checked = false;                        
+            });           
+            location.reload()  
+        }
+    });
+}
+
 function to_delete(id) {
     $.ajax({
         type: "POST",
@@ -266,6 +261,21 @@ function select_all() {
         data: "date=" + date,
         success: function(msg){
             $('input:checkbox.prim').prop('checked', true);
+        }
+    });
+}
+
+function un_select_all() {
+    var date = $("#datepicker").val()
+    $.ajax({
+        type: "POST",
+        url: "/un_mark_to_send/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: "date=" + date,
+        success: function(msg){
+            $('input:checkbox.prim').prop('checked', false);
         }
     });
 }
@@ -322,6 +332,23 @@ function rem_mail(id, name_zone) {
                 $("#mail_field_" + msg.ids[i]).html(html + '<a href="http://bgp.he.net/dns/' + name_zone + '#_whois" target="_blank">bgd.he.net</a>'
 );
             }
+        }
+    });
+}
+
+//SUPERBLACKLISTING
+function super_blacklist() {
+    var domain = $("#super_blacklist").val()
+    $.ajax({
+        type: "POST",
+        url: "/super_blacklist/",
+        data: "domain=" + domain,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            $("#super_blacklist").val('')
+            alert('done!')
         }
     });
 }

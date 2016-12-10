@@ -19,24 +19,11 @@ class RawLeads(models.Model):
     class Meta:
         db_table = "raw_leads"
 
-
-class Offer(models.Model):
-    lead = models.CharField(max_length=100)
-    zone = models.CharField(max_length=100, blank=True, null=True)
-    amount = models.FloatField(blank=True, null=True)
-    base_id = models.IntegerField()
-    hash_base_id = models.CharField(max_length=32, unique=True)
-    email = models.CharField(max_length=320, blank=True, null=True)
-    contact = models.CharField(max_length=50, blank=True, null=True)
-    response = models.SmallIntegerField(default=0)
-
-    date = models.DateField(default=timezone.now)
-    date_resp = models.DateField(blank=True, null=True)
-
-    status = models.CharField(max_length=100, blank=True, null=True)
+class SuperBlacklist(models.Model):
+    domain = models.CharField(max_length=100)
 
     class Meta:
-        db_table = 'offers'
+        db_table = 'super_blacklist'
 
 class Log(models.Model):
     date = models.DateField(default=timezone.now)
@@ -45,7 +32,7 @@ class Log(models.Model):
     duration = models.IntegerField(default=0)
 
 class BlackList(models.Model):
-    lead = models.CharField(max_length=100, blank=True, null=True)
+    email = models.CharField(max_length=320, blank=True, null=True)
 
     class Meta:
         db_table = 'blacklist'

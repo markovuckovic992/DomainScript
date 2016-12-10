@@ -33,9 +33,14 @@ urlpatterns = [
     #  active leads
     url(r'^active_leads/', domain.views.activeLeads),
     url(r'^blacklist/', domain.views.blacklist),
+    url(r'^blacklist_selected/', domain.views.blacklist_selected),
     url(r'^mark_to_send/', domain.views.mark_to_send),
+    url(r'^un_mark_to_send/', domain.views.un_mark_to_send),
     url(r'^delete/', domain.views.delete),
     url(r'^send_mails/', domain.views.send_mails),
     url(r'^add_mail_man/', domain.views.add_mail_man),
     url(r'^rem_mail/', domain.views.rem_mail),
+    #  super blaklist 
+    url(r'^blacklisting/', domain.views.blacklisting),
+    url(r'^super_blacklist/', domain.views.super_blacklist),
 ]
