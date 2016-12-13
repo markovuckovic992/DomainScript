@@ -252,6 +252,7 @@ def send_mails(request):
                     'drop': potential_profit.name_redemption,
                     'lead': potential_profit.name_zone,
                     'hash_base_id': hash_base_id,
+                    'remail': potential_profit.mail,
                 }
             )
 
@@ -261,7 +262,13 @@ def send_mails(request):
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def blacklisting(request):
-    return render(request, 'super_blacklist.html', {})
+    blacklist = BlackList.objects.all()
+    superblacklist = SuperBlacklist.objects.all()
+    return render(request, 'super_blacklist.html', 
+        {
+            'blacklist': blacklist,
+            'superblacklist': superblacklist,
+        })
 
 def super_blacklist(request):
     domain = request.POST['domain']
@@ -273,3 +280,20 @@ def super_blacklist(request):
     RawLeads.objects.filter(mail__endswith=exclude_email).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+def regular_blacklist(request):
+    email = request.POST['email']
+    entry = BlackList.objects.filter(email=email)
+    if not entry.exists():
+        new_entry = BlackList(email=email)
+        new_entry.save()
+    RawLeads.objects.filter(mail=email).delete()
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def remove_from_blacklist(request):
+    id_ = request.POST['id']
+    type_ = request.POST['type']
+    if int(type_) == 1:
+        BlackList.objects.filter(id=id_).delete()
+    else:
+        SuperBlacklist.objects.filter(id=id_).delete()
+    return HttpResponse('{"status": "success"}', content_type="application/json")

@@ -3,7 +3,6 @@
    <title>Editing</title>
 {% endblock %}
 {% block content %}
-    {% csrf_token %}
     <table class="table" style="margin-left: 20%; width: 60%;">
       <thead>
         <tr>
@@ -13,10 +12,35 @@
         </tr>        
         <tr>
           <td colspan="2" style="text-align: center; background: rgba(255,0,0,0.4);">
-            <input type="button" onclick="super_blacklist()" name="" value="Submit"/>
+            <input type="button" onclick="super_blacklist()" name="" value="Domain"/>
+            <input type="button" onclick="regular_blacklist()" name="" value="Email adress"/>
           </td>
         <tr>
       </thead>
+    </table>
+    <table>
+      <tr>
+        <th colspan="2">
+          Blacklisted emails
+        </th>
+      </tr>
+      {% for item in blacklist %}
+      <tr>
+        <td>{{item.email}}</td>
+        <td><button onclick="remove_from_blacklist({{item.id}}, 1)">Remove</button></td>
+      </tr>
+      {% endfor %}
+    </table>
+    <table>
+      <th colspan="2">
+          Blacklisted domains
+        </th>
+      {% for item in superblacklist %}
+      <tr>
+        <td>{{item.domain}}</td>
+        <td><button onclick="remove_from_blacklist({{item.id}}, 2)">Remove</button></td>
+      </tr>
+      {% endfor %}
     </table>
     <script type="text/javascript">      
       $("#Super").addClass('active');

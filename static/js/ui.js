@@ -347,8 +347,49 @@ function super_blacklist() {
             'X-CSRFToken': csrftoken,
         },
         success: function(msg){
-            $("#super_blacklist").val('')
-            alert('done!')
+            $("#super_blacklist").val('');
+            location.reload();
         }
     });
+}
+
+function regular_blacklist() {
+    var email = $("#super_blacklist").val()
+    $.ajax({
+        type: "POST",
+        url: "/regular_blacklist/",
+        data: "email=" + email,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            $("#super_blacklist").val('');
+            location.reload();
+        }
+    });
+}
+
+function remove_from_blacklist(id, type) {
+    $.ajax({
+        type: "POST",
+        url: "/remove_from_blacklist/",
+        data: "id=" + id + "&type=" + type,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            location.reload()
+        }
+    });
+}
+
+function filter_by_dom() {
+    var rows = $('#mytable tbody tr');
+    var temp = $('#filter_by_dom').val().toLowerCase();
+    var n, text;
+    rows.show().filter(function() {
+        text = $(this).find('td.redemption').text().toLowerCase();
+        n = text.indexOf(temp);
+        return n === -1;
+    }).hide();
 }
