@@ -10,7 +10,12 @@
    Show page:
    {% for i in range %}
         <button id="button_{{i}}" class="buttons" onclick="show({{i}})">{{ i }}</button>
-   {% endfor %}
+   {% endfor %}    
+    <select id="filter_by_dom" onclick="filter_by_dom()">
+      <option value="">-All-</option>
+      <option value=".com">.COM</option>
+      <option value=".net">.NET</option>
+    </select>
    <table id="mytable" class="sortable" style="margin-left: 1%; width: 70%;">
       <thead>
         <tr>
@@ -38,7 +43,7 @@
           {% else %}
             <td><input type="checkbox" class="check_{{entry.page}} r_{{entry.name_redemption}}" onclick="changestate('{{entry.id}}')" /></td>
           {% endif %}
-          <td class="sell">
+          <td class="sell redemption">
             {{entry.name_redemption}} ||
             <span style="color: green;" onclick="add_this_name('{{entry.name_redemption}}', {{entry.page}})">   Select
             </span>
