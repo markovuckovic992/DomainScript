@@ -226,9 +226,9 @@ def send_mails(request):
     delete = RawLeads.objects.filter(to_delete=1).delete()
     blacklists = RawLeads.objects.filter(blacklist=1)
     for blacklist in blacklists:
-        entry = BlackList.objects.filter(lead=blacklist.name_zone)
+        entry = BlackList.objects.filter(email=blacklist.mail)
         if not entry.exists():
-            new = BlackList(lead=blacklist.name_zone)
+            new = BlackList(email=blacklist.mail)
             new.save()
     RawLeads.objects.filter(blacklist=1).delete()
     potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1)
