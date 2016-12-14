@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from urllib import unquote
-from domain.models import RawLeads, SuperBlacklist, BlackList, Log
+from domain.models import *
+from domain.apps import *
 from basic_editing import main_filter
 from whois_domain import main, main_status
 from django.core.mail import send_mail
@@ -13,6 +14,7 @@ from math import ceil
 from os import popen
 from operator import attrgetter 
 import requests, hashlib, traceback, json
+from random import randint
 
 # EDITING
 def editing(request):
@@ -217,37 +219,6 @@ def rem_mail(request):
     }
     return HttpResponse(json.dumps(response), content_type="application/json")
 
-def form_a_msg(domain_name, zone, link, unsubscribe):  
-    domain_name = domain_name.upper() 
-    zone = zone.upper() 
-    line_offer = "<a href='" + str(link) + "'>OFFER PAGE LINK</a>"
-    link_un = "<a href='" + unsubscribe + "'>[LINK]</a>"
-
-    subject = zone + ' Get more traffic, more leads, more sales. Simple'
-    msg =  'Hi,'  
-    msg += '<br/>'
-    msg += 'I just wanted to drop a line to let you know that the domain ' + domain_name + ' will shortly be up for sale. If you are interested, you can grab this keyword-rich premium domain for the right offer.'  
-    msg += '<br/>' 
-    msg += 'Premium domains come with a host of advantages to boost SEO campaigns. They even receive higher CTRs (Click Through Rate) than freshly registered new domains. ' 
-    msg += '<br/>' 
-    msg += 'To acquire this domain, please click on the link below and make an offer or, simply reply back to this email with your offer: ' 
-    msg += '<br/>' 
-    msg += line_offer 
-    msg += '<br/>' 
-    msg += 'Just like you, we take SEO and traffic seriously. ' 
-    msg += '<br/>' 
-    msg += 'If you have any questions or need any help, please do not hesitate to ask. ' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += 'Best regards' 
-    msg += '<br/>' 
-    msg += 'Unsubscribe here - ' + link_un
-
-    return [subject, msg]
-
 
 def send_mails(request):
     date = request.POST['date']
@@ -268,8 +239,8 @@ def send_mails(request):
         try:
             link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
             unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))
-   
-            msg = form_a_msg(potential_profit.name_redemption, potential_profit.name_zone, link, unsubscribe)
+            case = randint(1, 4)
+            msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(link) + '","' + str(unsubscribe) + '")')
             send_mail(
                 msg[0],  # Title
                 potential_profit.name_zone,  # Body
