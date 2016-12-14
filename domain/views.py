@@ -217,6 +217,38 @@ def rem_mail(request):
     }
     return HttpResponse(json.dumps(response), content_type="application/json")
 
+def form_a_msg(domain_name, zone, link, unsubscribe):  
+    domain_name = domain_name.upper() 
+    zone = zone.upper() 
+    line_offer = "<a href='" + str(link) + "'>OFFER PAGE LINK</a>"
+    link_un = "<a href='" + unsubscribe + "'>[LINK]</a>"
+
+    subject = zone + ' Get more traffic, more leads, more sales. Simple'
+    msg =  'Hi,'  
+    msg += '<br/>'
+    msg += 'I just wanted to drop a line to let you know that the domain ' + domain_name + ' will shortly be up for sale. If you are interested, you can grab this keyword-rich premium domain for the right offer.'  
+    msg += '<br/>' 
+    msg += 'Premium domains come with a host of advantages to boost SEO campaigns. They even receive higher CTRs (Click Through Rate) than freshly registered new domains. ' 
+    msg += '<br/>' 
+    msg += 'To acquire this domain, please click on the link below and make an offer or, simply reply back to this email with your offer: ' 
+    msg += '<br/>' 
+    msg += line_offer 
+    msg += '<br/>' 
+    msg += 'Just like you, we take SEO and traffic seriously. ' 
+    msg += '<br/>' 
+    msg += 'If you have any questions or need any help, please do not hesitate to ask. ' 
+    msg += '<br/>' 
+    msg += '<br/>' 
+    msg += '<br/>' 
+    msg += '<br/>' 
+    msg += '<br/>' 
+    msg += 'Best regards' 
+    msg += '<br/>' 
+    msg += 'Unsubscribe here - ' + link_un
+
+    return [subject, msg]
+
+
 def send_mails(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
@@ -233,16 +265,18 @@ def send_mails(request):
         hash = hashlib.md5()
         hash.update(str(potential_profit.id))
         hash_base_id = hash.hexdigest()
-        link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
-        unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))
         try:
+            link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
+            unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))
+   
+            msg = form_a_msg(potential_profit.name_redemption, potential_profit.name_zone, link, unsubscribe)
             send_mail(
-                "Domain offer",  # Title
+                msg[0],  # Title
                 potential_profit.name_zone,  # Body
                 settings.EMAIL_HOST_USER,
                 [potential_profit.mail],
                 fail_silently=False,
-                html_message="<a href='" + str(link) + "'>Link</a><br/><a href='" + unsubscribe + "'>unsubscribe</a>",
+                html_message=msg[1],
             )
 
             requests.post(
