@@ -236,6 +236,7 @@ def send_mails(request):
     RawLeads.objects.filter(blacklist=1).delete()
     potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1)
     for potential_profit in potential_profits:
+        print potential_profit.mail
         hash = hashlib.md5()
         hash.update(str(potential_profit.id))
         hash_base_id = hash.hexdigest()

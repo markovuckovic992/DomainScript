@@ -8,34 +8,32 @@ class DomainConfig(AppConfig):
 
 
 def form_a_msg1(domain_name, link, unsubscribe):  
-    domain_name = domain_name.upper() 
-    line_offer = "<a href='" + str(link) + "'>OFFER PAGE LINK</a>"
-    link_un = "<a href='" + unsubscribe + "'>[LINK]</a>"
+	domain_name = domain_name.upper() 
+	line_offer = "<a href='" + str(link) + "'>OFFER PAGE LINK</a>"
+	link_un = "<a href='" + unsubscribe + "'>[LINK]</a>"
 
-    subject = domain_name + ' Get more traffic, more leads, more sales. Simple'
-    msg =  'Hi,'  
-    msg += '<br/>'
-    msg += 'I just wanted to drop a line to let you know that the domain ' + domain_name + ' will shortly be up for sale. If you are interested, you can grab this keyword-rich premium domain for the right offer.'  
-    msg += '<br/>' 
-    msg += 'Premium domains come with a host of advantages to boost SEO campaigns. They even receive higher CTRs (Click Through Rate) than freshly registered new domains. ' 
-    msg += '<br/>' 
-    msg += 'To acquire this domain, please click on the link below and make an offer or, simply reply back to this email with your offer: ' 
-    msg += '<br/>' 
-    msg += line_offer 
-    msg += '<br/>' 
-    msg += 'Just like you, we take SEO and traffic seriously. ' 
-    msg += '<br/>' 
-    msg += 'If you have any questions or need any help, please do not hesitate to ask. ' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += 'Best regards' 
-    msg += '<br/>' 
-    msg += 'Unsubscribe here - ' + link_un
+	subject = domain_name + ' Get more traffic, more leads, more sales. Simple'
+	msg =  'Hi,'  
+	msg += '<br/>'
+	msg += 'I just wanted to drop a line to let you know that the domain ' + domain_name + ' will shortly be up for sale. If you are interested, you can grab this keyword-rich premium domain for the right offer.'  
+	msg += '<br/>' 
+	msg += 'Premium domains come with a host of advantages to boost SEO campaigns. They even receive higher CTRs (Click Through Rate) than freshly registered new domains. ' 
+	msg += '<br/>' 
+	msg += 'To acquire this domain, please click on the link below and make an offer or, simply reply back to this email with your offer: ' 
+	msg += '<br/>' 
+	msg += line_offer 
+	msg += '<br/>' 
+	msg += 'Just like you, we take SEO and traffic seriously. ' 
+	msg += '<br/>' 
+	msg += 'If you have any questions or need any help, please do not hesitate to ask. ' 
+	msg += '<br/>' 
+	msg += '<a href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a>' 
+	msg += '<br/>' 
+	msg += 'Best regards' 
+	msg += '<br/>' 
+	msg += 'Unsubscribe here - ' + link_un
 
-    return [subject, msg]
+	return [subject, msg]
 
 def form_a_msg2(domain_name, link, unsubscribe): 
     domain_name = domain_name.upper() 
@@ -57,9 +55,7 @@ def form_a_msg2(domain_name, link, unsubscribe):
     msg += '<br/>' 
     msg += 'If you have any questions or need any help, please do not hesitate to ask. ' 
     msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
+    msg += '<a href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a>' 
     msg += '<br/>' 
     msg += 'Best regards' 
     msg += '<br/>' 
@@ -83,9 +79,8 @@ def form_a_msg3(domain_name, link, unsubscribe):
     msg += '<br/>' 
     msg += 'Need any help? Please feel free to contact our friendly customer support team. Simply reply back to this email. ' 
     msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
+    msg += '<a href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a>' 
+    msg += '<br/>'  
     msg += 'Best wishes' 
     msg += '<br/>' 
     msg += 'Unsubscribe here - ' + link_un
@@ -112,10 +107,8 @@ def form_a_msg4(domain_name, link, unsubscribe):
     msg += '<br/>' 
     msg += 'If you still need help, then we are here for you. Simply drop us a line or write to us in reply to this email and we will get back to you. ' 
     msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
-    msg += '<br/>' 
+    msg += '<a href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a>' 
+    msg += '<br/>'  
     msg += 'Best wishes' 
     msg += '<br/>' 
     msg += 'Unsubscribe here - ' + link_un
