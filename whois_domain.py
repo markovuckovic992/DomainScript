@@ -39,7 +39,7 @@ def main(date):
             elif same_shit.exists():
                 RawLeads.objects.filter(id=data.id).delete()
             else:
-				print data.name_redemption, email
+                print data.name_redemption, email
                 RawLeads.objects.filter(id=data.id).update(mail=email)
 
 
