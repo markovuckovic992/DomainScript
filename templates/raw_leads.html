@@ -73,7 +73,7 @@
         $('.dataTables_empty').css( 'display', 'none' );
         $("#button_{{page}}").css({"background-color": "LightGreen"})
         var selected_date = (window.location.search).replace('?date=', '').split("-");
-        var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);
+        var new_date = new Date((selected_date[2].split('&', 1))[0], selected_date[1] - 1, selected_date[0]);
         $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
         $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
       } );

@@ -57,7 +57,9 @@ def rawLeads(request):
     else:
         page = 1
     raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page)
-    all_leads = RawLeads.objects.filter(date=date)
+    numbers = [1]
+    numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
+    number_of_pages = max(set(numbers))
     try:
         log = Log.objects.get(date=date)
     except Log.DoesNotExist:
@@ -67,7 +69,7 @@ def rawLeads(request):
         'raw_leads.html',
         {
             "raw_leads": raw_leads,
-            'range': range(1, int(ceil(len(all_leads) / 5000)) + 2),
+            'range': range(1, number_of_pages +1),
             'log': log,
             'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
             'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
