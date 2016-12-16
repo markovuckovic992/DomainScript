@@ -39,8 +39,16 @@ def main(date):
             elif same_shit.exists():
                 RawLeads.objects.filter(id=data.id).delete()
             else:
-                print data.name_redemption, email
                 RawLeads.objects.filter(id=data.id).update(mail=email)
+
+    file = open('zone_with_no_emails.txt', 'w')
+    file.seek(0)
+    file.truncate()
+
+    datas = RawLeads.objects.filter(date=date, activated=1, mail__isnull=True)
+    for data in datas:
+        file.write(data.name_zone + '\n')
+
 
 
 def main_status(date):

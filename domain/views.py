@@ -305,3 +305,9 @@ def remove_from_blacklist(request):
     else:
         SuperBlacklist.objects.filter(id=id_).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def download(request):
+    f = open('zone_with_no_emails.txt', "r")
+    res = HttpResponse(f)
+    res['Content-Disposition'] = 'attachment; filename=zone_with_no_email.txt'
+    return res
