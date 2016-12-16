@@ -25,7 +25,7 @@ def form_a_msg1(domain_name, link, unsubscribe):
     msg += '<br/><br/>'
     msg += 'If you have any questions or need any help, please do not hesitate to ask. '
     msg += '<br/><br/>'
-    msg += '<a style="margin-left: 300px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a><br/><br/>'
+    msg += '<a style="margin-left: 200px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a><br/><br/>'
     msg += 'Best regards<br/><br/>'
     msg += 'Unsubscribe here - ' + link_un
 
@@ -51,7 +51,7 @@ def form_a_msg2(domain_name, link, unsubscribe):
     msg += '<br/><br/>'
     msg += 'If you have any questions or need any help, please do not hesitate to ask. '
     msg += '<br/><br/>'
-    msg += '<a style="margin-left: 300px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a><br/><br/>'
+    msg += '<a style="margin-left: 200px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a><br/><br/>'
     msg += 'Best regards<br/><br/>'
     msg += 'Unsubscribe here - ' + link_un
 
@@ -73,7 +73,7 @@ def form_a_msg3(domain_name, link, unsubscribe):
     msg += '<br/><br/>'
     msg += 'Need any help? Please feel free to contact our friendly customer support team. Simply reply<br/> back to this email. '
     msg += '<br/><br/>'
-    msg += '<a style="margin-left: 300px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a>'
+    msg += '<a style="margin-left: 200px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a>'
     msg += '<br/><br/>'
     msg += 'Best wishes'
     msg += '<br/><br/>'
@@ -103,7 +103,7 @@ def form_a_msg4(domain_name, link, unsubscribe):
     msg += '<br/><br/>'
     msg += 'If you still need help, then we are here for you. Simply drop us a line or write to us in reply to<br/> this email and we will get back to you. '
     msg += '<br/><br/>'
-    msg += '<a style="margin-left: 300px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a>'
+    msg += '<a style="margin-left: 200px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a>'
     msg += '<br/><br/>'
     msg += 'Best wishes'
     msg += '<br/><br/>'
