@@ -12,13 +12,15 @@ from django.db import connection
 from datetime import datetime
 from math import ceil
 from os import popen
-from operator import attrgetter 
+from operator import attrgetter
 import requests, hashlib, traceback, json
 from random import randint
+
 
 # EDITING
 def editing(request):
     return render(request, 'editing.html', {})
+
 
 def runEditing(request):
     try:
@@ -27,7 +29,7 @@ def runEditing(request):
         if int(arg) == 1:
             script = '_basic_editing'
         else:
-            script =  'basic_editing'
+            script = 'basic_editing'
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
         org = request.POST['org'].replace('C:\\fakepath\\', '')
@@ -45,6 +47,7 @@ def runEditing(request):
     except:
         print traceback.format_exc(), argument
         return HttpResponse('{"status": "failed"}', content_type="application/json")
+
 
 # RAW LEADS
 def rawLeads(request):
@@ -69,12 +72,13 @@ def rawLeads(request):
         'raw_leads.html',
         {
             "raw_leads": raw_leads,
-            'range': range(1, number_of_pages +1),
+            'range': range(1, number_of_pages + 1),
             'log': log,
             'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
             'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
             'page': page,
         })
+
 
 def reverse_state(request):
     raw_leads_id = int(unquote(request.POST['id']))
@@ -83,6 +87,7 @@ def reverse_state(request):
     mark %= 2
     RawLeads.objects.filter(id=raw_leads_id).update(mark=mark)
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
 
 def select_all(request):
     page = request.POST['page']
@@ -102,6 +107,7 @@ def add_this_name(request):
     raw_leads.update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+
 def rem_this_name(request):
     redemption = request.POST['redemption']
     page = request.POST['page']
@@ -111,11 +117,13 @@ def rem_this_name(request):
     raw_leads.update(mark=0)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+
 def find_mails(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
     main(date)
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
 
 def truncate(request):
     date = request.POST['date']
@@ -123,6 +131,7 @@ def truncate(request):
     raw_leads = RawLeads.objects.filter(activated=0, date=date)
     raw_leads.delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
 
 # ACTIVE LEADS
 def activeLeads(request):
@@ -146,10 +155,11 @@ def activeLeads(request):
             'total_a': len(raw_leads),
         })
 
+
 def blacklist(request):
     leads_id = int(unquote(request.POST['id']))
     date = request.POST['date']
-    date = datetime.strptime(date, '%d-%m-%Y').date()  
+    date = datetime.strptime(date, '%d-%m-%Y').date()
     blacklist = RawLeads.objects.get(id=leads_id).blacklist
     blacklist += 1
     blacklist %= 2
@@ -162,6 +172,7 @@ def blacklist(request):
     }
     return HttpResponse(json.dumps(response), content_type="application/json")
 
+
 def blacklist_selected(request):
     blacklists = RawLeads.objects.filter(blacklist=1)
     for blacklist in blacklists:
@@ -172,6 +183,7 @@ def blacklist_selected(request):
     RawLeads.objects.filter(blacklist=1).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+
 def delete(request):
     leads_id = int(unquote(request.POST['id']))
     to_delete = RawLeads.objects.get(id=leads_id).to_delete
@@ -180,6 +192,7 @@ def delete(request):
     RawLeads.objects.filter(id=leads_id).update(to_delete=to_delete)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+
 def mark_to_send(request):
     if 'id' in request.POST.keys():
         leads_id = int(unquote(request.POST['id']))
@@ -187,16 +200,16 @@ def mark_to_send(request):
         mark_to_send += 1
         mark_to_send %= 2
         RawLeads.objects.filter(id=leads_id).update(mark_to_send=mark_to_send)
-    else:    
+    else:
         date = request.POST['date']
-        date = datetime.strptime(date, '%d-%m-%Y').date()            
+        date = datetime.strptime(date, '%d-%m-%Y').date()
         RawLeads.objects.filter(date=date).update(mark_to_send=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
 def un_mark_to_send(request):
     date = request.POST['date']
-    date = datetime.strptime(date, '%d-%m-%Y').date()            
+    date = datetime.strptime(date, '%d-%m-%Y').date()
     RawLeads.objects.filter(date=date).update(mark_to_send=0)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -211,6 +224,7 @@ def add_mail_man(request):
         'ids': ids,
     }
     return HttpResponse(json.dumps(response), content_type="application/json")
+
 
 def rem_mail(request):
     lead_id = request.POST['id']
@@ -243,7 +257,8 @@ def send_mails(request):
             link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
             unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))
             case = randint(1, 4)
-            msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(link) + '","' + str(unsubscribe) + '")')
+            msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
+                link) + '","' + str(unsubscribe) + '")')
             send_mail(
                 msg[0],  # Title
                 potential_profit.name_zone,  # Body
@@ -269,14 +284,16 @@ def send_mails(request):
             print traceback.format_exc()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+
 def blacklisting(request):
     blacklist = BlackList.objects.all()
     superblacklist = SuperBlacklist.objects.all()
-    return render(request, 'super_blacklist.html', 
-        {
-            'blacklist': blacklist,
-            'superblacklist': superblacklist,
-        })
+    return render(request, 'super_blacklist.html',
+                  {
+                      'blacklist': blacklist,
+                      'superblacklist': superblacklist,
+                  })
+
 
 def super_blacklist(request):
     domain = request.POST['domain']
@@ -288,6 +305,7 @@ def super_blacklist(request):
     RawLeads.objects.filter(mail__endswith=exclude_email).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+
 def regular_blacklist(request):
     email = request.POST['email']
     entry = BlackList.objects.filter(email=email)
@@ -296,6 +314,7 @@ def regular_blacklist(request):
         new_entry.save()
     RawLeads.objects.filter(mail=email).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
 
 def remove_from_blacklist(request):
     id_ = request.POST['id']
