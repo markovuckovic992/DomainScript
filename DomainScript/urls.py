@@ -45,7 +45,10 @@ urlpatterns = [
     url(r'^super_blacklist/', domain.views.super_blacklist),
     url(r'^regular_blacklist/', domain.views.regular_blacklist),
     url(r'^remove_from_blacklist/', domain.views.remove_from_blacklist),
-
     #  download
     url(r'^download/', domain.views.download),
+    #  manual add
+    url(r'^manual/', domain.views.manual),
+    url(r'^search_manual/', domain.views.search_manual),
+    url(r'^add_manual/', domain.views.add_manual),
 ]

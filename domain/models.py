@@ -36,3 +36,9 @@ class BlackList(models.Model):
 
     class Meta:
         db_table = 'blacklist'
+
+class AllHash(models.Model):
+    hash_base_id = models.CharField(max_length=32, unique=True)
+
+    class Meta:
+        db_table = 'hashes'

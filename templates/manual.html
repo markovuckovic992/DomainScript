@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block head %}
+   <title>manual</title>
+{% endblock %}
+{% block content %}
+    <table class="table" style="margin-left: 20%; width: 60%;">
+      <thead>
+        <tr>
+          <td style="text-align: center; background: rgba(0,255,0,0.4);">
+            Date: <input type="text" id="datepicker"><br/>
+            Zone: <input type="text" id='manual_input_zone' vaule="zone domain"/><br/>
+            Redemption: <input type="text" id='manual_input_redem' vaule="redemption domain"/><br/>
+            Email: <input type="text" id='manual_input_email' vaule="email"/><br/>
+            <span id="hash_man" style="display: none;">Hash: </span><br/>
+            <span id="hash_man_link" style="display: none;">Link: </span>
+          </td>
+        </tr>        
+        <tr>
+          <td colspan="2" style="text-align: center; background: rgba(255,0,0,0.4);">
+            <input type="button" onclick="search_manual()" id="search_manual" value="search"/>
+            <input type="button" onclick="add_manual()" id="add_manual" value="add" style="display: none;"/>
+            <input type="button" onclick="window.location.reload()" id="reload" value="new entry" style="display: none;"/>
+          </td>
+        <tr>
+      </thead>
+    </table>    
+    <script type="text/javascript"> 
+      $( "#datepicker" ).datepicker();      
+      $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy'); 
+      $("#MAN").addClass('active');
+      $("#Base").removeClass();
+      $( document ).ready(function() {
+          $("#log_div").hide();
+      });
+    </script>
+{% endblock %}

@@ -17,10 +17,62 @@ import requests, hashlib, traceback, json
 from random import randint
 
 
+# MANUAL
+def manual(request):    
+    return render(request, 'manual.html', {})
+
+def search_manual(request):
+    zone = request.POST['zone']
+    rede = request.POST['rede']
+    date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()
+    try:        
+        entry_id = str(RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date).id)
+
+        hash = hashlib.md5()
+        hash.update(str(entry_id))
+        hash_base_id = hash.hexdigest()
+        while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+            hash.update(str(potential_profit.entry_id))
+            hash_base_id = hash.hexdigest()
+
+        return HttpResponse('{"hash": "' + str(hash_base_id) + '"}', content_type="application/json")
+    except:
+        print traceback.format_exc()
+        return HttpResponse('{"status": "failed"}', content_type="application/json")
+
+def add_manual(request):
+    hash_ = request.POST['hash']
+    email = request.POST['email']
+    zone = request.POST['zone']
+    rede = request.POST['rede']
+    date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()
+
+    potential_profit = RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date)
+
+    link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_))   
+
+    requests.post(
+        "http://www.webdomainexpert.pw/add_offer/",
+        data={
+            'base_id': potential_profit.id,
+            'drop': potential_profit.name_redemption,
+            'lead': potential_profit.name_zone,
+            'hash_base_id': hash_,
+            'remail': email,
+        }
+    )
+
+    RawLeads.objects.filter(id=potential_profit.id).delete()
+    new_entry = AllHash(hash_base_id=hash_)
+    new_entry.save()
+        
+    return HttpResponse('{"link": "' + str(link) + '"}', content_type="application/json")
+
 # EDITING
 def editing(request):
     return render(request, 'editing.html', {})
-
 
 def runEditing(request):
     try:
@@ -253,6 +305,11 @@ def send_mails(request):
         hash = hashlib.md5()
         hash.update(str(potential_profit.id))
         hash_base_id = hash.hexdigest()
+        while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+            hash.update(str(potential_profit.entry_id))
+            hash_base_id = hash.hexdigest()
+        new_entry = AllHash(hash_base_id=hash_base_id)
+        new_entry.save()
         try:
             link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
             unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))

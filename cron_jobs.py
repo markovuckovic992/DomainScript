@@ -1,13 +1,13 @@
 #!/usr/bin/python2.7
 import django
-import sys, requests
+import sys, requests, json
 from datetime import datetime, timedelta
 
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 
-from domain.models import BlackList
+from domain.models import BlackList, AllHash
 
 
 class CronJobs:
@@ -17,16 +17,20 @@ class CronJobs:
     def deleteOldData(self):
         response = requests.post(
             "http://www.webdomainexpert.pw/zakazani_delete_for_old_datas__/",
-        )
-        file = open('error.html', 'w')
-        file.write(str(response.json()))
+        )        
         items = response.json()
-        for item in items:	
-			email = item['fields']['email']			
-			entry = BlackList.objects.filter(email=email)
-			if not entry.exists():
-				new = BlackList(email=email)
-				new.save()
+        blocks = json.loads(items['blk'])
+        for item in blocks:	
+            email = item['fields']['email']			
+            entry = BlackList.objects.filter(email=email)
+            if not entry.exists():
+                new = BlackList(email=email)
+                new.save()
+
+        hashes = json.loads(items['hashes'])
+        for item in hashes:
+            hash_base_id = item['fields']['hash_base_id']         
+            AllHash.objects.filter(hash_base_id=hash_base_id).delete()
 
 
 c_j = CronJobs()

@@ -393,3 +393,64 @@ function filter_by_dom() {
         return n === -1;
     }).hide();
 }
+
+// MAN
+
+function search_manual() {
+    var zone = $('#manual_input_zone').val();
+    var rede = $('#manual_input_redem').val();
+    var date = $("#datepicker").val();
+    $.ajax({
+        type: "POST",
+        url: "/search_manual/",
+        data: "zone=" + zone + "&rede=" + rede + "&date=" + date,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            if (msg.hash) {
+                $('#search_manual').hide()
+                $('#add_manual').show()
+                $('#hash_man').show()
+
+                $('#hash_man').html('hash: ' + msg.hash)
+            } else {
+                alert("Can't find match for inputs!")
+            }
+        }
+    });
+
+}
+
+function add_manual() {
+    var hash = $('#hash_man').html().replace('hash: ', '');
+    var zone = $('#manual_input_zone').val();
+    var rede = $('#manual_input_redem').val();
+    var date = $("#datepicker").val();
+    var email = $("#manual_input_email").val();
+    if (hash && zone && rede && date && email) {
+        $.ajax({
+            type: "POST",
+            url: "/add_manual/",
+            data: "zone=" + zone + "&rede=" + rede + "&date=" + date + "&hash=" + hash + "&email=" + email,
+            headers: {
+                'X-CSRFToken': csrftoken,
+            },
+            success: function(msg){
+                if (msg.link) {
+                    $('#add_manual').hide()
+                    $('#reload').show()
+                    $('#hash_man_link').show()
+
+                    $('#hash_man_link').html('link: ' + msg.link)
+                } else {
+                    alert("Can't find match for inputs!")
+                }
+            }
+        });
+    } else {
+        console.log(hash, zone, rede, date, email)
+        alert('Some data is missing!');
+    }
+
+}
