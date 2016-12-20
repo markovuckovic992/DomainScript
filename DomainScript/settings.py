@@ -25,7 +25,7 @@ SECRET_KEY = 'o&%v77lrv1pm4#-ydt1r6zz*++z7ah2pt_y91bz1g(xf56b^h1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS=["*"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -129,13 +129,12 @@ STATIC_URL = '/static/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'administrator@premium-web-domain.com'
+EMAIL_HOST = 'smtp.premium-web-domain.com'
+EMAIL_HOST_USER = 'info@premium-web-domain.com'
 EMAIL_HOST_PASSWORD = 'asdqwe!@3'
-EMAIL_PORT = 587
+EMAIL_PORT = 25
 
-
-
-# EMAIL_HOST = 'smtp.premium-web-domain.com'
+# EMAIL_PORT = 587
 # EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'televizorzid987@gmail.com'
+# EMAIL_HOST_USER = 'televizorzid987'
 # EMAIL_HOST_PASSWORD = 'parket123'
