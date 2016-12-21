@@ -128,13 +128,16 @@ STATICFILES_DIRS = [
 STATIC_URL = '/static/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.premium-web-domain.com'
-EMAIL_HOST_USER = 'info@premium-web-domain.com'
-EMAIL_HOST_PASSWORD = 'asdqwe!@3'
-EMAIL_PORT = 25
+# EMAIL_HOST = 'smtp.premium-web-domain.com'
+# EMAIL_HOST_USER = 'info@premium-web-domain.com'
+# EMAIL_HOST_PASSWORD = 'asdqwe!@3'
+# EMAIL_PORT = 25
 
-# EMAIL_PORT = 587
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'televizorzid987'
-# EMAIL_HOST_PASSWORD = 'parket123'
+import base64
+
+EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.zoho.com'
+EMAIL_HOST_USER = base64.b64encode('ron@alvarezinternational.com')
+EMAIL_HOST_PASSWORD = base64.b64encode('asd12fgh')
+
+EMAIL_USE_TLS = True

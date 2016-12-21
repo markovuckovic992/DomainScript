@@ -15,9 +15,13 @@ class CronJobs:
         pass
 
     def deleteOldData(self):
-        response = requests.post(
-            "http://www.webdomainexpert.pw/zakazani_delete_for_old_datas__/",
-        )        
+        condition = True
+        while condition:
+            response = requests.post(
+                "http://www.webdomainexpert.pw/zakazani_delete_for_old_datas__/",
+            ) 
+            if response.status_code != 503:
+                condition = False
         items = response.json()
         blocks = json.loads(items['blk'])
         for item in blocks:	
