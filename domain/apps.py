@@ -18,7 +18,7 @@ def form_a_msg1(domain_name, link, unsubscribe):
     msg += 'for sale. If you are interested, you can grab this keyword-rich premium domain for the right<br/>'
     msg += '<br/>offer.<br/><br/>'
     msg += 'Premium domains come with a host of advantages to boost SEO campaigns. They even receive <br/> higher CTRs (Click Through Rate) than freshly registered new domains. <br/><br/>'
-    msg += 'To acquire this domain, please click on the link below and make an offer or, <u>simply reply back to <br/>this email with your offer: <u><br/><br/>'
+    msg += 'To acquire this domain, please click on the link below and make an offer or, <u>simply reply back to <br/>this email with your offer: </u><br/><br/>'
     msg += line_offer
     msg += '<br/><br/>'
     msg += 'Just like you, we take SEO and traffic seriously. '
