@@ -16,9 +16,10 @@ from operator import attrgetter
 import requests, hashlib, traceback, json
 from random import randint
 
+from django.core import mail
 
 # MANUAL
-def manual(request):    
+def manual(request):
     return render(request, 'manual.html', {})
 
 def search_manual(request):
@@ -26,7 +27,7 @@ def search_manual(request):
     rede = request.POST['rede']
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
-    try:        
+    try:
         entry_id = str(RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date).id)
 
         hash = hashlib.md5()
@@ -51,7 +52,7 @@ def add_manual(request):
 
     potential_profit = RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date)
 
-    link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_))   
+    link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_))
 
     requests.post(
         "http://www.webdomainexpert.pw/add_offer/",
@@ -67,7 +68,7 @@ def add_manual(request):
     RawLeads.objects.filter(id=potential_profit.id).delete()
     new_entry = AllHash(hash_base_id=hash_)
     new_entry.save()
-        
+
     return HttpResponse('{"link": "' + str(link) + '"}', content_type="application/json")
 
 # EDITING
@@ -301,6 +302,11 @@ def send_mails(request):
             new.save()
     RawLeads.objects.filter(blacklist=1).delete()
     potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1)
+
+    connection = mail.get_connection()
+    connection.open()
+    emails = []
+
     for potential_profit in potential_profits:
         hash = hashlib.md5()
         hash.update(str(potential_profit.id))
@@ -316,14 +322,24 @@ def send_mails(request):
             case = randint(1, 4)
             msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
                 link) + '","' + str(unsubscribe) + '")')
-            send_mail(
-                msg[0],  # Title
-                potential_profit.name_zone,  # Body
-                settings.EMAIL_HOST_USER,
+
+            # send_mail(
+            #     msg[0],  # Title
+            #     potential_profit.name_zone,  # Body
+            #     settings.EMAIL_HOST_USER,
+            #     [potential_profit.mail],
+            #     fail_silently=False,
+            #     html_message=msg[1],
+            # )
+
+            email = mail.EmailMultiAlternatives(
+                msg[0],
+                'potential_profit.name_zone',
+                'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
                 [potential_profit.mail],
-                fail_silently=False,
-                html_message=msg[1],
             )
+            email.attach_alternative(msg[1], "text/html")
+            emails.append(email)
 
             requests.post(
                 "http://www.webdomainexpert.pw/add_offer/",
@@ -339,6 +355,9 @@ def send_mails(request):
             RawLeads.objects.filter(id=potential_profit.id).delete()
         except:
             print traceback.format_exc()
+    connection.send_messages(emails)
+    connection.close()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 

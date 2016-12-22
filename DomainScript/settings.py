@@ -130,7 +130,7 @@ STATIC_URL = '/static/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.premium-web-domain.com'
 # EMAIL_HOST_USER = 'info@premium-web-domain.com'
-# EMAIL_HOST_PASSWORD = 'asdqwe!@3'
+# EMAIL_HOST_PASSWORD = 'asdqwe!@#'
 # EMAIL_PORT = 25
 
 
@@ -139,8 +139,3 @@ EMAIL_HOST = 'smtp.zoho.com'
 EMAIL_HOST_USER = 'info@ipenbiz.com'
 EMAIL_HOST_PASSWORD = 'asd12fgh'
 EMAIL_USE_TLS = True
-
-# info@ipenbiz.com (same pw)
-# smtp.zoho.com
-# port: 465 with ssl or 587 with TLS
-# PW - asd12fgh
