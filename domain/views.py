@@ -346,7 +346,6 @@ def send_mails(request):
                     'remail': potential_profit.mail,
                 }
             )
-            print req.status_code
             if req.status_code == 200:
                 RawLeads.objects.filter(id=potential_profit.id).delete()
 
