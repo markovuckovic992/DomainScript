@@ -33,9 +33,11 @@ def search_manual(request):
         hash = hashlib.md5()
         hash.update(str(entry_id))
         hash_base_id = hash.hexdigest()
+        i = 0
         while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-            hash.update(str(potential_profit.entry_id))
+            hash.update(str(entry_id + i))
             hash_base_id = hash.hexdigest()
+            i += 1
 
         return HttpResponse('{"hash": "' + str(hash_base_id) + '"}', content_type="application/json")
     except:
@@ -311,9 +313,11 @@ def send_mails(request):
         hash = hashlib.md5()
         hash.update(str(potential_profit.id))
         hash_base_id = hash.hexdigest()
+        i = 0
         while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-            hash.update(str(potential_profit.id))
+            hash.update(str(potential_profit.id + i))
             hash_base_id = hash.hexdigest()
+            i += 1
         new_entry = AllHash(hash_base_id=hash_base_id)
         new_entry.save()
         try:
