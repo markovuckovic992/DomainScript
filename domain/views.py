@@ -336,16 +336,7 @@ def send_mails(request):
             #     html_message=msg[1],
             # )
 
-            email = mail.EmailMultiAlternatives(
-                msg[0],
-                'potential_profit.name_zone',
-                'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
-                [potential_profit.mail],
-            )
-            email.attach_alternative(msg[1], "text/html")
-            emails.append(email)
-
-            requests.post(
+            req = requests.post(
                 "http://www.webdomainexpert.pw/add_offer/",
                 data={
                     'base_id': potential_profit.id,
@@ -355,8 +346,19 @@ def send_mails(request):
                     'remail': potential_profit.mail,
                 }
             )
+            print req.status_code
+            if req.status_code == 200:
+                RawLeads.objects.filter(id=potential_profit.id).delete()
 
-            RawLeads.objects.filter(id=potential_profit.id).delete()
+                email = mail.EmailMultiAlternatives(
+                    msg[0],
+                    'potential_profit.name_zone',
+                    'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
+                    [potential_profit.mail],
+                )
+                email.attach_alternative(msg[1], "text/html")
+                emails.append(email)
+
         except:
             print traceback.format_exc()
     connection.send_messages(emails)
