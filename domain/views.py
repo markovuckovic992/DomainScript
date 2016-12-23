@@ -312,7 +312,7 @@ def send_mails(request):
         hash.update(str(potential_profit.id))
         hash_base_id = hash.hexdigest()
         while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-            hash.update(str(potential_profit.entry_id))
+            hash.update(str(potential_profit.id))
             hash_base_id = hash.hexdigest()
         new_entry = AllHash(hash_base_id=hash_base_id)
         new_entry.save()
