@@ -68,6 +68,20 @@ function run_script(arg) {
                             $("#cover").fadeOut(100);
                             alert('Something went wrong!')
                         }
+                    },
+                    statusCode: {
+                        400: function() {
+                          alert('400 status code! user error');
+                        },
+                        500: function() {
+                          alert('500 status code! server error');
+                        },
+                        502: function() {
+                            alert('gateway timeout!')
+                        },
+                        504: function() {
+                            alert('gateway timeout!')
+                        }
                     }
                 });
             }
@@ -112,6 +126,14 @@ function find_mails() {
         success: function(msg){
             $("#cover").fadeOut(100);
             window.location='/active_leads/'
+        },
+        statusCode: {
+            400: function() {
+              alert('400 status code! user error');
+            },
+            500: function() {
+              alert('500 status code! server error');
+            }
         }
     });
 }
@@ -129,6 +151,14 @@ function find_mails_again() {
         success: function(msg){
             $("#cover").fadeOut(100);
             location.reload();
+        },
+        statusCode: {
+            400: function() {
+              alert('400 status code! user error');
+            },
+            500: function() {
+              alert('500 status code! server error');
+            }
         }
     });
 }
@@ -294,6 +324,14 @@ function send_mails() {
             $("#cover").fadeOut(100);
             location.reload();
             $('input:checkbox').removeAttr('checked');
+        },
+        statusCode: {
+            400: function() {
+              alert('400 status code! user error');
+            },
+            500: function() {
+              alert('500 status code! server error');
+            }
         }
     });
 }

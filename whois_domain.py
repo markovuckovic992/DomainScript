@@ -30,8 +30,11 @@ def main(date):
         if email:
             blacklisted = BlackList.objects.filter(email=email)
             same_shit = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
-            domain = email.split('@', 1)[1]
-            super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
+            try:
+                domain = email.split('@', 1)[1]
+                super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
+            except:
+                pass
             if blacklisted.exists():
                 RawLeads.objects.filter(id=data.id).delete()
             elif super_blacklisted.exists():
