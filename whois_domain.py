@@ -27,14 +27,10 @@ def main(date):
                     uslov = False
                 else:
                     i += 1
-        if email:
+        if email and '@' in email:
             blacklisted = BlackList.objects.filter(email=email)
             same_shit = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
-            try:
-                domain = email.split('@', 1)[1]
-            except:
-                print email
-                domain = 'alkdas-asdasa;adslasd'            
+            domain = email.split('@', 1)[1]           
             super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
             if blacklisted.exists():
                 RawLeads.objects.filter(id=data.id).delete()
