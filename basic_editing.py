@@ -169,11 +169,14 @@ def fcn2(domain_dict, pt, file, date):
         for matched_domain in matched_lines:
             iterno += 1
             page = floor(iterno / 5000) + 1
-            base1 = matched_domain.split(".", 1)
-            base2 = domain.split(".", 1)
-            if '.com' in domain and base1 == base2:
-                activated = 1
-            else:
+            try:            
+                base1 = matched_domain.split(".", 1)[0]
+                base2 = domain.split(".", 1)[0]
+                if '.com' in domain and base1 == base2:
+                    activated = 1
+                else:
+                    activated = 0
+            except:
                 activated = 0
             entry = RawLeads(
                 name_zone=(matched_domain).replace('\n', '').replace('\r', ''),

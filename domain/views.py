@@ -93,7 +93,7 @@ def runEditing(request):
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
         RawLeads.objects.filter(date=date).delete()
-        argument = "pypy " + path + "/" + script + ".py "
+        argument = "python " + path + "/" + script + ".py "
         argument += (com + " " + net + " " + org + " " + info + " ")
         argument += (redempt + " " + str(date))
         popen(argument)
