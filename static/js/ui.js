@@ -71,10 +71,10 @@ function run_script(arg) {
                     },
                     statusCode: {
                         400: function() {
-                          alert('400 status code! user error');
+                          alert('400 status code! user error, reload page');
                         },
                         500: function() {
-                          alert('500 status code! server error');
+                          alert('500 status code! server error, reload page');
                         },
                         502: function() {
                             alert('gateway timeout!')
@@ -129,10 +129,10 @@ function find_mails() {
         },
         statusCode: {
             400: function() {
-              alert('400 status code! user error');
+              alert('400 status code! user error, reload page');
             },
             500: function() {
-              alert('500 status code! server error');
+              alert('500 status code! server error, reload page');
             }
         }
     });
@@ -154,10 +154,10 @@ function find_mails_again() {
         },
         statusCode: {
             400: function() {
-              alert('400 status code! user error');
+              alert('400 status code! user error, reload page');
             },
             500: function() {
-              alert('500 status code! server error');
+              alert('500 status code! server error, reload page');
             }
         }
     });
@@ -327,10 +327,10 @@ function send_mails() {
         },
         statusCode: {
             400: function() {
-              alert('400 status code! user error');
+              alert('400 status code! user error, reload page');
             },
             500: function() {
-              alert('500 status code! server error');
+              alert('500 status code! server error, reload page');
             }
         }
     });
