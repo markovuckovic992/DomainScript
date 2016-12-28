@@ -45,14 +45,16 @@ def search_manual(request):
         return HttpResponse('{"status": "failed"}', content_type="application/json")
 
 def add_manual(request):
-    hash_ = request.POST['hash']
-    email = request.POST['email']
-    zone = request.POST['zone']
-    rede = request.POST['rede']
-    date = request.POST['date']
-    date = datetime.strptime(date, '%d-%m-%Y').date()
-
-    potential_profit = RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date)
+    _id = request.POST['id']
+    potential_profit = RawLeads.objects.get(id=_id)
+    hash = hashlib.md5()
+    hash.update(str(_id))
+    hash_ = hash.hexdigest()
+    i = 0
+    while AllHash.objects.filter(hash_base_id=hash_).exists():
+        hash.update(str(_id + i))
+        hash_ = hash.hexdigest()
+        i += 1
 
     link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_))
 
@@ -63,7 +65,7 @@ def add_manual(request):
             'drop': potential_profit.name_redemption,
             'lead': potential_profit.name_zone,
             'hash_base_id': hash_,
-            'remail': email,
+            'remail': potential_profit.mail,
         }
     )
 

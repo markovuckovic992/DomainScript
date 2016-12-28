@@ -460,35 +460,23 @@ function search_manual() {
 
 }
 
-function add_manual() {
-    var hash = $('#hash_man').html().replace('hash: ', '');
-    var zone = $('#manual_input_zone').val();
-    var rede = $('#manual_input_redem').val();
-    var date = $("#datepicker").val();
-    var email = $("#manual_input_email").val();
-    if (hash && zone && rede && date && email) {
+function add_manual(id, number) {
+    var r = confirm("Are you sure that you want to generate hash for entry number: " + number);            
+    if (r == true) {
         $.ajax({
             type: "POST",
             url: "/add_manual/",
-            data: "zone=" + zone + "&rede=" + rede + "&date=" + date + "&hash=" + hash + "&email=" + email,
+            data: "id=" + id,
             headers: {
                 'X-CSRFToken': csrftoken,
             },
             success: function(msg){
-                if (msg.link) {
-                    $('#add_manual').hide()
-                    $('#reload').show()
-                    $('#hash_man_link').show()
-
-                    $('#hash_man_link').html('link: ' + msg.link)
-                } else {
-                    alert("Can't find match for inputs!")
+                if(alert(msg.link)) {
+                }
+                else {
+                    window.location.reload(); 
                 }
             }
         });
-    } else {
-        console.log(hash, zone, rede, date, email)
-        alert('Some data is missing!');
-    }
-
+    } 
 }
