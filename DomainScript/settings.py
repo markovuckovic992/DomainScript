@@ -127,16 +127,16 @@ STATICFILES_DIRS = [
 
 STATIC_URL = '/static/'
 
-# EMAIL_USE_TLS = True
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.mandrillapp.com'
-# EMAIL_HOST_USER = 'test_dabset_email'
-# EMAIL_HOST_PASSWORD = 'Domainproject-2016'
-# EMAIL_PORT = 587
-
-
-EMAIL_PORT = 587
-EMAIL_HOST = 'smtp.zoho.com'
-EMAIL_HOST_USER = 'info@ipenbiz.com'
-EMAIL_HOST_PASSWORD = 'asd12fgh'
 EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.premium-web-domain.com'
+EMAIL_HOST_USER = 'info@premium-web-domain.com'
+EMAIL_HOST_PASSWORD = 'asdqwe!@#'
+EMAIL_PORT = 587
+
+
+# EMAIL_PORT = 587
+# EMAIL_HOST = 'smtp.zoho.com'
+# EMAIL_HOST_USER = 'info@ipenbiz.com'
+# EMAIL_HOST_PASSWORD = 'asd12fgh'
+# EMAIL_USE_TLS = True
