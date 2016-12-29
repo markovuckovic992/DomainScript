@@ -2,7 +2,7 @@
 import django
 import sys, requests, json, hashlib, traceback
 from datetime import datetime, timedelta
-
+from random import randint
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
