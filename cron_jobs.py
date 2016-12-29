@@ -10,6 +10,7 @@ django.setup()
 
 from domain.models import BlackList, AllHash, RawLeads
 from django.core import mail
+from django.conf import settings
 
 class CronJobs:
     def __init__(self):
