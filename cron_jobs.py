@@ -85,6 +85,7 @@ class CronJobs:
 
                     # email.attach_alternative(msg[1], "text/html")
                     # emails.append(email)
+                    print [potential_profit.mail]
                     mail.send_mail(
                         msg[0],  # Title
                         potential_profit.name_zone,  # Body
