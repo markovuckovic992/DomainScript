@@ -50,11 +50,10 @@ def add_manual(request):
     hash = hashlib.md5()
     hash.update(str(_id))
     hash_ = hash.hexdigest()
-    i = 0
     while AllHash.objects.filter(hash_base_id=hash_).exists():
-        hash.update(str(_id + i))
+        _id += 1
+        hash.update(str(_id))
         hash_ = hash.hexdigest()
-        i += 1
 
     link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_))
 
