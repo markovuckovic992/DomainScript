@@ -12,6 +12,7 @@ from domain.models import BlackList, AllHash, RawLeads
 from django.core import mail
 from django.conf import settings
 
+
 class CronJobs:
     def __init__(self):
         pass
@@ -75,15 +76,24 @@ class CronJobs:
                 if req.status_code == 200:
                     RawLeads.objects.filter(id=potential_profit.id).delete()
 
-                    email = mail.EmailMultiAlternatives(
-                        msg[0],
-                        'potential_profit.name_zone',
-                        'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
+                    # email = mail.EmailMultiAlternatives(
+                    #     msg[0],
+                    #     'potential_profit.name_zone',
+                    #     'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
+                    #     [potential_profit.mail],
+                    # )
+
+                    # email.attach_alternative(msg[1], "text/html")
+                    # emails.append(email)
+                    mail.send_mail(
+                        msg[0],  # Title
+                        potential_profit.name_zone,  # Body
+                        settings.EMAIL_HOST_USER,
                         [potential_profit.mail],
+                        fail_silently=False,
+                        html_message=msg[1],
                     )
 
-                    email.attach_alternative(msg[1], "text/html")
-                    emails.append(email)
 
             except:
                 print traceback.format_exc()
