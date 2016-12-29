@@ -28,7 +28,7 @@ def search_manual(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
     try:
-        entry_id = str(RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date).id)
+        entry_id = RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date).id
 
         hash = hashlib.md5()
         hash.update(str(entry_id))
@@ -45,7 +45,7 @@ def search_manual(request):
         return HttpResponse('{"status": "failed"}', content_type="application/json")
 
 def add_manual(request):
-    _id = request.POST['id']
+    _id = int(request.POST['id'])
     potential_profit = RawLeads.objects.get(id=_id)
     hash = hashlib.md5()
     hash.update(str(_id))
