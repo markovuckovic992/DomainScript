@@ -450,7 +450,6 @@ function search_manual() {
                 $('#search_manual').hide()
                 $('#add_manual').show()
                 $('#hash_man').show()
-
                 $('#hash_man').html('hash: ' + msg.hash)
             } else {
                 alert("Can't find match for inputs!")
