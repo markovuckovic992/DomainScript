@@ -109,7 +109,7 @@ function load() {
 
 function show (i) {
     var date = $("#datepicker").val();
-    window.location.href=('/raw_leads/?date=' + date + '&page=' + i);           
+    window.location.href=('/raw_leads/?date=' + date + '&page=' + i);
 }
 
 
@@ -197,7 +197,7 @@ function add_this_name(name_redemption, page) {
         success: function (msg) {
         	for (i = 0; i < items.length; i += 1) {
     			items[i].checked = true;
-        	}	
+        	}
         }
     });
 }
@@ -215,7 +215,7 @@ function rem_this_name(name_redemption, page) {
         success: function (msg) {
             for (i = 0; i < items.length; i += 1) {
                 items[i].checked = false;
-            }   
+            }
         }
     });
 }
@@ -234,10 +234,10 @@ function blacklist(id) {
             'X-CSRFToken': csrftoken
         },
         data: "id=" + id + "&date=" + date,
-        success: function (msg) {            
+        success: function (msg) {
             for (i = 0; i < msg.ids.length; i += 1) {
                 $("#blacklist_" + msg.ids[i]).prop('checked', msg.command);
-            }  
+            }
         }
     });
 }
@@ -249,11 +249,11 @@ function blacklist_selected() {
         headers: {
             'X-CSRFToken': csrftoken
         },
-        success: function (msg) { 
+        success: function (msg) {
             $(':checkbox.blacklist').each(function() {
-                this.checked = false;                        
-            });           
-            location.reload()  
+                this.checked = false;
+            });
+            location.reload()
         }
     });
 }
@@ -461,7 +461,7 @@ function search_manual() {
 }
 
 function add_manual(id, number) {
-    var r = confirm("Are you sure that you want to generate hash for entry number: " + number);            
+    var r = confirm("Are you sure that you want to generate hash for entry number: " + number);
     if (r == true) {
         $.ajax({
             type: "POST",
@@ -471,12 +471,11 @@ function add_manual(id, number) {
                 'X-CSRFToken': csrftoken,
             },
             success: function(msg){
-                if(alert(msg.link)) {
-                }
-                else {
-                    window.location.reload(); 
+                var person = prompt("Your link is:", msg.link);
+                if (person != null) {
+                    window.location.reload();
                 }
             }
         });
-    } 
+    }
 }

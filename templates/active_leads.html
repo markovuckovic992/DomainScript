@@ -8,7 +8,7 @@
     <button onclick="find_mails_again()">Run whois scipt again</button>
     <button onclick="select_all()">Select all</button>
     <button onclick="un_select_all()">Unselect all</button>
-    <button onclick="blacklist_selected()">Blacklist</button>    
+    <button onclick="blacklist_selected()">Blacklist</button>
     <select id="filter_by_dom" onclick="filter_by_dom()">
       <option value="">-All-</option>
       <option value=".com">.COM</option>
@@ -32,17 +32,17 @@
       </thead>
       <tbody>
         {% for entry in raw_leads %}
-        <tr>     
-          <td>{{forloop.counter}}</td>     
-          <td class="redemption">{{entry.name_redemption}}</td> 
+        <tr>
+          <td>{{forloop.counter}}</td>
+          <td class="redemption">{{entry.name_redemption}}</td>
           {% if entry.mark_to_send %}
             <td><input type="checkbox" class="prim" checked onclick="mark_to_send('{{entry.id}}')" />
            {% else %}
             <td><input type="checkbox" class="prim" onclick="mark_to_send('{{entry.id}}')" /></td>
-          {% endif %}                 
+          {% endif %}
           <td>
             <a href="http://{{entry.name_zone}}" target="_blank">{{entry.name_zone}}</a>
-          </td>       
+          </td>
           <td id="mail_field_{{entry.id}}">
             {%if entry.mail %}
                 {{entry.mail}}<button onclick="rem_mail({{entry.id}}, '{entry.name_zone}}')">Rewrite</button>
@@ -51,7 +51,7 @@
                 <a href="http://bgp.he.net/dns/{{entry.name_zone}}#_whois" target="_blank">bgd.he.net</a>
             {%endif%}
           </td>
-          <td>          
+          <td>
             <button onclick="add_manual({{entry.id}}, {{forloop.counter}})">HASH</button>
           </td>
           {% if entry.blacklist %}
@@ -64,7 +64,7 @@
             <td style="background: red; color: white;" ><input type="checkbox" checked onclick="to_delete('{{entry.id}}')" />
            {% else %}
             <td style="background: red; color: white;" ><input type="checkbox" onclick="to_delete('{{entry.id}}')" /></td>
-          {% endif %}     
+          {% endif %}
 
         </tr>
         {% endfor %}
@@ -78,14 +78,14 @@
       </tbody>
     </table>
     <script type="text/javascript">
-      $( function() {       
+      $( function() {
         $('#mytable').DataTable({
           "iDisplayLength": 5000
         });
         $('#mytable_length').css( 'display', 'none' );
         $('#mytable_paginate').css( 'display', 'none' );
         $('#mytable_info').css( 'display', 'none' );
-        $('.dataTables_empty').css( 'display', 'none' );      
+        $('.dataTables_empty').css( 'display', 'none' );
         var selected_date = (window.location.search).replace('?date=', '').split("-");
         var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);
         $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
