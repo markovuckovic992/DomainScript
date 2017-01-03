@@ -22,27 +22,27 @@ from django.core import mail
 def manual(request):
     return render(request, 'manual.html', {})
 
-def search_manual(request):
-    zone = request.POST['zone']
-    rede = request.POST['rede']
-    date = request.POST['date']
-    date = datetime.strptime(date, '%d-%m-%Y').date()
-    try:
-        entry_id = RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date).id
+# def search_manual(request):
+#     zone = request.POST['zone']
+#     rede = request.POST['rede']
+#     date = request.POST['date']
+#     date = datetime.strptime(date, '%d-%m-%Y').date()
+#     try:
+#         entry_id = RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date).id
 
-        hash = hashlib.md5()
-        hash.update(str(entry_id))
-        hash_base_id = hash.hexdigest()
-        i = 0
-        while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-            hash.update(str(entry_id + i))
-            hash_base_id = hash.hexdigest()
-            i += 1
+#         hash = hashlib.md5()
+#         hash.update(str(entry_id))
+#         hash_base_id = hash.hexdigest()
+#         i = 0
+#         while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+#             hash.update(str(entry_id + i))
+#             hash_base_id = hash.hexdigest()
+#             i += 1
 
-        return HttpResponse('{"hash": "' + str(hash_base_id) + '"}', content_type="application/json")
-    except:
-        print traceback.format_exc()
-        return HttpResponse('{"status": "failed"}', content_type="application/json")
+#         return HttpResponse('{"hash": "' + str(hash_base_id) + '"}', content_type="application/json")
+#     except:
+#         print traceback.format_exc()
+#         return HttpResponse('{"status": "failed"}', content_type="application/json")
 
 def add_manual(request):
     _id = int(request.POST['id'])
@@ -311,16 +311,7 @@ def send_mails(request):
     emails = []
 
     for potential_profit in potential_profits:
-        hash = hashlib.md5()
-        hash.update(str(potential_profit.id))
-        hash_base_id = hash.hexdigest()
-        i = 0
-        while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-            hash.update(str(potential_profit.id + i))
-            hash_base_id = hash.hexdigest()
-            i += 1
-        new_entry = AllHash(hash_base_id=hash_base_id)
-        new_entry.save()
+        hash_base_id = potential_profit.hash_base_id
         try:
             link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
             unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))
@@ -412,3 +403,11 @@ def download(request):
     res = HttpResponse(f)
     res['Content-Disposition'] = 'attachment; filename=zone_with_no_email.txt'
     return res
+
+def add_multiple(request):
+    items = request.POST.get('dict')
+    jd = json.dumps(items)
+    items = eval(json.loads(jd))
+    for item in items:
+        RawLeads.objects.filter(id=item['id']).update(mail=item['value'])
+    return HttpResponse('{"status": "success"}', content_type="application/json")

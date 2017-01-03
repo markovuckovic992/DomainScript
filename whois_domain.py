@@ -1,13 +1,30 @@
 from os import popen
 
-import os, django
+import os, django, hashlib
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, BlackList, SuperBlacklist
+from domain.models import RawLeads, BlackList, SuperBlacklist, AllHash
 
 def main(date):
     usefull_data = []
     RawLeads.objects.filter(date=date, mark=1).update(activated=1)
+
+    # hashes    
+    non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True)
+    for non_hashed_lead in non_hashed_leads:
+        hash = hashlib.md5()
+        hash.update(str(non_hashed_lead.id))
+        hash_base_id = hash.hexdigest()
+        i = 0
+        while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+            hash.update(str(non_hashed_lead.id + i))
+            hash_base_id = hash.hexdigest()
+            i += 1
+        new_entry = AllHash(hash_base_id=hash_base_id)
+        new_entry.save()
+        RawLeads.objects.filter(id=non_hashed_lead.id).update(hash_base_id=hash_base_id)
+    # endhashes
+
     datas = RawLeads.objects.filter(date=date, activated=1, mail__isnull=True)
     for data in datas:
         uslov = True

@@ -17,6 +17,7 @@
     <a href="/download/" target="_blank">
       <button>Download!</button>
     </a>
+    <button onclick="add_multiple()">Add multiple</button>
    <table id="mytable" class="sortable" style="margin-left: 1%; width: 70%;">
       <thead>
         <tr>
@@ -47,12 +48,12 @@
             {%if entry.mail %}
                 {{entry.mail}}<button onclick="rem_mail({{entry.id}}, '{entry.name_zone}}')">Rewrite</button>
             {%else%}
-                email not found <input type="text" id="mail_entry_{{entry.id}}"/><button onclick="add_mail_man({{entry.id}}, '{{entry.name_zone}}')">Add</button>
+                email not found <input type="text" class="email_entries" id="mail_entry_{{entry.id}}"/><button onclick="add_mail_man({{entry.id}}, '{{entry.name_zone}}')">Add</button>
                 <a href="http://bgp.he.net/dns/{{entry.name_zone}}#_whois" target="_blank">bgd.he.net</a>
             {%endif%}
           </td>
           <td>
-            <button onclick="add_manual({{entry.id}}, {{forloop.counter}})">HASH</button>
+            <button onclick="add_manual({{entry.id}}, {{forloop.counter}}, '{{entry.hash_base_id}}')">HASH</button>
           </td>
           {% if entry.blacklist %}
             <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" checked onclick="blacklist('{{entry.id}}')" class="blacklist"/>

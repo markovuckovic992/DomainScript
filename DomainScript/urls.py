@@ -49,6 +49,6 @@ urlpatterns = [
     url(r'^download/', domain.views.download),
     #  manual add
     url(r'^manual/', domain.views.manual),
-    url(r'^search_manual/', domain.views.search_manual),
     url(r'^add_manual/', domain.views.add_manual),
+    url(r'^add_multiple/', domain.views.add_multiple),
 ]

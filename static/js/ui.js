@@ -357,7 +357,7 @@ function add_mail_man(id, name_zone) {
 
 function rem_mail(id, name_zone) {
     var zone = "'" + name_zone + "'"
-    var html = 'email not found <input type="text" id="mail_entry_' + id + '"/><button onclick="add_mail_man(' + id + ', ' + zone + ')">Add</button>';
+    var html = 'email not found <input type="text" class="email_entries" id="mail_entry_' + id + '"/><button onclick="add_mail_man(' + id + ', ' + zone + ')">Add</button>';
     $.ajax({
         type: "POST",
         url: "/rem_mail/",
@@ -456,24 +456,36 @@ function search_manual() {
             }
         }
     });
-
 }
 
-function add_manual(id, number) {
+function add_manual(id, number, hash) {
     var r = confirm("Are you sure that you want to generate hash for entry number: " + number);
+    var link = 'http://www.webdomainexpert.pw/offer/?id='
     if (r == true) {
+        var person = prompt("Your link is:", link + hash);
+    }
+}
+
+function add_multiple() {
+    var dict = []; 
+    $("input[type='text'].email_entries").each(function(index, elem) {
+        if($(elem).val()) {
+            dict.push({
+                id:   $(elem).attr('id').replace('mail_entry_', ''),
+                value: $(elem).val()
+            });
+        }
+    });
+    if(dict.length) {
         $.ajax({
             type: "POST",
-            url: "/add_manual/",
-            data: "id=" + id,
+            url: "/add_multiple/",
+            data: {'dict': JSON.stringify(dict)},
             headers: {
                 'X-CSRFToken': csrftoken,
             },
             success: function(msg){
-                var person = prompt("Your link is:", msg.link);
-                if (person != null) {
-                    window.location.reload();
-                }
+                window.location.reload()
             }
         });
     }
