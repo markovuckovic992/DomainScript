@@ -458,12 +458,41 @@ function search_manual() {
     });
 }
 
-function add_manual(id, number, hash) {
+function search_manual(id, number, hash) {
     var r = confirm("Are you sure that you want to generate hash for entry number: " + number);
     var link = 'http://www.webdomainexpert.pw/offer/?id='
     if (r == true) {
         var person = prompt("Your link is:", link + hash);
     }
+}
+
+function add_manual() {
+    var file = $("#red_file_name").val();
+    $.ajax({
+        type: "POST",
+        url: "/add_manual/",
+        data: "file=" + file,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            alert("it's uploaded")
+        },
+         statusCode: {
+            400: function() {
+              alert('400 status code! user error, reload page');
+            },
+            500: function() {
+              alert('500 status code! server error, reload page');
+            },
+            502: function() {
+                alert('gateway timeout!');
+            },
+            504: function() {
+                alert('gateway timeout!');
+            }
+        }
+    });
 }
 
 function add_multiple() {

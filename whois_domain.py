@@ -3,7 +3,7 @@ from os import popen
 import os, django, hashlib
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, BlackList, SuperBlacklist, AllHash
+from domain.models import RawLeads, BlackList, SuperBlacklist, AllHash, Emails
 
 def main(date):
     usefull_data = []
@@ -30,20 +30,24 @@ def main(date):
         uslov = True
         i = 0
         email = None
-        while uslov:
-            try:
-                tube = popen("whois '" + str(
-                    (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email'",
-                             'r')
-                email = tube.read()
-                email = email.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
-                tube.close()
-                break
-            except:
-                if i > 5:
-                    uslov = False
-                else:
-                    i += 1
+
+        try:
+            email = Emails.objects.get(name_zone=data.name_zone).email
+        except: 
+            while uslov:               
+                try:
+                    tube = popen("whois '" + str(
+                        (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email'",
+                                 'r')
+                    email = tube.read()
+                    email = email.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
+                    tube.close()
+                    break
+                except:
+                    if i > 5:
+                        uslov = False
+                    else:
+                        i += 1
         if email and '@' in email:
             blacklisted = BlackList.objects.filter(email=email)
             same_shit = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
@@ -57,6 +61,11 @@ def main(date):
                 RawLeads.objects.filter(id=data.id).delete()
             else:
                 RawLeads.objects.filter(id=data.id).update(mail=email)
+                if Emails.objects.filter(name_zone=data.name_zone).exists():
+                    Emails.objects.filter(name_zone=data.name_zone).update(email=email)
+                else:
+                    new = Emails(name_zone=data.name_zone, email=email)
+                    new.save()
 
     file = open('zone_with_no_emails.txt', 'w')
     file.seek(0)

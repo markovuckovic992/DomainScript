@@ -262,7 +262,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
     with open(redemption_path, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-	    domain = row[0].strip('"')
+            domain = row[0].strip('"')
             teemp = (domain, )
             usefull_data.append(teemp)
         usefull_data.pop(0)    

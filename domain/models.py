@@ -43,3 +43,10 @@ class AllHash(models.Model):
 
     class Meta:
         db_table = 'hashes'
+
+class Emails(models.Model):
+    email = models.CharField(max_length=320, blank=True, null=True)
+    name_zone = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'emails'

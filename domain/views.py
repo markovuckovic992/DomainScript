@@ -13,7 +13,7 @@ from datetime import datetime
 from math import ceil
 from os import popen
 from operator import attrgetter
-import requests, hashlib, traceback, json
+import requests, hashlib, traceback, json, csv
 from random import randint
 
 from django.core import mail
@@ -22,57 +22,18 @@ from django.core import mail
 def manual(request):
     return render(request, 'manual.html', {})
 
-# def search_manual(request):
-#     zone = request.POST['zone']
-#     rede = request.POST['rede']
-#     date = request.POST['date']
-#     date = datetime.strptime(date, '%d-%m-%Y').date()
-#     try:
-#         entry_id = RawLeads.objects.get(name_zone=zone, name_redemption=rede, date=date).id
-
-#         hash = hashlib.md5()
-#         hash.update(str(entry_id))
-#         hash_base_id = hash.hexdigest()
-#         i = 0
-#         while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-#             hash.update(str(entry_id + i))
-#             hash_base_id = hash.hexdigest()
-#             i += 1
-
-#         return HttpResponse('{"hash": "' + str(hash_base_id) + '"}', content_type="application/json")
-#     except:
-#         print traceback.format_exc()
-#         return HttpResponse('{"status": "failed"}', content_type="application/json")
-
 def add_manual(request):
-    _id = int(request.POST['id'])
-    potential_profit = RawLeads.objects.get(id=_id)
-    hash = hashlib.md5()
-    hash.update(str(_id))
-    hash_ = hash.hexdigest()
-    while AllHash.objects.filter(hash_base_id=hash_).exists():
-        _id += 1
-        hash.update(str(_id))
-        hash_ = hash.hexdigest()
-
-    link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_))
-
-    requests.post(
-        "http://www.webdomainexpert.pw/add_offer/",
-        data={
-            'base_id': potential_profit.id,
-            'drop': potential_profit.name_redemption,
-            'lead': potential_profit.name_zone,
-            'hash_base_id': hash_,
-            'remail': potential_profit.mail,
-        }
-    )
-
-    RawLeads.objects.filter(id=potential_profit.id).delete()
-    new_entry = AllHash(hash_base_id=hash_)
-    new_entry.save()
-
-    return HttpResponse('{"link": "' + str(link) + '"}', content_type="application/json")
+    file = request.POST['file'].replace('C:\\fakepath\\', '')
+    with open(file, 'r') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        for row in spamreader:
+            name_zone = row[0].strip('"').replace(" ", "")
+            email = row[1].strip('"').replace(" ", "")
+            if email:
+                new = Emails(name_zone=name_zone, email=email)
+                new.save()
+                RawLeads.objects.filter(name_zone=name_zone).update(mail=email)
+    return HttpResponse('{"status": "success"}', content_type="application/json")
 
 # EDITING
 def editing(request):

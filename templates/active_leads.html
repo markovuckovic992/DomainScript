@@ -53,7 +53,7 @@
             {%endif%}
           </td>
           <td>
-            <button onclick="add_manual({{entry.id}}, {{forloop.counter}}, '{{entry.hash_base_id}}')">HASH</button>
+            <button onclick="search_manual({{entry.id}}, {{forloop.counter}}, '{{entry.hash_base_id}}')">HASH</button>
           </td>
           {% if entry.blacklist %}
             <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" checked onclick="blacklist('{{entry.id}}')" class="blacklist"/>
