@@ -235,7 +235,13 @@ def add_mail_man(request):
     mail = request.POST['email']
     lead_id = request.POST['id']
     name_zone = RawLeads.objects.get(id=lead_id).name_zone
+
     RawLeads.objects.filter(name_zone=name_zone).update(mail=mail)
+    if Emails.objects.filter(name_zone=name_zone).exists:
+        Emails.objects.filter(name_zone=name_zone).update(email=mail)
+    else:
+        Emails(name_zone=name_zone, email=mail)
+
     ids = map(attrgetter('id'), RawLeads.objects.filter(name_zone=name_zone))
     response = {
         'ids': ids,
@@ -246,7 +252,10 @@ def add_mail_man(request):
 def rem_mail(request):
     lead_id = request.POST['id']
     name_zone = RawLeads.objects.get(id=lead_id).name_zone
+
     RawLeads.objects.filter(name_zone=name_zone).update(mail=None)
+    Emails.objects.filter(name_zone=name_zone).delete()
+
     ids = map(attrgetter('id'), RawLeads.objects.filter(name_zone=name_zone))
     response = {
         'ids': ids,
