@@ -237,7 +237,7 @@ def add_mail_man(request):
     name_zone = RawLeads.objects.get(id=lead_id).name_zone
 
     RawLeads.objects.filter(name_zone=name_zone).update(mail=mail)
-    if Emails.objects.filter(name_zone=name_zone).exists:
+    if Emails.objects.filter(name_zone=name_zone).exists():
         Emails.objects.filter(name_zone=name_zone).update(email=mail)
     else:
         Emails(name_zone=name_zone, email=mail)
