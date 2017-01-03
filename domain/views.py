@@ -240,7 +240,8 @@ def add_mail_man(request):
     if Emails.objects.filter(name_zone=name_zone).exists():
         Emails.objects.filter(name_zone=name_zone).update(email=mail)
     else:
-        Emails(name_zone=name_zone, email=mail)
+        new = Emails(name_zone=name_zone, email=mail)
+        new.save()
 
     ids = map(attrgetter('id'), RawLeads.objects.filter(name_zone=name_zone))
     response = {
