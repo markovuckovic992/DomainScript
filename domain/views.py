@@ -382,3 +382,21 @@ def add_multiple(request):
     for item in items:
         RawLeads.objects.filter(id=item['id']).update(mail=item['value'])
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def active_manual(request):
+    _id = request.POST['id']
+    potential_profit = RawLeads.objects.get(id=_id)
+    req = requests.post(
+        "http://www.webdomainexpert.pw/add_offer/",
+        data={
+            'base_id': potential_profit.id,
+            'drop': potential_profit.name_redemption,
+            'lead': potential_profit.name_zone,
+            'hash_base_id': potential_profit.hash_base_id,
+            'remail': potential_profit.mail,
+        }
+    )
+    if req.status_code == 200:
+        return HttpResponse('{"status": "success"}', content_type="application/json")
+    else:
+        HttpResponse(status=req.status_code)

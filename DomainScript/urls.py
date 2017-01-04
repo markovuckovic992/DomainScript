@@ -40,7 +40,7 @@ urlpatterns = [
     url(r'^send_mails/', domain.views.send_mails),
     url(r'^add_mail_man/', domain.views.add_mail_man),
     url(r'^rem_mail/', domain.views.rem_mail),
-    #  super blaklist 
+    #  super blaklist
     url(r'^blacklisting/', domain.views.blacklisting),
     url(r'^super_blacklist/', domain.views.super_blacklist),
     url(r'^regular_blacklist/', domain.views.regular_blacklist),
@@ -51,4 +51,5 @@ urlpatterns = [
     url(r'^manual/', domain.views.manual),
     url(r'^add_manual/', domain.views.add_manual),
     url(r'^add_multiple/', domain.views.add_multiple),
+    url(r'^active_manual/', domain.views.active_manual),
 ]

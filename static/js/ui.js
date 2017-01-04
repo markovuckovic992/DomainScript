@@ -462,7 +462,31 @@ function search_manual(id, number, hash) {
     var r = confirm("Are you sure that you want to generate hash for entry number: " + number);
     var link = 'http://www.webdomainexpert.pw/offer/?id='
     if (r == true) {
-        var person = prompt("Your link is:", link + hash);
+        $.ajax({
+            type: "POST",
+            url: "/active_manual/",
+            data: "id=" + id,
+            headers: {
+                'X-CSRFToken': csrftoken,
+            },
+            success: function(msg) {
+                var person = prompt("Your link is:", link + hash);
+            },
+            statusCode: {
+                400: function() {
+                  alert('400 status code! user error, reload page');
+                },
+                500: function() {
+                  alert('500 status code! server error, reload page');
+                },
+                502: function() {
+                    alert('gateway timeout!');
+                },
+                504: function() {
+                    alert('gateway timeout!');
+                }
+            }
+        });
     }
 }
 
@@ -496,7 +520,7 @@ function add_manual() {
 }
 
 function add_multiple() {
-    var dict = []; 
+    var dict = [];
     $("input[type='text'].email_entries").each(function(index, elem) {
         if($(elem).val()) {
             dict.push({
