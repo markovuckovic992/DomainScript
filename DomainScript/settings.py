@@ -15,6 +15,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+EMAIL_TEMPLATES = BASE_DIR + '/EMAIL_TEMPLATES'
+EMAIL_TEXT = BASE_DIR + '/EMAIL_TEXT'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -56,7 +58,7 @@ ROOT_URLCONF = 'DomainScript.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': ['templates', 'EMAIL_TEMPLATES'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

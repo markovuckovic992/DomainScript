@@ -287,9 +287,9 @@ def send_mails(request):
             link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
             unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))
             case = randint(1, 4)
-            msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
-                link) + '","' + str(unsubscribe) + '")')
-
+            # msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
+                # link) + '","' + str(unsubscribe) + '")')
+            msg = form_a_msg1(str(potential_profit.name_redemption), str(link), str(unsubscribe))
             # send_mail(
             #     msg[0],  # Title
             #     potential_profit.name_zone,  # Body
@@ -298,7 +298,7 @@ def send_mails(request):
             #     fail_silently=False,
             #     html_message=msg[1],
             # )
-
+            
             req = requests.post(
                 "http://www.webdomainexpert.pw/add_offer/",
                 data={

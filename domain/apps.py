@@ -1,5 +1,10 @@
 from __future__ import unicode_literals
 from django.apps import AppConfig
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context, Template      
+from django.conf import settings
+import codecs
 
 
 class DomainConfig(AppConfig):
@@ -8,28 +13,41 @@ class DomainConfig(AppConfig):
 
 def form_a_msg1(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
-    line_offer = "<a href='" + str(link) + "'>OFFER PAGE LINK</a>"
-    link_un = "<a href='" + unsubscribe + "'>[LINK]</a>"
+    # link_offer = "<a href='" + str(link) + "'>OFFER PAGE LINK</a>"
+    # link_un = "<a href='" + unsubscribe + "'>[LINK]</a>"
 
     subject = domain_name + ' Get more traffic, more leads, more sales. Simple'
-    msg = 'Hi,'
-    msg += '<br/><br/>'
-    msg += 'I just wanted to drop a line to let you know that the domain ' + domain_name + ' will shortly be up<br/>'
-    msg += 'for sale. If you are interested, you can grab this keyword-rich premium domain for the right<br/>'
-    msg += '<br/>offer.<br/><br/>'
-    msg += 'Premium domains come with a host of advantages to boost SEO campaigns. They even receive <br/> higher CTRs (Click Through Rate) than freshly registered new domains. <br/><br/>'
-    msg += 'To acquire this domain, please click on the link below and make an offer or, <u>simply reply back to <br/>this email with your offer: </u><br/><br/>'
-    msg += line_offer
-    msg += '<br/><br/>'
-    msg += 'Just like you, we take SEO and traffic seriously. '
-    msg += '<br/><br/>'
-    msg += 'If you have any questions or need any help, please do not hesitate to ask. '
-    msg += '<br/><br/>'
-    msg += '<a style="margin-left: 200px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a><br/><br/>'
-    msg += 'Best regards<br/><br/>'
-    msg += 'Unsubscribe here - ' + link_un
+    # msg = 'Hi,'
+    # msg += '<br/><br/>'
+    # msg += 'I just wanted to drop a line to let you know that the domain ' + domain_name + ' will shortly be up<br/>'
+    # msg += 'for sale. If you are interested, you can grab this keyword-rich premium domain for the right<br/>'
+    # msg += '<br/>offer.<br/><br/>'
+    # msg += 'Premium domains come with a host of advantages to boost SEO campaigns. They even receive <br/> higher CTRs (Click Through Rate) than freshly registered new domains. <br/><br/>'
+    # msg += 'To acquire this domain, please click on the link below and make an offer or, <u>simply reply back to <br/>this email with your offer: </u><br/><br/>'
+    # msg += link_offer
+    # msg += '<br/><br/>'
+    # msg += 'Just like you, we take SEO and traffic seriously. '
+    # msg += '<br/><br/>'
+    # msg += 'If you have any questions or need any help, please do not hesitate to ask. '
+    # msg += '<br/><br/>'
+    # msg += '<a style="margin-left: 200px;" href="' + str(link) + '"><img src="http://www.webdomainexpert.pw/static/images/button.png" /></a><br/><br/>'
+    # msg += 'Best regards<br/><br/>'
+    # msg += 'Unsubscribe here - ' + link_un
 
-    return [subject, msg]
+    file = codecs.open(settings.EMAIL_TEMPLATES + '/template.html', 'r')
+    content = file.read()
+    htmly = Template(content)
+    d = {
+        "items": {
+            'domain_name': domain_name,
+            'link_offer': link,
+            'link_un': unsubscribe,
+        }
+    }
+
+    html_content = htmly.render(Context(d))
+    print content
+    return [subject, html_content]
 
 
 def form_a_msg2(domain_name, link, unsubscribe):
