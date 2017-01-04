@@ -46,7 +46,6 @@ def form_a_msg1(domain_name, link, unsubscribe):
     }
 
     html_content = htmly.render(Context(d))
-    print content
     return [subject, html_content]
 
 
