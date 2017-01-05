@@ -9,7 +9,7 @@ from nltk.corpus import brown, words as wd
 import progressbar as pb
 from math import log, ceil, floor
 import threading, re, time, thread
-import csv, sys, gc, os, django
+import csv, sys, gc, os, django, hashlib
 os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
@@ -102,16 +102,16 @@ def fcn(domain_data, pt):
         temp = str(domain).lstrip('.')
         tmp = temp.split(".")[0]
         parts1 = [w for w in re.split(r'[`\-=~!@#$%^&*()_+\[\]{};\'\\:"|<,./<>?]', tmp)]
-        parts = []        
-        if len(parts1) <= 3:     
-            for part in parts1:                    
-                temp = (infer_spaces(part).split())  
+        parts = []
+        if len(parts1) <= 3:
+            for part in parts1:
+                temp = (infer_spaces(part).split())
                 parts += (temp)
             parts_no_numbers = [x for x in parts if not x.isdigit()]
             digits = [x for x in parts if x.isdigit()]
             if len(parts_no_numbers) <= 3 and len(digits) <= 0:
                 super_tmp = ''
-                for part in parts_no_numbers:                    
+                for part in parts_no_numbers:
                     if part not in words:
                         break
                     elif len(part) > 3:
@@ -135,11 +135,11 @@ def fcn(domain_data, pt):
                 temp = str(domain).lstrip('.')
                 tmp = temp.split(".")[0]
                 parts1 = [w for w in re.split(r'[`\-=~!@#$%^&*()_+\[\]{};\'\\:"|<,./<>?]', tmp)]
-                parts = []        
-                if len(parts1) <= 3:            
+                parts = []
+                if len(parts1) <= 3:
                     if len(parts1) != 1:
-                        for part in parts1:                    
-                            temp = (infer_spaces(part).split())  
+                        for part in parts1:
+                            temp = (infer_spaces(part).split())
                             parts += (temp)
                     else:
                         parts = parts1
@@ -147,7 +147,7 @@ def fcn(domain_data, pt):
                     digits = [x for x in parts if x.isdigit()]
                     if len(parts_no_numbers) <= 3 and len(digits) <= 0:
                         super_tmp = ''
-                        for part in parts_no_numbers:                    
+                        for part in parts_no_numbers:
                             if part not in words:
                                 if (4 < len(part) < 11) and len(parts_no_numbers) == 1:
                                     keywords.append(part)
@@ -188,7 +188,7 @@ def fcn2(domain_dict, pt, all_domains, date):
         for matched_domain in matched_lines:
             iterno += 1
             page = floor(iterno / 5000) + 1
-            try:            
+            try:
                 base1 = matched_domain.split(".", 1)[0]
                 base2 = domain.split(".", 1)[0]
                 if '.com' in domain and base1 == base2:
@@ -205,6 +205,27 @@ def fcn2(domain_dict, pt, all_domains, date):
                 activated=activated
             )
             entry.save()
+
+            _id = RawLeads.objects.get(
+                   name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                   name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                   date=date,
+                   page=page,
+                   activated=activated
+            )
+
+            hash = hashlib.md5()
+            hash.update(str(_id))
+            hash_base_id = hash.hexdigest()
+            jj = 0
+            while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+                hash.update(str(_id + jj))
+                hash_base_id = hash.hexdigest()
+                jj += 1
+            new_entry = AllHash(hash_base_id=hash_base_id)
+            new_entry.save()
+            RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+
     pt.update()
 
 
@@ -219,7 +240,7 @@ def fcn3(domain_dict, pt, all_domains, date):
     matched_lines = []
     matched_lines_copy = []
     for keyword in keywords:
-        if len(matched_lines) == 0 and condition: 
+        if len(matched_lines) == 0 and condition:
             matched_lines = [line.lower() for line in all_domains if line.lower().startswith(keyword) or line.lower().endswith(keyword)]
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
@@ -230,7 +251,7 @@ def fcn3(domain_dict, pt, all_domains, date):
         for matched_domain in matched_lines:
             iterno += 1
             page = floor(iterno / 5000) + 1
-            try:            
+            try:
                 base1 = matched_domain.split(".", 1)[0]
                 base2 = domain.split(".", 1)[0]
                 if '.com' in domain and base1 == base2:
@@ -265,7 +286,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
             domain = row[0].strip('"')
             teemp = (domain, )
             usefull_data.append(teemp)
-        usefull_data.pop(0)    
+        usefull_data.pop(0)
     Log.objects.filter(date=sys.argv[6]).update(number_of_all=len(usefull_data))
     increment = (100.0/len(usefull_data))
     text = 'phase 1 '
@@ -278,7 +299,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         # threads.append(t)
         # t.start()
     # for t in threads:
-    #     t.join()    
+    #     t.join()
     Log.objects.filter(date=sys.argv[6]).update(number_of_redemption=len(result_list + result_list_b))
     usefull_data = None
     pt = None
@@ -317,7 +338,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
         file.close()
         pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, all_domains, date)            
+            fcn2(result, pt2, all_domains, date)
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date)
         all_domains = None

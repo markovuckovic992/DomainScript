@@ -11,7 +11,7 @@ from nltk.corpus import brown, words as wd
 import progressbar as pb, traceback
 from math import log, ceil, floor
 import threading, re, time, thread
-import csv, sys, gc, os, django
+import csv, sys, gc, os, django, hashlib
 os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
@@ -119,7 +119,7 @@ def fcn(domain_data, pt):
             digits = [x for x in parts if x.isdigit()]
             if len(parts_no_numbers) <= 3 and len(digits) <= 0:
                 super_tmp = ''
-                for part in parts_no_numbers:                    
+                for part in parts_no_numbers:
                     if part not in words:
                         if (4 < len(part) < 11) and len(parts_no_numbers) == 1:
                             keywords.append(part)
@@ -169,7 +169,7 @@ def fcn2(domain_dict, pt, file, date):
         for matched_domain in matched_lines:
             iterno += 1
             page = floor(iterno / 5000) + 1
-            try:            
+            try:
                 base1 = matched_domain.split(".", 1)[0]
                 base2 = domain.split(".", 1)[0]
                 if '.com' in domain and base1 == base2:
@@ -186,6 +186,27 @@ def fcn2(domain_dict, pt, file, date):
                 activated=activated
             )
             entry.save()
+
+            _id = RawLeads.objects.get(
+                   name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                   name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                   date=date,
+                   page=page,
+                   activated=activated
+            )
+
+            hash = hashlib.md5()
+            hash.update(str(_id))
+            hash_base_id = hash.hexdigest()
+            jj = 0
+            while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+                hash.update(str(_id + jj))
+                hash_base_id = hash.hexdigest()
+                jj += 1
+            new_entry = AllHash(hash_base_id=hash_base_id)
+            new_entry.save()
+            RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+
     pt.update()
 
 def fcn3(path, pt, date):
