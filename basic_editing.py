@@ -15,7 +15,7 @@ import csv, sys, gc, os, django, hashlib
 os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, Log
+from domain.models import RawLeads, Log, AllHash
 from datetime import datetime
 
 fname = 'No Path selected'
@@ -193,7 +193,7 @@ def fcn2(domain_dict, pt, file, date):
                    date=date,
                    page=page,
                    activated=activated
-            )
+            ).id
 
             hash = hashlib.md5()
             hash.update(str(_id))

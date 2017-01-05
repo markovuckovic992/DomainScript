@@ -13,7 +13,7 @@ import csv, sys, gc, os, django, hashlib
 os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, Log
+from domain.models import RawLeads, Log, AllHash
 
 fname = 'No Path selected'
 fname2 = 'No Path selected'
@@ -212,7 +212,7 @@ def fcn2(domain_dict, pt, all_domains, date):
                    date=date,
                    page=page,
                    activated=activated
-            )
+            ).id
 
             hash = hashlib.md5()
             hash.update(str(_id))
@@ -275,7 +275,7 @@ def fcn3(domain_dict, pt, all_domains, date):
                    date=date,
                    page=page,
                    activated=activated
-            )
+            ).id
 
             hash = hashlib.md5()
             hash.update(str(_id))
