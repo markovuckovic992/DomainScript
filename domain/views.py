@@ -98,11 +98,21 @@ def rawLeads(request):
 
 
 def reverse_state(request):
-    raw_leads_id = int(unquote(request.POST['id']))
-    mark = RawLeads.objects.get(id=raw_leads_id).mark
-    mark += 1
-    mark %= 2
-    RawLeads.objects.filter(id=raw_leads_id).update(mark=mark)
+    if 'ids' in request.POST:    
+        ids = request.POST.get('ids')
+        jd = json.dumps(ids)
+        ids = eval(json.loads(jd))      
+        if 'true' in request.POST.get('foo'):
+            mark = 1
+        else:
+            mark = 0
+        RawLeads.objects.filter(id__in=ids).update(mark=mark)
+    else:
+        raw_leads_id = int(unquote(request.POST['id']))
+        mark = RawLeads.objects.get(id=raw_leads_id).mark
+        mark += 1
+        mark %= 2
+        RawLeads.objects.filter(id=raw_leads_id).update(mark=mark)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -211,16 +221,26 @@ def delete(request):
 
 
 def mark_to_send(request):
-    if 'id' in request.POST.keys():
-        leads_id = int(unquote(request.POST['id']))
-        mark_to_send = RawLeads.objects.get(id=leads_id).mark_to_send
-        mark_to_send += 1
-        mark_to_send %= 2
-        RawLeads.objects.filter(id=leads_id).update(mark_to_send=mark_to_send)
-    else:
-        date = request.POST['date']
-        date = datetime.strptime(date, '%d-%m-%Y').date()
-        RawLeads.objects.filter(date=date).update(mark_to_send=1)
+    if 'ids' in request.POST:    
+        ids = request.POST.get('ids')
+        jd = json.dumps(ids)
+        ids = eval(json.loads(jd))      
+        if 'true' in request.POST.get('foo'):
+            mark_to_send = 1
+        else:
+            mark_to_send = 0
+        RawLeads.objects.filter(id__in=ids).update(mark_to_send=mark_to_send)
+    else:     
+        if 'id' in request.POST.keys():
+            leads_id = int(unquote(request.POST['id']))
+            mark_to_send = RawLeads.objects.get(id=leads_id).mark_to_send
+            mark_to_send += 1
+            mark_to_send %= 2
+            RawLeads.objects.filter(id=leads_id).update(mark_to_send=mark_to_send)
+        else:
+            date = request.POST['date']
+            date = datetime.strptime(date, '%d-%m-%Y').date()
+            RawLeads.objects.filter(date=date).update(mark_to_send=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 

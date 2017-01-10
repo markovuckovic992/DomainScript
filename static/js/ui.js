@@ -91,15 +91,39 @@ function run_script(arg) {
     }
 }
 //RAW LEADS
-function changestate(id) {
-    $.ajax({
-        type: "POST",
-        url: "/reverse_state/",
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        data: "id=" + id,
-    });
+var lastChecked = null;      
+
+function changestate(id, e) {  
+    var $chkboxes = $(':checkbox');       
+
+    if(e.shiftKey) {
+        var start = $chkboxes.index(e.target);
+        var end = $chkboxes.index(lastChecked);
+        var checks = $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1)
+        checks.prop('checked', lastChecked.checked);
+        var ids = [];
+        for (var i = 1; i < checks.length; i += 1) {
+            ids.push($(checks[i]).attr('id'))
+        }
+        $.ajax({
+            type: "POST",
+            url: "/reverse_state/",
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
+        });
+    } else {        
+        $.ajax({
+            type: "POST",
+            url: "/reverse_state/",
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: "id=" + id,
+        });
+    }  
+    lastChecked = e.target;
 }
 
 function load() {
@@ -269,15 +293,40 @@ function to_delete(id) {
     });
 }
 
-function mark_to_send(id) {
-    $.ajax({
-        type: "POST",
-        url: "/mark_to_send/",
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        data: "id=" + id,
-    });
+function mark_to_send(id, e) {
+    var $chkboxes = $(':checkbox.prim');       
+
+    if(e.shiftKey) {
+        var start = $chkboxes.index(e.target);
+        var end = $chkboxes.index(lastChecked);
+        var checks = $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1)
+        checks.prop('checked', lastChecked.checked);
+        var ids = [];
+        for (var i = 1; i < checks.length; i += 1) {
+            ids.push($(checks[i]).attr('id'))
+        }
+        $.ajax({
+            type: "POST",
+            url: "/mark_to_send/",
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
+        });
+    } else {        
+        $.ajax({
+            type: "POST",
+            url: "/mark_to_send/",
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: "id=" + id,
+        });
+    }  
+    lastChecked = e.target;
+
+
+    
 }
 
 function select_all() {

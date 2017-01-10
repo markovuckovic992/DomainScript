@@ -39,9 +39,9 @@
           <td>{{forloop.counter}}</td>
           <td class="zone"><a href="http://{{entry.name_zone}}" target="_blank">{{entry.name_zone}}</a></td>
           {% if entry.mark %}
-            <td><input type="checkbox" class="check_{{entry.page}} r_{{entry.name_redemption}}" checked onclick="changestate('{{entry.id}}')" />
+            <td><input type="checkbox" id={{entry.id}} class="check_{{entry.page}} r_{{entry.name_redemption}}" checked  onclick="changestate('{{entry.id}}', event)"/>
           {% else %}
-            <td><input type="checkbox" class="check_{{entry.page}} r_{{entry.name_redemption}}" onclick="changestate('{{entry.id}}')" /></td>
+            <td><input type="checkbox" id={{entry.id}} class="check_{{entry.page}} r_{{entry.name_redemption}}" onclick="changestate('{{entry.id}}', event)"/></td>
           {% endif %}
           <td class="sell redemption">
             {{entry.name_redemption}} ||
@@ -86,6 +86,6 @@
 
       } );
       $("#Filt").addClass('active');
-      $("#Base").removeClass();
+      $("#Base").removeClass();     
     </script>
 {% endblock %}
