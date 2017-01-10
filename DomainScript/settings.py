@@ -25,9 +25,12 @@ EMAIL_TEXT = BASE_DIR + '/EMAIL_TEXT'
 SECRET_KEY = 'o&%v77lrv1pm4#-ydt1r6zz*++z7ah2pt_y91bz1g(xf56b^h1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    'localost',
+    '127.0.0.1',
+]
 
 
 # Application definition
