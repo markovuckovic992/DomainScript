@@ -25,7 +25,7 @@ EMAIL_TEXT = BASE_DIR + '/EMAIL_TEXT'
 SECRET_KEY = 'o&%v77lrv1pm4#-ydt1r6zz*++z7ah2pt_y91bz1g(xf56b^h1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '192.168.1.40']
 
