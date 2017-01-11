@@ -98,10 +98,10 @@ def rawLeads(request):
 
 
 def reverse_state(request):
-    if 'ids' in request.POST:    
+    if 'ids' in request.POST:
         ids = request.POST.get('ids')
         jd = json.dumps(ids)
-        ids = eval(json.loads(jd))      
+        ids = eval(json.loads(jd))
         if 'true' in request.POST.get('foo'):
             mark = 1
         else:
@@ -221,16 +221,16 @@ def delete(request):
 
 
 def mark_to_send(request):
-    if 'ids' in request.POST:    
+    if 'ids' in request.POST:
         ids = request.POST.get('ids')
         jd = json.dumps(ids)
-        ids = eval(json.loads(jd))      
+        ids = eval(json.loads(jd))
         if 'true' in request.POST.get('foo'):
             mark_to_send = 1
         else:
             mark_to_send = 0
         RawLeads.objects.filter(id__in=ids).update(mark_to_send=mark_to_send)
-    else:     
+    else:
         if 'id' in request.POST.keys():
             leads_id = int(unquote(request.POST['id']))
             mark_to_send = RawLeads.objects.get(id=leads_id).mark_to_send
@@ -318,7 +318,7 @@ def send_mails(request):
             #     fail_silently=False,
             #     html_message=msg[1],
             # )
-            
+
             req = requests.post(
                 "http://www.webdomainexpert.pw/add_offer/",
                 data={
@@ -337,6 +337,7 @@ def send_mails(request):
                     'potential_profit.name_zone',
                     'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
                     [potential_profit.mail],
+                    reply_to=("edomainexpert@gmail.com", ),
                 )
                 email.attach_alternative(msg[1], "text/html")
                 emails.append(email)
