@@ -17,6 +17,7 @@ import requests, hashlib, traceback, json, csv
 from random import randint
 
 from django.core import mail
+from smtplib import SMTPServerDisconnected
 
 # MANUAL
 def manual(request):
@@ -340,8 +341,12 @@ def send_mails(request):
                 )
                 email.attach_alternative(msg[1], "text/html")
                 emails.append(email)
-                connection.send_messages(emails)
-                emails = []
+                try:
+                    connection.send_messages(emails)
+                except SMTPServerDisconnected:
+                    connection = mail.get_connection()
+                    connection.open()
+                    connection.send_messages(emails)
         except:
             print traceback.format_exc()
     connection.close()
