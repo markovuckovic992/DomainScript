@@ -299,7 +299,6 @@ def send_mails(request):
 
     connection = mail.get_connection()
     connection.open()
-    emails = []
 
     for potential_profit in potential_profits:
         hash_base_id = potential_profit.hash_base_id
@@ -331,7 +330,7 @@ def send_mails(request):
             )
             if req.status_code == 200:
                 RawLeads.objects.filter(id=potential_profit.id).delete()
-
+                emails = []
                 email = mail.EmailMultiAlternatives(
                     msg[0],
                     'potential_profit.name_zone',
@@ -341,10 +340,10 @@ def send_mails(request):
                 )
                 email.attach_alternative(msg[1], "text/html")
                 emails.append(email)
-
+                connection.send_messages(emails)
+                emails = []
         except:
             print traceback.format_exc()
-    connection.send_messages(emails)
     connection.close()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
