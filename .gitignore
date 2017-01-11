@@ -13,3 +13,4 @@
 *.tar
 *.zip
 DomainScript/settings.py
+DomainScript/.settings.py
