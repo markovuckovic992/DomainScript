@@ -72,3 +72,7 @@ input[type="checkbox"] {
     overflow-y: auto;    /* Trigger vertical scroll    */
     overflow-x: hidden;  /* Hide the horizontal scroll */
 }
+
+#mytable {
+  table-layout: fixed;
+}
