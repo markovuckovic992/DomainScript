@@ -282,7 +282,7 @@ function blacklist_selected() {
     });
 }
 
-function to_delete(id) {
+function to_delete(id, e) {
     var $chkboxes = $(':checkbox.delete__');
     if(e.shiftKey) {
         var start = $chkboxes.index(e.target);
