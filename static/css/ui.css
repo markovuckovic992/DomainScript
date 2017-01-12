@@ -65,8 +65,6 @@ input[type="checkbox"] {
   display:block;
 }
 
-#mytable thead, #mytable tbody { display: block; }
-
 #mytable tbody {
     height: 600px;       /* Just for the demo          */
     overflow-y: auto;    /* Trigger vertical scroll    */
