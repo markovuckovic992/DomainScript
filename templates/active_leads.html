@@ -62,9 +62,9 @@
           {% endif %}
 
           {% if entry.to_delete %}
-            <td style="background: red; color: white;" ><input type="checkbox" checked onclick="to_delete('{{entry.id}}')" />
+            <td style="background: red; color: white;" ><input class="delete__" type="checkbox" checked onclick="to_delete('{{entry.id}}')" />
            {% else %}
-            <td style="background: red; color: white;" ><input type="checkbox" onclick="to_delete('{{entry.id}}')" /></td>
+            <td style="background: red; color: white;" ><input class="delete__" type="checkbox" onclick="to_delete('{{entry.id}}')" /></td>
           {% endif %}
 
         </tr>

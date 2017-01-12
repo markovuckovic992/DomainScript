@@ -213,12 +213,22 @@ def blacklist_selected(request):
 
 
 def delete(request):
-    leads_id = int(unquote(request.POST['id']))
-    to_delete = RawLeads.objects.get(id=leads_id).to_delete
-    to_delete += 1
-    to_delete %= 2
-    RawLeads.objects.filter(id=leads_id).update(to_delete=to_delete)
-    return HttpResponse('{"status": "success"}', content_type="application/json")
+    if 'ids' in request.POST:
+        ids = request.POST.get('ids')
+        jd = json.dumps(ids)
+        ids = eval(json.loads(jd))
+        if 'true' in request.POST.get('foo'):
+            to_delete = 1
+        else:
+            to_delete = 0
+        RawLeads.objects.filter(id__in=ids).update(to_delete=to_delete)
+    else:
+        leads_id = int(unquote(request.POST['id']))
+        to_delete = RawLeads.objects.get(id=leads_id).to_delete
+        to_delete += 1
+        to_delete %= 2
+        RawLeads.objects.filter(id=leads_id).update(to_delete=to_delete)
+        return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
 def mark_to_send(request):

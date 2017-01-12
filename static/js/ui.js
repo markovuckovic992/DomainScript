@@ -91,10 +91,10 @@ function run_script(arg) {
     }
 }
 //RAW LEADS
-var lastChecked = null;      
+var lastChecked = null;
 
-function changestate(id, e) {  
-    var $chkboxes = $(':checkbox');       
+function changestate(id, e) {
+    var $chkboxes = $(':checkbox');
 
     if(e.shiftKey) {
         var start = $chkboxes.index(e.target);
@@ -113,7 +113,7 @@ function changestate(id, e) {
             },
             data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
         });
-    } else {        
+    } else {
         $.ajax({
             type: "POST",
             url: "/reverse_state/",
@@ -122,7 +122,7 @@ function changestate(id, e) {
             },
             data: "id=" + id,
         });
-    }  
+    }
     lastChecked = e.target;
 }
 
@@ -283,18 +283,39 @@ function blacklist_selected() {
 }
 
 function to_delete(id) {
-    $.ajax({
-        type: "POST",
-        url: "/delete/",
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        data: "id=" + id,
-    });
+    var $chkboxes = $(':checkbox.delete__');
+    if(e.shiftKey) {
+        var start = $chkboxes.index(e.target);
+        var end = $chkboxes.index(lastChecked);
+        var checks = $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1)
+        checks.prop('checked', lastChecked.checked);
+        var ids = [];
+        for (var i = 1; i < checks.length; i += 1) {
+            ids.push($(checks[i]).attr('id'))
+        }
+        $.ajax({
+            type: "POST",
+            url: "/delete/",
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
+        });
+    } else {
+        $.ajax({
+            type: "POST",
+            url: "/delete/",
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            data: "id=" + id,
+        });
+    }
+    lastChecked = e.target;
 }
 
 function mark_to_send(id, e) {
-    var $chkboxes = $(':checkbox.prim');       
+    var $chkboxes = $(':checkbox.prim');
 
     if(e.shiftKey) {
         var start = $chkboxes.index(e.target);
@@ -313,7 +334,7 @@ function mark_to_send(id, e) {
             },
             data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
         });
-    } else {        
+    } else {
         $.ajax({
             type: "POST",
             url: "/mark_to_send/",
@@ -322,11 +343,8 @@ function mark_to_send(id, e) {
             },
             data: "id=" + id,
         });
-    }  
+    }
     lastChecked = e.target;
-
-
-    
 }
 
 function select_all() {
