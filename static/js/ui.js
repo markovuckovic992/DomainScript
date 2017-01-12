@@ -291,7 +291,7 @@ function to_delete(id, e) {
         checks.prop('checked', lastChecked.checked);
         var ids = [];
         for (var i = 1; i < checks.length; i += 1) {
-            ids.push($(checks[i]).attr('id'))
+            ids.push($(checks[i]).attr('id').replace('_del', ''))
         }
         $.ajax({
             type: "POST",
