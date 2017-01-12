@@ -26,7 +26,7 @@ table.sortable thead {
     background-color:#eee;
     color:#666666;
     font-weight: bold;
-    cursor: default; 
+    cursor: default;
 }
 
 table.sortable > tbody > tr > td {
@@ -38,7 +38,7 @@ th {
     text-align: center;
 }
 
-#log_div { 
+#log_div {
   background-color: #333;
   color: white;
   height: 200px;
@@ -61,7 +61,7 @@ table.sortable > tbody > tr {
 }
 
 input[type="checkbox"] {
-  margin: 0 auto;    
+  margin: 0 auto;
   display:block;
 }
 
@@ -71,8 +71,4 @@ input[type="checkbox"] {
     height: 600px;       /* Just for the demo          */
     overflow-y: auto;    /* Trigger vertical scroll    */
     overflow-x: hidden;  /* Hide the horizontal scroll */
-}
-
-#mytable {
-  table-layout: fixed;
 }
