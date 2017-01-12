@@ -347,7 +347,7 @@ def send_mails(request):
                     'potential_profit.name_zone',
                     'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
                     [potential_profit.mail],
-                    reply_to=("edomainexpert@gmail.com", ),
+                    reply_to=("support@webdomainexpert.com", ),
                 )
                 email.attach_alternative(msg[1], "text/html")
                 emails.append(email)
