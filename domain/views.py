@@ -228,7 +228,7 @@ def delete(request):
         to_delete += 1
         to_delete %= 2
         RawLeads.objects.filter(id=leads_id).update(to_delete=to_delete)
-        return HttpResponse('{"status": "success"}', content_type="application/json")
+    return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
 def mark_to_send(request):
