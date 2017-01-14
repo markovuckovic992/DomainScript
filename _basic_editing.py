@@ -186,45 +186,46 @@ def fcn2(domain_dict, pt, all_domains, date):
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
-            iterno += 1
-            page = floor(iterno / 5000) + 1
-            try:
-                base1 = matched_domain.split(".", 1)[0]
-                base2 = domain.split(".", 1)[0]
-                if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                    activated = 1
-                else:
+            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
+                iterno += 1
+                page = floor(iterno / 5000) + 1
+                try:
+                    base1 = matched_domain.split(".", 1)[0]
+                    base2 = domain.split(".", 1)[0]
+                    if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
+                        activated = 1
+                    else:
+                        activated = 0
+                except:
                     activated = 0
-            except:
-                activated = 0
-            entry = RawLeads(
-                name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                date=date,
-                page=page,
-                activated=activated
-            )
-            entry.save()
+                entry = RawLeads(
+                    name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                    name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                    date=date,
+                    page=page,
+                    activated=activated
+                )
+                entry.save()
 
-            _id = RawLeads.objects.get(
-                   name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                   name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                   date=date,
-                   page=page,
-                   activated=activated
-            ).id
+                _id = RawLeads.objects.get(
+                       name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                       name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                       date=date,
+                       page=page,
+                       activated=activated
+                ).id
 
-            hash = hashlib.md5()
-            hash.update(str(_id))
-            hash_base_id = hash.hexdigest()
-            jj = 0
-            while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-                hash.update(str(_id + jj))
+                hash = hashlib.md5()
+                hash.update(str(_id))
                 hash_base_id = hash.hexdigest()
-                jj += 1
-            new_entry = AllHash(hash_base_id=hash_base_id)
-            new_entry.save()
-            RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+                jj = 0
+                while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+                    hash.update(str(_id + jj))
+                    hash_base_id = hash.hexdigest()
+                    jj += 1
+                new_entry = AllHash(hash_base_id=hash_base_id)
+                new_entry.save()
+                RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
 
     pt.update()
 
@@ -249,45 +250,46 @@ def fcn3(domain_dict, pt, all_domains, date):
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
-            iterno += 1
-            page = floor(iterno / 5000) + 1
-            try:
-                base1 = matched_domain.split(".", 1)[0]
-                base2 = domain.split(".", 1)[0]
-                if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                    activated = 1
-                else:
+            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
+                iterno += 1
+                page = floor(iterno / 5000) + 1
+                try:
+                    base1 = matched_domain.split(".", 1)[0]
+                    base2 = domain.split(".", 1)[0]
+                    if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
+                        activated = 1
+                    else:
+                        activated = 0
+                except:
                     activated = 0
-            except:
-                activated = 0
-            entry = RawLeads(
-                name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                date=date,
-                page=page,
-                activated=activated
-            )
-            entry.save()
+                entry = RawLeads(
+                    name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                    name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                    date=date,
+                    page=page,
+                    activated=activated
+                )
+                entry.save()
 
-            _id = RawLeads.objects.get(
-                   name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                   name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                   date=date,
-                   page=page,
-                   activated=activated
-            ).id
+                _id = RawLeads.objects.get(
+                       name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                       name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                       date=date,
+                       page=page,
+                       activated=activated
+                ).id
 
-            hash = hashlib.md5()
-            hash.update(str(_id))
-            hash_base_id = hash.hexdigest()
-            jj = 0
-            while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-                hash.update(str(_id + jj))
+                hash = hashlib.md5()
+                hash.update(str(_id))
                 hash_base_id = hash.hexdigest()
-                jj += 1
-            new_entry = AllHash(hash_base_id=hash_base_id)
-            new_entry.save()
-            RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+                jj = 0
+                while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+                    hash.update(str(_id + jj))
+                    hash_base_id = hash.hexdigest()
+                    jj += 1
+                new_entry = AllHash(hash_base_id=hash_base_id)
+                new_entry.save()
+                RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
 
     pt.update()
 
