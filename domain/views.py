@@ -63,7 +63,7 @@ def runEditing(request):
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
         RawLeads.objects.filter(date=date).delete()
-        argument = "python " + path + "/" + script + ".py "
+        argument = "pypy " + path + "/" + script + ".py "
         argument += (com + " " + net + " " + org + " " + info + " ")
 
         if us:
@@ -88,7 +88,6 @@ def runEditing(request):
             argument += "none "
 
         argument += (redempt + " " + str(date))
-        print argument
         popen(argument)
         # main_filter(com, net, org, info, redempt, date)
         return HttpResponse('{"status": "success"}', content_type="application/json")
