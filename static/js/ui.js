@@ -40,6 +40,13 @@ function run_script(arg) {
     var com = $("#com_file_name").val()
     var net = $("#net_file_name").val()
     var info = $("#info_file_name").val()
+
+    var us = $("#us_file_name").val()
+    var extra1 = $("#extra1_file_name").val()
+    var extra2 = $("#extra2_file_name").val()
+    var extra3 = $("#extra3_file_name").val()
+    var extra4 = $("#extra4_file_name").val()
+
     var redempt = $("#red_file_name").val()
     var date = $("#datepicker").val()
     var len  = date.split("-").length;
@@ -56,7 +63,11 @@ function run_script(arg) {
                     url: "/run_script/",
                     data: "org=" + org + "&net=" + net +
                     "&com=" + com + "&info=" + info +
-                    "&redempt=" + redempt + "&date=" + date + "&arg=" + arg,
+                    "&us=" + us + "&extra1=" + extra1 +
+                    "&extra2=" + extra2 + "&extra3=" + extra3 +
+                    "&extra4=" + extra4 +
+                    "&redempt=" + redempt + 
+                    "&date=" + date + "&arg=" + arg,
                     headers: {
                         'X-CSRFToken': csrftoken,
                     },

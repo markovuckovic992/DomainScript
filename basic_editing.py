@@ -172,7 +172,7 @@ def fcn2(domain_dict, pt, file, date):
             try:
                 base1 = matched_domain.split(".", 1)[0]
                 base2 = domain.split(".", 1)[0]
-                if '.com' in domain and base1 == base2:
+                if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
                     activated = 1
                 else:
                     activated = 0
@@ -220,9 +220,9 @@ def fcn3(path, pt, date):
 result_list = []
 iterno = 0
 
-def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
+def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
     global result_list, link, value, text
-    paths = [com_path, net_path, org_path, info_path]
+    paths = [com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path]
     usefull_data = []
     with open(redemption_path, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -232,7 +232,7 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
             usefull_data.append(teemp)
         usefull_data.pop(0)
     increment = (100.0 / len(usefull_data))
-    Log.objects.filter(date=sys.argv[6]).update(number_of_all=len(usefull_data))
+    Log.objects.filter(date=sys.argv[11]).update(number_of_all=len(usefull_data))
     text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
@@ -242,13 +242,13 @@ def main_filter(com_path, net_path, org_path, info_path, redemption_path, date):
     usefull_data = None
     pt = None
     gc.collect()
-    Log.objects.filter(date=sys.argv[6]).update(number_of_redemption=len(result_list))
+    Log.objects.filter(date=sys.argv[11]).update(number_of_redemption=len(result_list))
     threads = []
     increment = (100.0 / len(result_list))
     value = 0
     pt = progress_timer(description='process : ', n_iter=(len(result_list) * 4))
     for path in paths:
-        if path:
+        if path and path != 'none':
             fcn3(path, pt, date)
         else:
             pass
@@ -267,13 +267,22 @@ def threadmain():
 if __name__ == '__main__':
     value = 0.0
     text = ''
-    # try:
-    #     thread.start_new_thread(threadmain, ())
-    # except:
-    # 	  pass
-    if not Log.objects.filter(date=sys.argv[6]).exists():
-        entry = Log(date=sys.argv[6])
+
+    if not Log.objects.filter(date=sys.argv[11]).exists():
+        entry = Log(date=sys.argv[11])
         entry.save()
-    main_filter(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+    main_filter(
+        sys.argv[1], 
+        sys.argv[2], 
+        sys.argv[3], 
+        sys.argv[4], 
+        sys.argv[5], 
+        sys.argv[6],
+        sys.argv[7],
+        sys.argv[8],
+        sys.argv[9],
+        sys.argv[10],
+        sys.argv[11],
+    )
     duration = int(time.time() - start_time)
-    Log.objects.filter(date=sys.argv[6]).update(duration=duration)
+    Log.objects.filter(date=sys.argv[11]).update(duration=duration)

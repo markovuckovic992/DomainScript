@@ -52,13 +52,43 @@ def runEditing(request):
         net = request.POST['net'].replace('C:\\fakepath\\', '')
         org = request.POST['org'].replace('C:\\fakepath\\', '')
         info = request.POST['info'].replace('C:\\fakepath\\', '')
+        us = request.POST['us'].replace('C:\\fakepath\\', '')
+
+        e1 = request.POST['extra1'].replace('C:\\fakepath\\', '')
+        e2 = request.POST['extra2'].replace('C:\\fakepath\\', '')
+        e3 = request.POST['extra3'].replace('C:\\fakepath\\', '')
+        e4 = request.POST['extra4'].replace('C:\\fakepath\\', '')
+
         redempt = request.POST['redempt'].replace('C:\\fakepath\\', '')
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
         RawLeads.objects.filter(date=date).delete()
-        argument = "pypy " + path + "/" + script + ".py "
+        argument = "python " + path + "/" + script + ".py "
         argument += (com + " " + net + " " + org + " " + info + " ")
+
+        if us:
+            argument += (us + " ")
+        else:
+            argument += "none "
+        if e1:
+            argument += (e1 + " ")
+        else:
+            argument += "none "
+        if e2:
+            argument += (e2 + " ")
+        else:
+            argument += "none "
+        if e3:
+            argument += (e3 + " ")
+        else:
+            argument += "none "
+        if e4:
+            argument += (e4 + " ")
+        else:
+            argument += "none "
+
         argument += (redempt + " " + str(date))
+        print argument
         popen(argument)
         # main_filter(com, net, org, info, redempt, date)
         return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -306,7 +336,7 @@ def send_mails(request):
             new = BlackList(email=blacklist.mail)
             new.save()
     RawLeads.objects.filter(blacklist=1).delete()
-    potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1)
+    potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1, mail__isnull=False)
 
     connection = mail.get_connection()
     connection.open()

@@ -26,6 +26,7 @@ email = mail.EmailMultiAlternatives(
     'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
     ['markovuckovic992@yahoo.com'],
     reply_to=("edomainexpert@gmail.com", ),
+    bcc=[bcc_email]
 )
 emails.append(email)
 try:
