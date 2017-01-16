@@ -62,7 +62,13 @@ def runEditing(request):
         redempt = request.POST['redempt'].replace('C:\\fakepath\\', '')
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
+
+        to_del = RawLeads.objects.filter(date=date)
+        hash_base_ids = map(attrgetter('hash_base_id'), to_del)
         RawLeads.objects.filter(date=date).delete()
+        AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
+
+
         argument = "pypy " + path + "/" + script + ".py "
         argument += (com + " " + net + " " + org + " " + info + " ")
 
@@ -184,9 +190,12 @@ def find_mails(request):
 
 def truncate(request):
     date = request.POST['date']
+    activated = request.POST['activated']
     date = datetime.strptime(date, '%d-%m-%Y').date()
-    raw_leads = RawLeads.objects.filter(activated=0, date=date)
-    raw_leads.delete()
+    raw_leads = RawLeads.objects.filter(activated=activated, date=date)
+    hash_base_ids = map(attrgetter('hash_base_id'), raw_leads)
+    RawLeads.objects.filter(activated=0, date=date).delete()
+    AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -237,7 +246,11 @@ def blacklist_selected(request):
         if not entry.exists():
             new = BlackList(email=blacklist.mail)
             new.save()
+    raw_leads = RawLeads.objects.filter(blacklist=1)
+    hash_base_ids = map(attrgetter('hash_base_id'), raw_leads)
     RawLeads.objects.filter(blacklist=1).delete()
+    AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -327,14 +340,24 @@ def rem_mail(request):
 def send_mails(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
+
+    _to_delete = RawLeads.objects.filter(to_delete=1)
+    delete_ids = map(attrgetter('hash_base_id'), _to_delete)
     delete = RawLeads.objects.filter(to_delete=1).delete()
+
     blacklists = RawLeads.objects.filter(blacklist=1)
     for blacklist in blacklists:
         entry = BlackList.objects.filter(email=blacklist.mail)
         if not entry.exists():
             new = BlackList(email=blacklist.mail)
             new.save()
-    RawLeads.objects.filter(blacklist=1).delete()
+
+    _to_blacklist = RawLeads.objects.filter(blacklist=1)
+    blacklist_ids = map(attrgetter('hash_base_id'), _to_delete)
+    delete = RawLeads.objects.filter(blacklist=1).delete()
+
+    AllHash.objects.filter(hash_base_id__in=blacklist_ids + delete_ids)
+
     potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1, mail__isnull=False)
 
     connection = mail.get_connection()
@@ -369,7 +392,10 @@ def send_mails(request):
                 }
             )
             if req.status_code == 200:
+                hsbid = RawLeads.objects.get(id=potential_profit.id).hash_base_id
+                AllHash.objects.filter(hash_base_id=hsbid)
                 RawLeads.objects.filter(id=potential_profit.id).delete()
+
                 emails = []
                 email = mail.EmailMultiAlternatives(
                     msg[0],
@@ -410,7 +436,12 @@ def super_blacklist(request):
         new_entry = SuperBlacklist(domain=domain)
         new_entry.save()
     exclude_email = '@' + str(domain)
-    RawLeads.objects.filter(mail__endswith=exclude_email).delete()
+
+    super_b_l = RawLeads.objects.filter(mail__endswith=exclude_email)
+    hash_base_ids = map(attrgetter('hash_base_id'), super_b_l)
+    RawLeads.objects.filter(hash_base_id__in=hash_base_ids).delete()
+    AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -420,7 +451,12 @@ def regular_blacklist(request):
     if not entry.exists():
         new_entry = BlackList(email=email)
         new_entry.save()
-    RawLeads.objects.filter(mail=email).delete()
+
+    b_l = RawLeads.objects.filter(mail=email)
+    hash_base_ids = map(attrgetter('hash_base_id'), b_l)
+    RawLeads.objects.filter(hash_base_id__in=hash_base_ids).delete()
+    AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 

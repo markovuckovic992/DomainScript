@@ -6,7 +6,7 @@
     <h1 id="empty_page" class="hide">This page is empty</h1>
     {% csrf_token %}
    Date: <input type="text" id="datepicker" onchange="load()">
-   <button onclick="truncate()">Truncate</button>
+   <button onclick="truncate(0)">Truncate</button>
    Show page:
    {% for i in range %}
         <button id="button_{{i}}" class="buttons" onclick="show({{i}})">{{ i }}</button>
@@ -86,6 +86,6 @@
 
       } );
       $("#Filt").addClass('active');
-      $("#Base").removeClass();     
+      $("#Base").removeClass();
     </script>
 {% endblock %}

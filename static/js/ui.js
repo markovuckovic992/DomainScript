@@ -66,7 +66,7 @@ function run_script(arg) {
                     "&us=" + us + "&extra1=" + extra1 +
                     "&extra2=" + extra2 + "&extra3=" + extra3 +
                     "&extra4=" + extra4 +
-                    "&redempt=" + redempt + 
+                    "&redempt=" + redempt +
                     "&date=" + date + "&arg=" + arg,
                     headers: {
                         'X-CSRFToken': csrftoken,
@@ -198,7 +198,7 @@ function find_mails_again() {
     });
 }
 
-function truncate() {
+function truncate(act) {
     var passwd = prompt("Enter Password : ", "your password here");
     if (passwd == 2011) {
         var date = $("#datepicker").val();
@@ -208,7 +208,7 @@ function truncate() {
             headers: {
                 'X-CSRFToken': csrftoken
             },
-            data: "date=" + date,
+            data: "date=" + date + "&activated=" + act,
             success: function (msg) {
                 alert("It's Done!")
                 window.location.href=('/raw_leads/?date=' + date);
