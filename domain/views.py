@@ -403,6 +403,7 @@ def send_mails(request):
                     'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
                     [potential_profit.mail],
                     reply_to=("support@webdomainexpert.com", ),
+                    bcc=["bcc-webdomainexpert@outlook.com"],
                 )
                 email.attach_alternative(msg[1], "text/html")
                 emails.append(email)

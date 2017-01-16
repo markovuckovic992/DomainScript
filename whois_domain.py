@@ -9,7 +9,7 @@ def main(date):
     usefull_data = []
     RawLeads.objects.filter(date=date, mark=1).update(activated=1)
 
-    # hashes    
+    # hashes
     non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True)
     for non_hashed_lead in non_hashed_leads:
         hash = hashlib.md5()
@@ -33,8 +33,8 @@ def main(date):
 
         try:
             email = Emails.objects.get(name_zone=data.name_zone).email
-        except: 
-            while uslov:               
+        except:
+            while uslov:
                 try:
                     tube = popen("whois '" + str(
                         (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email'",

@@ -30,8 +30,8 @@ email = mail.EmailMultiAlternatives(
 )
 emails.append(email)
 try:
-	connection.send_messages(emails)
-	raise SMTPServerDisconnected
+    connection.send_messages(emails)
+    raise SMTPServerDisconnected
 except SMTPServerDisconnected:
-	pass
+    pass
 connection.close()
