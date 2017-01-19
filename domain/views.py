@@ -194,7 +194,7 @@ def truncate(request):
     date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(activated=activated, date=date)
     hash_base_ids = map(attrgetter('hash_base_id'), raw_leads)
-    RawLeads.objects.filter(activated=0, date=date).delete()
+    RawLeads.objects.filter(activated=activated, date=date).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
