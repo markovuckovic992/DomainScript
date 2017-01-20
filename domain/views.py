@@ -114,7 +114,10 @@ def rawLeads(request):
         page = 1
     raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page)
     numbers = [1]
-    numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
+    try:
+        numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
+    except:
+        pass
     number_of_pages = max(set(numbers))
     try:
         log = Log.objects.get(date=date)
