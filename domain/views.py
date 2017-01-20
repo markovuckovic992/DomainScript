@@ -503,4 +503,4 @@ def active_manual(request):
     if req.status_code == 200:
         return HttpResponse('{"status": "success"}', content_type="application/json")
     else:
-        HttpResponse(status=req.status_code)
+        return HttpResponse(status=req.status_code)
