@@ -394,6 +394,22 @@ def send_mails(request):
                     'remail': potential_profit.mail,
                 }
             )
+            if req.status_code == 204:
+                hash = hashlib.md5()
+                hash.update(str(potential_profit.id + 100000))
+                hash_base_id = hash.hexdigest()
+
+                req = requests.post(
+                    "http://www.webdomainexpert.pw/add_offer/",
+                    data={
+                        'base_id': potential_profit.id,
+                        'drop': potential_profit.name_redemption,
+                        'lead': potential_profit.name_zone,
+                        'hash_base_id': hash_base_id,
+                        'remail': potential_profit.mail,
+                    }
+                )
+
             if req.status_code == 200:
                 hsbid = RawLeads.objects.get(id=potential_profit.id).hash_base_id
                 AllHash.objects.filter(hash_base_id=hsbid)
