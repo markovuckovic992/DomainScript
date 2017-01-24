@@ -10,8 +10,7 @@ import csv
 with open('convertcsv.csv', 'r') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
-        print row
-        RawLeads(
+        new = RawLeads(
             name_zone=row[1],
             name_redemption=row[3],
             date=datetime.now().date(),
@@ -19,3 +18,4 @@ with open('convertcsv.csv', 'r') as csvfile:
             activated=1,
             mail=row[4],
         )
+        new.save()
