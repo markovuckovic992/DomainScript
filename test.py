@@ -10,6 +10,7 @@ import csv
 with open('convertcsv.csv', 'r') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
+        print row
         RawLeads(
             name_zone=row[0],
             name_redemption=row[2],
