@@ -12,9 +12,10 @@ with open('convertcsv.csv', 'r') as csvfile:
     for row in spamreader:
         print row
         RawLeads(
-            name_zone=row[0],
-            name_redemption=row[2],
+            name_zone=row[1],
+            name_redemption=row[3],
             date=datetime.now().date(),
             page=1,
             activated=1,
+            mail=row[4],
         )
