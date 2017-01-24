@@ -5,7 +5,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 from domain.models import RawLeads
 from datetime import datetime
-
+import csv
 
 with open('convertcsv.csv', 'r') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
