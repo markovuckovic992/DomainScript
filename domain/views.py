@@ -357,11 +357,11 @@ def send_mails(request):
             new = BlackList(email=blacklist.mail)
             new.save()
     print eml
-    _to_blacklist = RawLeads.objects.filter(mail__in=eml)
-    blacklist_ids = map(attrgetter('hash_base_id'), _to_delete)
-    delete = RawLeads.objects.filter(mail__in=eml).delete()
+    # _to_blacklist = RawLeads.objects.filter(mail__in=eml)
+    # blacklist_ids = map(attrgetter('hash_base_id'), _to_delete)
+    # delete = RawLeads.objects.filter(mail__in=eml).delete()
 
-    AllHash.objects.filter(hash_base_id__in=blacklist_ids + delete_ids)
+    # AllHash.objects.filter(hash_base_id__in=blacklist_ids + delete_ids)
 
     potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1, mail__isnull=False)
 
