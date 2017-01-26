@@ -522,3 +522,9 @@ def active_manual(request):
         return HttpResponse('{"status": "success"}', content_type="application/json")
     else:
         return HttpResponse(status=req.status_code)
+
+@csrf_exempt
+def del_hash(request):
+    hash_base_id = request.POST['hash_base_id']
+    AllHash.objects.filter(hash_base_id=hash_base_id).delete()
+    return HttpResponse('{"status": "success"}', content_type="application/json")

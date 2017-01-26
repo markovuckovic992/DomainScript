@@ -52,4 +52,5 @@ urlpatterns = [
     url(r'^add_manual/', domain.views.add_manual),
     url(r'^add_multiple/', domain.views.add_multiple),
     url(r'^active_manual/', domain.views.active_manual),
+    url(r'^del_hash/', domain.views.del_hash),
 ]
