@@ -349,15 +349,17 @@ def send_mails(request):
     delete = RawLeads.objects.filter(to_delete=1).delete()
 
     blacklists = RawLeads.objects.filter(blacklist=1)
+    eml = []
     for blacklist in blacklists:
         entry = BlackList.objects.filter(email=blacklist.mail)
+        eml.append(blacklist.mail)
         if not entry.exists():
             new = BlackList(email=blacklist.mail)
             new.save()
 
-    _to_blacklist = RawLeads.objects.filter(blacklist=1)
+    _to_blacklist = RawLeads.objects.filter(mail__in=eml)
     blacklist_ids = map(attrgetter('hash_base_id'), _to_delete)
-    delete = RawLeads.objects.filter(blacklist=1).delete()
+    delete = RawLeads.objects.filter(mail__in=eml).delete()
 
     AllHash.objects.filter(hash_base_id__in=blacklist_ids + delete_ids)
 
