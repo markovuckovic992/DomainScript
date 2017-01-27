@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^select_all/', domain.views.select_all),
     url(r'^add_this_name/', domain.views.add_this_name),
     url(r'^rem_this_name/', domain.views.rem_this_name),
+    url(r'^find_active/', domain.views.find_active),
     #  active leads
     url(r'^active_leads/', domain.views.activeLeads),
     url(r'^blacklist/', domain.views.blacklist),

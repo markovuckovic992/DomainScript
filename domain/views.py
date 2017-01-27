@@ -527,3 +527,14 @@ def del_hash(request):
     hash_base_id = request.POST['hash_base_id']
     AllHash.objects.filter(hash_base_id=hash_base_id).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def find_active(request):
+    date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()
+    raw_leads = RawLeads.objects.filter(activated=0, date=date)
+    for raw_lead in raw_leads:
+        drop = raw_lead.name_redemption.split('.')[0]
+        zone = raw_lead.name_zone.split('.')[0]
+        if drop == zone:
+            RawLeads.objects.filter(id=raw_lead.id).update(activated=1)
+    return HttpResponse('{"status": "success"}', content_type="application/json")

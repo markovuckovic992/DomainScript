@@ -137,6 +137,31 @@ function changestate(id, e) {
     lastChecked = e.target;
 }
 
+function find_active() {
+    var date = $("#datepicker").val();
+    $("#cover").fadeIn(100);
+    $.ajax({
+        type: "POST",
+        url: "/find_active/",
+        data: "date=" + date,
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        success: function(msg){
+            $("#cover").fadeOut(100);
+            window.location.href=('/raw_leads/?date=' + date);
+        },
+        statusCode: {
+            400: function() {
+              alert('400 status code! user error, reload page');
+            },
+            500: function() {
+              alert('500 status code! server error, reload page');
+            }
+        }
+    });
+}
+
 function load() {
     var date = $("#datepicker").val();
     window.location.href=('/raw_leads/?date=' + date);
