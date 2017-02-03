@@ -24,7 +24,7 @@ from operator import attrgetter
 
 bls = BlackList.objects.all()
 
-for bl in bls:    
+for bl in bls:
     hash_base_ids = map(attrgetter('hash_base_id'), RawLeads.objects.filter(mail=bl.email))
     AllHash.objects.filter(hash_base_id__in=hash_base_ids)
     RawLeads.objects.filter(mail=bl.email).delete()

@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 import django
 import sys, requests, json, hashlib, traceback
 from datetime import datetime, timedelta
