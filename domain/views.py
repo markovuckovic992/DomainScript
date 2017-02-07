@@ -19,6 +19,12 @@ from random import randint
 from django.core import mail
 from smtplib import SMTPServerDisconnected
 
+
+hosts = [
+    'webdomainexpert.pw',
+    'alvarezinternational.com',
+]
+
 # MANUAL
 def manual(request):
     return render(request, 'manual.html', {})
@@ -370,8 +376,10 @@ def send_mails(request):
     for potential_profit in potential_profits:
         hash_base_id = potential_profit.hash_base_id
         try:
-            link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
-            unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))
+            iterator = randint(0, 1)
+            link = ('http://www.' + str(hosts[iterator]) + '/offer/?id=' + str(hash_base_id))
+            iterator = randint(0, 1)
+            unsubscribe = ('http://www.' + str(hosts[iterator]) + '/unsubscribe/?id=' + str(hash_base_id))
             case = randint(1, 5)
             msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
                 link) + '","' + str(unsubscribe) + '")')
