@@ -376,9 +376,9 @@ def send_mails(request):
     for potential_profit in potential_profits:
         hash_base_id = potential_profit.hash_base_id
         try:
-            iterator = randint(0, 1)
+            iterator = randint(1, 1)
             link = ('http://www.' + str(hosts[iterator]) + '/offer/?id=' + str(hash_base_id))
-            iterator = randint(0, 1)
+            iterator = randint(1, 1)
             unsubscribe = ('http://www.' + str(hosts[iterator]) + '/unsubscribe/?id=' + str(hash_base_id))
             case = randint(1, 5)
             msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
