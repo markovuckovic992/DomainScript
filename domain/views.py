@@ -225,9 +225,15 @@ def activeLeads(request):
         bad2 = "".join(sbad.domain.split())
         RawLeads.objects.filter(mail__icontains=bad2).delete()
     # end blacklist #
+    if 'date' in request.GET.keys():
+        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
+    else:
+        date = datetime.now()
+
+    
     # delete duplicates
     unique_fields = ['name_redemption', 'mail']
-    duplicates = (RawLeads.objects.values(*unique_fields)
+    duplicates = (RawLeads.objects.filter(activated=1, date=date).values(*unique_fields)
                                  .order_by()
                                  .annotate(max_id=models.Max('id'),
                                            count_id=models.Count('id'))
@@ -238,10 +244,7 @@ def activeLeads(request):
                         .exclude(id=duplicate['max_id'])
                         .delete())
     # end delete #
-    if 'date' in request.GET.keys():
-        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
-    else:
-        date = datetime.now()
+
     raw_leads = RawLeads.objects.filter(activated=1, date=date)
     try:
         log = Log.objects.get(date=date)
