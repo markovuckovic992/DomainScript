@@ -237,7 +237,7 @@ def activeLeads(request):
                                  .order_by()
                                  .annotate(max_id=models.Max('id'),
                                            count_id=models.Count('id'))
-                                 .filter(count_id__gt=1).filter(activated=1, date=date))
+                                 .filter(count_id__gt=1, activated=1, date=date))
 
     for duplicate in duplicates:
         (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields})
@@ -407,9 +407,9 @@ def send_mails(request):
     for potential_profit in potential_profits:
         hash_base_id = potential_profit.hash_base_id
         try:
-            iterator = randint(1, 1)
+            iterator = randint(0, 3)
             link = ('http://www.' + str(hosts[iterator]) + '/offer/?id=' + str(hash_base_id))
-            iterator = randint(1, 1)
+            iterator = randint(0, 3)
             unsubscribe = ('http://www.' + str(hosts[iterator]) + '/unsubscribe/?id=' + str(hash_base_id))
             case = randint(1, 5)
             msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
