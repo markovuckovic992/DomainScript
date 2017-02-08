@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db import models
 from urllib import unquote
 from domain.models import *
 from domain.apps import *
@@ -15,14 +16,16 @@ from os import popen
 from operator import attrgetter
 import requests, hashlib, traceback, json, csv
 from random import randint
-
+import re
 from django.core import mail
 from smtplib import SMTPServerDisconnected
 
 
 hosts = [
-    'webdomainexpert.pw',
-    'alvarezinternational.com',
+    'webdomainexpert.us',
+    'webdomainexpert.host',
+    'webdomainexpert.site',
+    'webdomainexpert.club',
 ]
 
 # MANUAL
@@ -210,6 +213,31 @@ def truncate(request):
 
 # ACTIVE LEADS
 def activeLeads(request):
+    # second blacklisting
+    bads = BlackList.objects.all()
+    for bad in bads:
+        bad2 = "".join(bad.email.split())
+        regex = r"\s*" + str(bad2) + "\s*"
+        RawLeads.objects.filter(mail__regex=regex).delete()
+
+    sbads = SuperBlacklist.objects.all()
+    for sbad in sbads:
+        bad2 = "".join(sbad.domain.split())
+        RawLeads.objects.filter(mail__icontains=bad2).delete()
+    # end blacklist #
+    # delete duplicates
+    unique_fields = ['name_redemption', 'mail']
+    duplicates = (RawLeads.objects.values(*unique_fields)
+                                 .order_by()
+                                 .annotate(max_id=models.Max('id'),
+                                           count_id=models.Count('id'))
+                                 .filter(count_id__gt=1))
+
+    for duplicate in duplicates:
+        (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields})
+                        .exclude(id=duplicate['max_id'])
+                        .delete())
+    # end delete #
     if 'date' in request.GET.keys():
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
@@ -459,7 +487,8 @@ def blacklisting(request):
 
 
 def super_blacklist(request):
-    domain = request.POST['domain']
+    domain = request.POST['domain']      
+    domain = "".join(domain.split())
     entry = SuperBlacklist.objects.filter(domain=domain)
     if not entry.exists():
         new_entry = SuperBlacklist(domain=domain)
@@ -475,7 +504,8 @@ def super_blacklist(request):
 
 
 def regular_blacklist(request):
-    email = request.POST['email']
+    email = request.POST['email']   
+    email = "".join(email.split())
     entry = BlackList.objects.filter(email=email)
     if not entry.exists():
         new_entry = BlackList(email=email)
