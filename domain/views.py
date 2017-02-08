@@ -213,7 +213,7 @@ def truncate(request):
 
 # ACTIVE LEADS
 def activeLeads(request):
-    # second blacklisting
+    # blacklisting
     bads = BlackList.objects.all()
     for bad in bads:
         bad2 = "".join(bad.email.split())
@@ -237,7 +237,7 @@ def activeLeads(request):
                                  .order_by()
                                  .annotate(max_id=models.Max('id'),
                                            count_id=models.Count('id'))
-                                 .filter(count_id__gt=1, activated=1, date=date))
+                                 .filter(count_id__gt=1, activated=1, date=date, mail__isnull=False))
 
     for duplicate in duplicates:
         (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields})

@@ -48,7 +48,8 @@ def main(date):
                         uslov = False
                     else:
                         i += 1
-        if email and '@' in email:
+        if email and '@' in email:  
+            email = "".join(email.split())
             blacklisted = BlackList.objects.filter(email=email)
             same_shit = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
             domain = email.split('@', 1)[1]
