@@ -21,5 +21,5 @@ for lead in leads:
 emails = Emails.objects.all()
 
 for email in emails:
-    email = "".join(email.email.split())
-    Emails.objects.filter(id=email.id).update(email=email)
+    tmp = "".join(email.email.split())
+    Emails.objects.filter(id=email.id).update(email=tmp)
