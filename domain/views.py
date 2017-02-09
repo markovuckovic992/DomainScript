@@ -233,16 +233,10 @@ def activeLeads(request):
 
     # delete duplicates
     unique_fields = ['name_redemption', 'mail']
-    duplicates = (RawLeads.objects.values(*unique_fields)
-                                 .order_by()
-                                 .annotate(max_id=models.Max('id'),
-                                           count_id=models.Count('id'))
-                                 .filter(count_id__gt=1, activated=1, date=date, mail__isnull=False))
+    duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(max_id=models.Max('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated=1, date=date, mail__isnull=False))
 
     for duplicate in duplicates:
-        (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields})
-                        .exclude(id=duplicate['max_id'])
-                        .delete())
+        (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['max_id']).delete())
     # end delete #
 
     raw_leads = RawLeads.objects.filter(activated=1, date=date)
@@ -490,7 +484,7 @@ def blacklisting(request):
 
 
 def super_blacklist(request):
-    domain = request.POST['domain']      
+    domain = request.POST['domain']
     domain = "".join(domain.split())
     entry = SuperBlacklist.objects.filter(domain=domain)
     if not entry.exists():
@@ -507,7 +501,7 @@ def super_blacklist(request):
 
 
 def regular_blacklist(request):
-    email = request.POST['email']   
+    email = request.POST['email']
     email = "".join(email.split())
     entry = BlackList.objects.filter(email=email)
     if not entry.exists():
