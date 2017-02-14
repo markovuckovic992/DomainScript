@@ -1,5 +1,4 @@
 #!/usr/bin/pypy
-
 from Tkinter import *
 import ttk
 from ttk import *
