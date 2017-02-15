@@ -579,15 +579,19 @@ def search(request):
     return render(request, 'search.html', {})
 
 def search_results(request):
-    datepicker = request.POST['datepicker']
-    date = datetime.strptime(datepicker, '%d-%m-%Y').date()
-
     name_redemption = request.POST['drop_domain']
     name_zone = request.POST['zone_domain']
-
-    search_leads = RawLeads.objects.filter(
-        name_zone__contains=name_zone,
-        name_redemption__contains=name_redemption,
-        date=date,
-    )[0:10]
+    if 'datepicker' in request.POST.keys():
+        datepicker = request.POST['datepicker']
+        date = datetime.strptime(datepicker, '%d-%m-%Y').date()
+        search_leads = RawLeads.objects.filter(
+            name_zone__contains=name_zone,
+            name_redemption__contains=name_redemption,
+            date=date,
+        )[0:10]
+    else:        
+        search_leads = RawLeads.objects.filter(
+            name_zone__contains=name_zone,
+            name_redemption__contains=name_redemption
+        )[0:10]
     return render(request, 'search.html', {'search_leads': search_leads})
