@@ -588,10 +588,10 @@ def search_results(request):
             name_zone__contains=name_zone,
             name_redemption__contains=name_redemption,
             date=date,
-        )[0:10]
+        )[0:200]
     except:      
         search_leads = RawLeads.objects.filter(
             name_zone__contains=name_zone,
             name_redemption__contains=name_redemption
-        )[0:10]
+        )[0:200]
     return render(request, 'search.html', {'search_leads': search_leads})
