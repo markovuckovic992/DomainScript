@@ -581,15 +581,15 @@ def search(request):
 def search_results(request):
     name_redemption = request.POST['drop_domain']
     name_zone = request.POST['zone_domain']
-    if 'datepicker' in request.POST.keys():
-        datepicker = request.POST['datepicker']
+    datepicker = request.POST['datepicker']
+    try:
         date = datetime.strptime(datepicker, '%d-%m-%Y').date()
         search_leads = RawLeads.objects.filter(
             name_zone__contains=name_zone,
             name_redemption__contains=name_redemption,
             date=date,
         )[0:10]
-    else:        
+    except:      
         search_leads = RawLeads.objects.filter(
             name_zone__contains=name_zone,
             name_redemption__contains=name_redemption
