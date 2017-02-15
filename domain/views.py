@@ -403,7 +403,6 @@ def send_mails(request):
         try:
             iterator = randint(0, 3)
             link = ('http://www.' + str(hosts[iterator]) + '/offer/?id=' + str(hash_base_id))
-            iterator = randint(0, 3)
             unsubscribe = ('http://www.' + str(hosts[iterator]) + '/unsubscribe/?id=' + str(hash_base_id))
             case = randint(1, 5)
             msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
@@ -453,7 +452,7 @@ def send_mails(request):
                 email = mail.EmailMultiAlternatives(
                     msg[0],
                     'potential_profit.name_zone',
-                    'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
+                    'Web Domain Expert <info@' + str(hosts[iterator]) + '>',
                     [potential_profit.mail],
                     reply_to=("support@webdomainexpert.com", ),
                     bcc=["bcc-webdomainexpert@outlook.com"],

@@ -35,7 +35,7 @@ emails = []
 email = mail.EmailMultiAlternatives(
     'TEST',
     'TEST',
-    'Web Domain Expert <rtl.ludak@gmail.com>',
+    'Web Domain Expert <info@webdomainexpert.club>',
     ['markovuckovic992@yahoo.com'],
 )
 emails.append(email)
