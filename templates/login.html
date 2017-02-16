@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+
+    <body OnLoad="document.loginform.username.focus();">
+
+    <form autocomplete="off" action="" method="post" id="loginform" name="loginform">
+       {% csrf_token %}
+       <fieldset>
+          <p></p>
+          <label for="username">User:</label><input type="text" id="username" tabindex="1" name="username"/>
+          <label for="password">Pass:</label><input type="password" id="password" tabindex="2" name="password"/>
+          <button type="submit">Log in</button>
+        </fieldset>
+    </form>
+
+    </body>
+</html>

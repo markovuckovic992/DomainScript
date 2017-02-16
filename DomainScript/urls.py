@@ -19,6 +19,7 @@ import domain.views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^home_login/', domain.views.Login),
     #  editing
     url(r'^$', domain.views.editing),
     url(r'^run_script/', domain.views.runEditing),
@@ -57,5 +58,7 @@ urlpatterns = [
     url(r'^del_hash/', domain.views.del_hash),
     # search
     url(r'^search/', domain.views.search),    
-    url(r'^search_results/', domain.views.search_results),    
+    url(r'^search_results/', domain.views.search_results),  
+    # admin  
+    url(r'^classified/', domain.views.admin),    
 ]

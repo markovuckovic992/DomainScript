@@ -667,4 +667,7 @@ function send_pending(argument) {
     }
 }
 
-
+function load_logs() {
+    var date = $("#datepicker").val();
+    window.location.href=('/classified/?date=' + date);
+}

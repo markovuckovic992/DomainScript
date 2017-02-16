@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
 from django.db import models
 from urllib import unquote
 from domain.models import *
@@ -20,13 +22,25 @@ import re
 from django.core import mail
 from smtplib import SMTPServerDisconnected
 
-
 hosts = [
     'webdomainexpert.us',
     'webdomainexpert.host',
     'webdomainexpert.site',
     'webdomainexpert.club',
 ]
+
+@ensure_csrf_cookie
+def Login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None and user.is_active:
+            login(request, user)
+            return HttpResponseRedirect("/classified/")
+        else:
+            return render(request, 'login.html')
+    return render(request, 'login.html')
 
 # MANUAL
 def manual(request):
@@ -126,19 +140,13 @@ def rawLeads(request):
     try:
         numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
     except:
-        pass
-    number_of_pages = max(set(numbers))
-    try:
-        log = Log.objects.get(date=date)
-    except Log.DoesNotExist:
-        log = None
+        pass    
     return render(
         request,
         'raw_leads.html',
         {
             "raw_leads": raw_leads,
             'range': range(1, number_of_pages + 1),
-            'log': log,
             'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
             'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
             'page': page,
@@ -239,18 +247,13 @@ def activeLeads(request):
     #     (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['max_id']).delete())
     # # end delete #
 
-    raw_leads = RawLeads.objects.filter(activated=1, date=date)
-    try:
-        log = Log.objects.get(date=date)
-    except Log.DoesNotExist:
-        log = None
+    raw_leads = RawLeads.objects.filter(activated=1, date=date)   
     return render(
         request,
         'active_leads.html',
         {
             "raw_leads": raw_leads,
             'range': range(1, int(ceil(len(raw_leads) / 5000)) + 2),
-            'log': log,
             'total_r': len(RawLeads.objects.filter(activated=0, date=date)),
             'total_a': len(raw_leads),
         })
@@ -670,3 +673,26 @@ def send_pending(request):
             print traceback.format_exc()
     connection.close()
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
+
+@login_required
+def admin(request):
+    if 'date' in request.GET.keys():
+        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
+    else:
+        date = datetime.now()
+
+    try:
+        log = Log.objects.get(date=date)
+    except Log.DoesNotExist:
+        log = None
+
+
+    return render(
+        request,
+        'classified.html',
+        {
+            "log": log,
+            'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
+            'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
+        })
