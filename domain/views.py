@@ -225,10 +225,10 @@ def activeLeads(request):
     #     bad2 = "".join(sbad.domain.split())
     #     RawLeads.objects.filter(mail__icontains=bad2).delete()
     # # end blacklist #
-    # if 'date' in request.GET.keys():
-    #     date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
-    # else:
-    #     date = datetime.now()
+    if 'date' in request.GET.keys():
+        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
+    else:
+        date = datetime.now()
 
 
     # # delete duplicates
