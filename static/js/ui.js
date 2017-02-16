@@ -650,6 +650,7 @@ function add_multiple() {
 function send_pending(argument) {
     var passwd = prompt("Enter Password : ", "your password here");
     if (passwd == 2011) {
+        $("#cover").fadeIn(100);
         $.ajax({
         type: "POST",
         url: "/send_pending/",
@@ -657,6 +658,7 @@ function send_pending(argument) {
             'X-CSRFToken': csrftoken,
         },
         success: function(msg){
+            $("#cover").fadeOut(100);
             window.location.reload()
         }
     });
