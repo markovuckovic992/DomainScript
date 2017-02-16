@@ -9,7 +9,9 @@ def main(date):
     usefull_data = []
     number_of_new = len(RawLeads.objects.filter(date=date, mark=1, activated=0))
     number_of_old = Log.objects.get(date=datetime.now().date()).number_act
-    Log.objects.filter(date=date).update(number_act=(int(number_of_old) + int(number_of_new)))
+    number_of_old_2 = Log.objects.get(date=datetime.now().date()).number_act_2
+    Log.objects.filter(date=datetime.now().date()).update(number_act=(int(number_of_old) + int(number_of_new)))
+    Log.objects.filter(date=date).update(number_act_2=(int(number_of_old_2) + int(number_of_new)))
 
     RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
 

@@ -471,7 +471,9 @@ def send_mails(request):
     connection.close()
 
     number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
-    Log.objects.filter(date=date).update(number_sent=(int(asdi) + int(number_of_old)))
+    number_of_old_2 = Log.objects.get(date=date).number_sent_2
+    Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
+    Log.objects.filter(date=date).update(number_sent_2=(int(asdi) + int(number_of_old_2)))
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 

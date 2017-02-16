@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block head %}
+   <title>Sending</title>
+{% endblock %}
+{% block content %}
+    {% csrf_token %}
+    Date: <input type="text" id="datepicker" onchange="load_logs()">
+    <div>
+        {% if log %}
+            <p>Number of dropping domains :{{log.number_of_redemption}} out of {{log.number_of_all}}</p>
+            <p>Raw Leads: {{total_r}}</p>
+            <p>Total Active Leads: {{total_a}}</p>
+            <p>Activated on selected date: {{log.number_act}}</p>
+            <p>Activated that were acquired on selected date: {{log.number_act_2}}</p>
+            <p>Sent on selected date: {{log.number_sent}}</p> 
+            <p>Sent that were acquired on selected date: {{log.number_sent_2}}</p> 
+            <p>Script render time [s]: {{log.duration}}</p>
+        {% else %}
+            <p>Script is not started yet</p>
+        {% endif %}
+    </div>
+    <script type="text/javascript">
+      $( function() {
+        var selected_date = (window.location.search).replace('?date=', '').split("-");
+        var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);
+        $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
+        $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
+      } );
+      $("#ADM").addClass('active');
+      $("#Base").removeClass();
+    </script>
+{% endblock %}

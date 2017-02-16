@@ -32,7 +32,9 @@ class Log(models.Model):
     number_of_all = models.IntegerField(default=0)
     duration = models.IntegerField(default=0)    
     number_act = models.IntegerField(default=0)    
+    number_act_2 = models.IntegerField(default=0)    
     number_sent = models.IntegerField(default=0)    
+    number_sent_2 = models.IntegerField(default=0)    
 
 class BlackList(models.Model):
     email = models.CharField(max_length=320, blank=True, null=True)

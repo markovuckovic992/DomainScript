@@ -65,6 +65,7 @@
         <li id="Super" ><a href="/blacklisting/">Blacklisting</a></li>
         <li id="MAN" ><a href="/manual/">Manual</a></li>
         <li id="SEA" ><a href="/search/">Search</a></li>
+        <li id="ADM" ><a href="/classified/">Admin</a></li>
       </ul>
     </div>
   </div>
@@ -75,20 +76,7 @@
     {% block content %}
 
     {% endblock %}
-    </div>
-    <div id="log_div">
-        {% if log %}
-            <p>Date: {{log.date}}</p>
-            <p>Number of dropping domains :{{log.number_of_redemption}} out of {{log.number_of_all}}</p>
-            <p>Raw Leads: {{total_r}}</p>
-            <p>Active Leads: {{total_a}}</p>
-            <p>Man. Activated: {{log.number_act}}</p>
-            <p>Sent: {{log.number_sent}}</p> 
-            <p>Script render time [s]: {{log.duration}}</p>
-        {% else %}
-            <p>Script is not started yet</p>
-        {% endif %}
-    </div>
+    </div>    
   </div>
 </div>
 <div id="cover"> </div>
