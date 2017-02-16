@@ -1,5 +1,5 @@
 from os import popen
-
+from datetime import datetime
 import os, django, hashlib
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
@@ -8,7 +8,7 @@ from domain.models import *
 def main(date):
     usefull_data = []
     number_of_new = len(RawLeads.objects.filter(date=date, mark=1, activated=0))
-    number_of_old = Log.objects.get(date=date).number_act
+    number_of_old = Log.objects.get(date=datetime.now().date()).number_act
     Log.objects.filter(date=date).update(number_act=(int(number_of_old) + int(number_of_new)))
 
     RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)

@@ -470,7 +470,7 @@ def send_mails(request):
             print traceback.format_exc()
     connection.close()
 
-    number_of_old = Log.objects.get(date=date).number_sent
+    number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
     Log.objects.filter(date=date).update(number_sent=(int(asdi) + int(number_of_old)))
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
