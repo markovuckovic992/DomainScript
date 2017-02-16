@@ -480,7 +480,7 @@ def send_mails(request):
             print traceback.format_exc()
     connection.close()
 
-    if Log.objects.filter(date=datetime.now().date()).exists():
+    if not Log.objects.filter(date=datetime.now().date()).exists():
         Log().save()
     number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
     number_of_old_2 = Log.objects.get(date=date).number_sent_2

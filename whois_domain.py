@@ -7,7 +7,7 @@ from domain.models import *
 
 def main(date):
     usefull_data = []
-    if Log.objects.filter(date=datetime.now().date()).exists():
+    if not Log.objects.filter(date=datetime.now().date()).exists():
         Log().save()
     number_of_new = len(RawLeads.objects.filter(date=date, mark=1, activated=0))
     number_of_old = Log.objects.get(date=datetime.now().date()).number_act
