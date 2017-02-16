@@ -709,10 +709,10 @@ def admin(request):
 
     if log:
         data_to_show = {
-            'number_act_2':log2.number_act_2  if log2 else 0,
-            'number_sent_2':log2.number_sent_2 if log2 else 0,
-            'number_sent':log.number_sent if log else 0,
-            'number_sent':log.number_sent if log else 0,
+            'number_act':log2.number_act_2  if log2 else 0,
+            'number_sent':log2.number_sent_2 if log2 else 0,
+            'number_act_2':log.number_sent if log else 0,
+            'number_sent_2':log.number_sent if log else 0,
             'number_of_redemption': log.number_of_redemption,
             'number_of_all': log.number_of_all,
         }
