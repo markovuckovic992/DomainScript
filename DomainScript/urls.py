@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^send_mails/', domain.views.send_mails),
     url(r'^add_mail_man/', domain.views.add_mail_man),
     url(r'^rem_mail/', domain.views.rem_mail),
+    url(r'^send_pending/', domain.views.send_pending),
     #  super blaklist
     url(r'^blacklisting/', domain.views.blacklisting),
     url(r'^super_blacklist/', domain.views.super_blacklist),

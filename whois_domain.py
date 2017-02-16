@@ -3,11 +3,15 @@ from os import popen
 import os, django, hashlib
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, BlackList, SuperBlacklist, AllHash, Emails
+from domain.models import *
 
 def main(date):
     usefull_data = []
-    RawLeads.objects.filter(date=date, mark=1).update(activated=1)
+    number_of_new = len(RawLeads.objects.filter(date=date, mark=1, activated=0))
+    number_of_old = Log.objects.get(date=date).number_act
+    Log.objects.filter(date=date).update(number_act=(int(number_of_old) + int(number_of_new)))
+
+    RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
 
     # hashes
     non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True)
@@ -54,12 +58,15 @@ def main(date):
             same_shit = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
             domain = email.split('@', 1)[1]
             super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
+            super_same_shit = RawLeads.objects.filter(mail__endswith='@' + str(domain))
             if blacklisted.exists():
                 RawLeads.objects.filter(id=data.id).delete()
             elif super_blacklisted.exists():
                 RawLeads.objects.filter(id=data.id).delete()
             elif same_shit.exists():
                 RawLeads.objects.filter(id=data.id).delete()
+            elif super_same_shit.exists():
+                RawLeads.objects.filter(id=data.id).delete()                
             else:
                 RawLeads.objects.filter(id=data.id).update(mail=email)
                 if Emails.objects.filter(name_zone=data.name_zone).exists():

@@ -213,31 +213,31 @@ def truncate(request):
 
 # ACTIVE LEADS
 def activeLeads(request):
-    # blacklisting
-    bads = BlackList.objects.all()
-    for bad in bads:
-        bad2 = "".join(bad.email.split())
-        regex = r"\s*" + str(bad2) + "\s*"
-        RawLeads.objects.filter(mail__regex=regex).delete()
+    # # blacklisting
+    # bads = BlackList.objects.all()
+    # for bad in bads:
+    #     bad2 = "".join(bad.email.split())
+    #     regex = r"\s*" + str(bad2) + "\s*"
+    #     RawLeads.objects.filter(mail__regex=regex).delete()
 
-    sbads = SuperBlacklist.objects.all()
-    for sbad in sbads:
-        bad2 = "".join(sbad.domain.split())
-        RawLeads.objects.filter(mail__icontains=bad2).delete()
-    # end blacklist #
-    if 'date' in request.GET.keys():
-        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
-    else:
-        date = datetime.now()
+    # sbads = SuperBlacklist.objects.all()
+    # for sbad in sbads:
+    #     bad2 = "".join(sbad.domain.split())
+    #     RawLeads.objects.filter(mail__icontains=bad2).delete()
+    # # end blacklist #
+    # if 'date' in request.GET.keys():
+    #     date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
+    # else:
+    #     date = datetime.now()
 
 
-    # delete duplicates
-    unique_fields = ['name_redemption', 'mail']
-    duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(max_id=models.Max('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated=1, date=date, mail__isnull=False))
+    # # delete duplicates
+    # unique_fields = ['name_redemption', 'mail']
+    # duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(max_id=models.Max('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated=1, date=date, mail__isnull=False))
 
-    for duplicate in duplicates:
-        (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['max_id']).delete())
-    # end delete #
+    # for duplicate in duplicates:
+    #     (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['max_id']).delete())
+    # # end delete #
 
     raw_leads = RawLeads.objects.filter(activated=1, date=date)
     try:
@@ -397,7 +397,7 @@ def send_mails(request):
 
     connection = mail.get_connection()
     connection.open()
-
+    asdi = 0
     for potential_profit in potential_profits:
         hash_base_id = potential_profit.hash_base_id
         try:
@@ -452,7 +452,7 @@ def send_mails(request):
                 email = mail.EmailMultiAlternatives(
                     msg[0],
                     'potential_profit.name_zone',
-                    'Web Domain Expert <info@' + str(hosts[iterator]) + '>',
+                    'Web Domain Expert <' + str(settings.EMAIL_HOST_USER) + '>',
                     [potential_profit.mail],
                     reply_to=("support@webdomainexpert.com", ),
                     bcc=["bcc-webdomainexpert@outlook.com"],
@@ -460,7 +460,8 @@ def send_mails(request):
                 email.attach_alternative(msg[1], "text/html")
                 emails.append(email)
                 try:
-                    connection.send_messages(emails)
+                    connection.send_messages(emails)    
+                    asdi += 1               
                 except SMTPServerDisconnected:
                     connection = mail.get_connection()
                     connection.open()
@@ -468,6 +469,9 @@ def send_mails(request):
         except:
             print traceback.format_exc()
     connection.close()
+
+    number_of_old = Log.objects.get(date=date).number_sent
+    Log.objects.filter(date=date).update(number_sent=(int(asdi) + int(number_of_new)))
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -595,3 +599,72 @@ def search_results(request):
             name_redemption__contains=name_redemption
         )[0:200]
     return render(request, 'search.html', {'search_leads': search_leads})
+
+def send_pending(request):
+    potential_profits = RawLeads.objects.filter(mark_to_send=1, mail__isnull=False)
+
+    connection = mail.get_connection()
+    connection.open()
+
+    for potential_profit in potential_profits:
+        hash_base_id = potential_profit.hash_base_id
+        try:
+            iterator = randint(0, 3)
+            link = ('http://www.' + str(hosts[iterator]) + '/offer/?id=' + str(hash_base_id))
+            unsubscribe = ('http://www.' + str(hosts[iterator]) + '/unsubscribe/?id=' + str(hash_base_id))
+            case = randint(1, 5)
+            msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
+                link) + '","' + str(unsubscribe) + '")')
+
+            req = requests.post(
+                "http://www.webdomainexpert.pw/add_offer/",
+                data={
+                    'base_id': potential_profit.id,
+                    'drop': potential_profit.name_redemption,
+                    'lead': potential_profit.name_zone,
+                    'hash_base_id': hash_base_id,
+                    'remail': potential_profit.mail,
+                }
+            )
+            if req.status_code == 204:
+                hash = hashlib.md5()
+                hash.update(str(potential_profit.id + 100000))
+                hash_base_id = hash.hexdigest()
+
+                req = requests.post(
+                    "http://www.webdomainexpert.pw/add_offer/",
+                    data={
+                        'base_id': potential_profit.id,
+                        'drop': potential_profit.name_redemption,
+                        'lead': potential_profit.name_zone,
+                        'hash_base_id': hash_base_id,
+                        'remail': potential_profit.mail,
+                    }
+                )
+
+            if req.status_code == 200:
+                hsbid = RawLeads.objects.get(id=potential_profit.id).hash_base_id
+                AllHash.objects.filter(hash_base_id=hsbid)
+                RawLeads.objects.filter(id=potential_profit.id).delete()
+
+                emails = []
+                email = mail.EmailMultiAlternatives(
+                    msg[0],
+                    'potential_profit.name_zone',
+                    'Web Domain Expert <' + str(settings.EMAIL_HOST_USER) + '>',
+                    [potential_profit.mail],
+                    reply_to=("support@webdomainexpert.com", ),
+                    bcc=["bcc-webdomainexpert@outlook.com"],
+                )
+                email.attach_alternative(msg[1], "text/html")
+                emails.append(email)
+                try:
+                    connection.send_messages(emails)
+                except SMTPServerDisconnected:
+                    connection = mail.get_connection()
+                    connection.open()
+                    connection.send_messages(emails)
+        except:
+            print traceback.format_exc()
+    connection.close()
+    return HttpResponse('{"status": "success"}', content_type="application/json")

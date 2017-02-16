@@ -646,3 +646,16 @@ function add_multiple() {
         });
     }
 }
+
+function send_pending(argument) {
+    $.ajax({
+        type: "POST",
+        url: "/send_pending/",
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            window.location.reload()
+        }
+    });
+}

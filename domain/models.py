@@ -30,7 +30,9 @@ class Log(models.Model):
     date = models.DateField(default=timezone.now)
     number_of_redemption = models.IntegerField(default=0)
     number_of_all = models.IntegerField(default=0)
-    duration = models.IntegerField(default=0)
+    duration = models.IntegerField(default=0)    
+    number_act = models.IntegerField(default=0)    
+    number_sent = models.IntegerField(default=0)    
 
 class BlackList(models.Model):
     email = models.CharField(max_length=320, blank=True, null=True)

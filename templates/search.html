@@ -24,6 +24,9 @@
           </th>          
           <th>
             Date
+          </th>       
+          <th>
+            Hash
           </th>
         </tr>
       </thead>
@@ -38,6 +41,7 @@
           {% endif %}
           <td>{{entry.name_zone}},{{entry.name_redemption}} </td>
           <td>{{entry.date}} </td>
+          <td>{{entry.hash_base_id}} </td>
         </tr>
         {% endfor %}
       </tbody>  
