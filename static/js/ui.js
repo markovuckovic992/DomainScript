@@ -648,7 +648,9 @@ function add_multiple() {
 }
 
 function send_pending(argument) {
-    $.ajax({
+    var passwd = prompt("Enter Password : ", "your password here");
+    if (passwd == 2011) {
+        $.ajax({
         type: "POST",
         url: "/send_pending/",
         headers: {
@@ -658,4 +660,9 @@ function send_pending(argument) {
             window.location.reload()
         }
     });
+    } else {
+        alert('Incorrect password');
+    }
 }
+
+
