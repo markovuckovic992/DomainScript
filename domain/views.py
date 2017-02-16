@@ -480,6 +480,8 @@ def send_mails(request):
             print traceback.format_exc()
     connection.close()
 
+    if Log.objects.filter(date=datetime.now().date()).exists():
+        Log().save()
     number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
     number_of_old_2 = Log.objects.get(date=date).number_sent_2
     Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
@@ -494,10 +496,10 @@ def blacklisting(request):
     blacklist = BlackList.objects.all()
     superblacklist = SuperBlacklist.objects.all()
     return render(request, 'super_blacklist.html',
-                  {
-                      'blacklist': blacklist,
-                      'superblacklist': superblacklist,
-                  })
+      {
+          'blacklist': blacklist,
+          'superblacklist': superblacklist,
+      })
 
 
 def super_blacklist(request):
@@ -716,7 +718,7 @@ def admin(request):
         }
     else:
         data_to_show = None
-        
+
     return render(
         request,
         'classified.html',
