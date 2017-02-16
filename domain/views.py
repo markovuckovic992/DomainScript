@@ -44,6 +44,8 @@ def Login(request):
 
 # MANUAL
 def manual(request):
+    if request.user:
+        logout(request)
     return render(request, 'manual.html', {})
 
 def add_manual(request):
@@ -61,6 +63,8 @@ def add_manual(request):
 
 # EDITING
 def editing(request):
+    if request.user:
+        logout(request)
     return render(request, 'editing.html', {})
 
 def runEditing(request):
@@ -127,6 +131,8 @@ def runEditing(request):
 
 # RAW LEADS
 def rawLeads(request):
+    if request.user:
+        logout(request)
     if 'date' in request.GET.keys() and len(request.GET['date']) > 6:
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
@@ -140,7 +146,8 @@ def rawLeads(request):
     try:
         numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
     except:
-        pass    
+        pass   
+    number_of_pages = max(set(numbers))    
     return render(
         request,
         'raw_leads.html',
@@ -482,6 +489,8 @@ def send_mails(request):
 
 
 def blacklisting(request):
+    if request.user:
+        logout(request)
     blacklist = BlackList.objects.all()
     superblacklist = SuperBlacklist.objects.all()
     return render(request, 'super_blacklist.html',
@@ -585,9 +594,13 @@ def find_active(request):
 
 # SEARCH
 def search(request):
+    if request.user:
+        logout(request)
     return render(request, 'search.html', {})
 
-def search_results(request):
+def search_results(request):    
+    if request.user:
+        logout(request)
     name_redemption = request.POST['drop_domain']
     name_zone = request.POST['zone_domain']
     datepicker = request.POST['datepicker']
