@@ -702,15 +702,10 @@ def admin(request):
     except Log.DoesNotExist:
         log = None
 
-    try:
-        log2 = Log.objects.get(date=datetime.now().date())
-    except Log.DoesNotExist:
-        log2 = None
-
     if log:
         data_to_show = {
-            'number_act':log2.number_act  if log2 else 0,
-            'number_sent':log2.number_sent if log2 else 0,
+            'number_act':log.number_act  if log else 0,
+            'number_sent':log.number_sent if log else 0,
             'number_act_2':log.number_act_2 if log else 0,
             'number_sent_2':log.number_sent_2 if log else 0,
             'number_of_redemption': log.number_of_redemption,
