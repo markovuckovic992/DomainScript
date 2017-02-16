@@ -700,12 +700,24 @@ def admin(request):
     except Log.DoesNotExist:
         log = None
 
+    try:
+        log2 = Log.objects.get(date=datetime.now().date())
+    except Log.DoesNotExist:
+        log2 = None
 
+    data_to_show = {
+        'number_act_2':log2.number_act_2,
+        'number_sent_2':log2.number_sent_2,
+        'number_sent':log.number_sent,
+        'number_sent':log.number_sent,
+        'number_of_redemption': log.number_of_redemption,
+        'number_of_all': log.number_of_all,
+    }
     return render(
         request,
         'classified.html',
         {
-            "log": log,
+            "log": data_to_show,
             'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
             'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
         })
