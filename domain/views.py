@@ -625,7 +625,7 @@ def send_pending(request):
 
     connection = mail.get_connection()
     connection.open()
-
+    asdi = 0
     for potential_profit in potential_profits:
         hash_base_id = potential_profit.hash_base_id
         try:
@@ -680,6 +680,11 @@ def send_pending(request):
                 emails.append(email)
                 try:
                     connection.send_messages(emails)
+                    asdi += 1
+
+                    number_of_old_2 = Log.objects.get(date=potential_profit.date).number_sent_2
+                    Log.objects.filter(date=date).update(number_sent_2=(1 + int(number_of_old_2)))
+                
                 except SMTPServerDisconnected:
                     connection = mail.get_connection()
                     connection.open()
@@ -687,6 +692,12 @@ def send_pending(request):
         except:
             print traceback.format_exc()
     connection.close()
+
+    if not Log.objects.filter(date=datetime.now().date()).exists():
+        Log().save()
+    number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
+    Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
+    
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -695,7 +706,7 @@ def admin(request):
     if 'date' in request.GET.keys():
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
-        date = datetime.now()
+        date = datetime.now().date()
 
     try:
         log = Log.objects.get(date=date)
