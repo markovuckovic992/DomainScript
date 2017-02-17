@@ -659,7 +659,6 @@ function send_pending(argument) {
         },
         success: function(msg){
             $("#cover").fadeOut(100);
-            window.location.reload()
         }
     });
     } else {
