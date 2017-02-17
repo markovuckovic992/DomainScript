@@ -671,3 +671,32 @@ function load_logs() {
     var date = $("#datepicker").val();
     window.location.href=('/classified/?date=' + date);
 }
+
+function whois_period() {
+    var interval = $("#whois_period").val();
+    $.ajax({
+        type: "POST",
+        url: "/whois_period/",
+        data: "interval=" + interval,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            alert("Done!")
+        },
+         statusCode: {
+            400: function() {
+              alert('400 status code! user error, reload page');
+            },
+            500: function() {
+              alert('500 status code! server error, reload page');
+            },
+            502: function() {
+                alert('gateway timeout!');
+            },
+            504: function() {
+                alert('gateway timeout!');
+            }
+        }
+    });
+}

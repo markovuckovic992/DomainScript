@@ -700,6 +700,14 @@ def send_pending(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+def whois_period(request):
+    interval = request.GET['interval']
+    dates = []
+    for i in range(0, interval):
+        date = (datetime.now() - timedelta(days=i)).date()
+        dates.append(date)
+    main_period(dates)
+    return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @login_required
 def admin(request):
@@ -715,7 +723,7 @@ def admin(request):
 
     if log:
         data_to_show = {
-            'number_act':log.number_act  if log else 0,
+            'number_act':log.number_act if log else 0,
             'number_sent':log.number_sent if log else 0,
             'number_act_2':log.number_act_2 if log else 0,
             'number_sent_2':log.number_sent_2 if log else 0,

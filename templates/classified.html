@@ -4,20 +4,26 @@
 {% endblock %}
 {% block content %}
     {% csrf_token %}
-    Date: <input type="text" id="datepicker" onchange="load_logs()">
-    <div>
-        {% if log %}
-            <p>Number of dropping domains :{{log.number_of_redemption}} out of {{log.number_of_all}}</p>
-            <p>Raw Leads: {{total_r}}</p>
-            <p>Total Active Leads: {{total_a}}</p>
-            <p>Activated on selected date: {{log.number_act}}</p>
-            <p>Activated that were acquired on selected date: {{log.number_act_2}}</p>
-            <p>Sent on selected date: {{log.number_sent}}</p> 
-            <p>Sent that were acquired on selected date: {{log.number_sent_2}}</p> 
-            <p>Script render time [s]: {{log.duration}}</p>
-        {% else %}
-            <p>Script is not started yet</p>
-        {% endif %}
+    <div bgcolor="#D3D3D3">
+        Date: <input type="text" id="datepicker" onchange="load_logs()">
+        <div>
+            {% if log %}
+                <p>Number of dropping domains :{{log.number_of_redemption}} out of {{log.number_of_all}}</p>
+                <p>Raw Leads: {{total_r}}</p>
+                <p>Total Active Leads: {{total_a}}</p>
+                <p>Activated on selected date: {{log.number_act}}</p>
+                <p>Activated that were acquired on selected date: {{log.number_act_2}}</p>
+                <p>Sent on selected date: {{log.number_sent}}</p>
+                <p>Sent that were acquired on selected date: {{log.number_sent_2}}</p>
+                <p>Script render time [s]: {{log.duration}}</p>
+            {% else %}
+                <p>Script is not started yet</p>
+            {% endif %}
+        </div>
+    </div>
+    <div bgcolor="gray">
+        <input type="number" placeholder="number of days" id="whois_period" />
+        <button onclick="whois_period()">Run whois!</button>
     </div>
     <script type="text/javascript">
       $( function() {

@@ -61,4 +61,5 @@ urlpatterns = [
     url(r'^search_results/', domain.views.search_results),
     # admin
     url(r'^classified/', domain.views.admin),
+    url(r'^whois_period/', domain.views.whois_period),
 ]
