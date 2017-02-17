@@ -12,7 +12,7 @@ from whois_domain import main, main_status
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import connection
-from datetime import datetime
+from datetime import datetime, timedelta
 from math import ceil
 from os import popen
 from operator import attrgetter
