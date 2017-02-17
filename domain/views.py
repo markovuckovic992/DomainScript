@@ -495,11 +495,10 @@ def blacklisting(request):
         logout(request)
     blacklist = BlackList.objects.all()
     superblacklist = SuperBlacklist.objects.all()
-    return render(request, 'super_blacklist.html',
-      {
-          'blacklist': blacklist,
-          'superblacklist': superblacklist,
-      })
+    return render(request, 'super_blacklist.html', {
+        'blacklist': blacklist,
+        'superblacklist': superblacklist,
+    })
 
 
 def super_blacklist(request):
