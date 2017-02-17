@@ -57,8 +57,8 @@ urlpatterns = [
     url(r'^active_manual/', domain.views.active_manual),
     url(r'^del_hash/', domain.views.del_hash),
     # search
-    url(r'^search/', domain.views.search),    
-    url(r'^search_results/', domain.views.search_results),  
-    # admin  
-    url(r'^classified/', domain.views.admin),    
+    url(r'^search/', domain.views.search),
+    url(r'^search_results/', domain.views.search_results),
+    # admin
+    url(r'^classified/', domain.views.admin),
 ]

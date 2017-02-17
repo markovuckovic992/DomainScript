@@ -146,8 +146,8 @@ def rawLeads(request):
     try:
         numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
     except:
-        pass   
-    number_of_pages = max(set(numbers))    
+        pass
+    number_of_pages = max(set(numbers))
     return render(
         request,
         'raw_leads.html',
@@ -254,7 +254,7 @@ def activeLeads(request):
     #     (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['max_id']).delete())
     # # end delete #
 
-    raw_leads = RawLeads.objects.filter(activated=1, date=date)   
+    raw_leads = RawLeads.objects.filter(activated=1, date=date)
     return render(
         request,
         'active_leads.html',
@@ -470,8 +470,8 @@ def send_mails(request):
                 email.attach_alternative(msg[1], "text/html")
                 emails.append(email)
                 try:
-                    connection.send_messages(emails)    
-                    asdi += 1               
+                    connection.send_messages(emails)
+                    asdi += 1
                 except SMTPServerDisconnected:
                     connection = mail.get_connection()
                     connection.open()
@@ -600,7 +600,7 @@ def search(request):
         logout(request)
     return render(request, 'search.html', {})
 
-def search_results(request):    
+def search_results(request):
     if request.user:
         logout(request)
     name_redemption = request.POST['drop_domain']
@@ -613,7 +613,7 @@ def search_results(request):
             name_redemption__contains=name_redemption,
             date=date,
         )[0:200]
-    except:      
+    except:
         search_leads = RawLeads.objects.filter(
             name_zone__contains=name_zone,
             name_redemption__contains=name_redemption
@@ -621,7 +621,7 @@ def search_results(request):
     return render(request, 'search.html', {'search_leads': search_leads})
 
 def send_pending(request):
-    potential_profits = RawLeads.objects.filter(mark_to_send=1, mail__isnull=False)
+    potential_profits = RawLeads.objects.filter(activated=1, mail__isnull=False)
 
     connection = mail.get_connection()
     connection.open()
@@ -684,7 +684,7 @@ def send_pending(request):
 
                     number_of_old_2 = Log.objects.get(date=potential_profit.date).number_sent_2
                     Log.objects.filter(date=date).update(number_sent_2=(1 + int(number_of_old_2)))
-                
+
                 except SMTPServerDisconnected:
                     connection = mail.get_connection()
                     connection.open()
@@ -697,7 +697,7 @@ def send_pending(request):
         Log().save()
     number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
     Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
-    
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
