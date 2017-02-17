@@ -70,7 +70,7 @@ def main(date):
             elif same_shit.exists():
                 RawLeads.objects.filter(id=data.id).delete()
             elif super_same_shit.exists():
-                RawLeads.objects.filter(id=data.id).delete()                
+                RawLeads.objects.filter(id=data.id).delete()
             else:
                 RawLeads.objects.filter(id=data.id).update(mail=email)
                 if Emails.objects.filter(name_zone=data.name_zone).exists():
@@ -111,3 +111,7 @@ def main_status(date):
                     i += 1
         if status:
             Offer.objects.filter(id=data.id).update(status=status)
+
+if __name__ == "__main__":
+    main(datetime.now().date())
+
