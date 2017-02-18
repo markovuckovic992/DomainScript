@@ -417,15 +417,6 @@ def send_mails(request):
             case = randint(1, 5)
             msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
                 link) + '","' + str(unsubscribe) + '")')
-            # msg = form_a_msg1(str(potential_profit.name_redemption), str(link), str(unsubscribe))
-            # send_mail(
-            #     msg[0],  # Title
-            #     potential_profit.name_zone,  # Body
-            #     settings.EMAIL_HOST_USER,
-            #     [potential_profit.mail],
-            #     fail_silently=False,
-            #     html_message=msg[1],
-            # )
 
             req = requests.post(
                 "http://www.webdomainexpert.pw/add_offer/",
