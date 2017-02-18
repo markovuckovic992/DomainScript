@@ -691,7 +691,7 @@ def send_pending(request):
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def whois_period(request):
-    interval = request.GET['interval']
+    interval = request.POST['interval']
     dates = []
     for i in range(0, interval):
         date = (datetime.now() - timedelta(days=i)).date()
