@@ -683,22 +683,26 @@ function whois_period() {
             'X-CSRFToken': csrftoken,
         },
         success: function(msg){
-            alert("Done!")
+            $("#cover").fadeOut(100);
+            alert("Done!");
         },
          statusCode: {
             400: function() {
+                $("#cover").fadeOut(100);
               alert('400 status code! user error, reload page');
             },
             500: function() {
+                $("#cover").fadeOut(100);
               alert('500 status code! server error, reload page');
             },
             502: function() {
+                $("#cover").fadeOut(100);
                 alert('gateway timeout!');
             },
             504: function() {
+                $("#cover").fadeOut(100);
                 alert('gateway timeout!');
             }
         }
     });
-    $("#cover").fadeOut(100);
 }
