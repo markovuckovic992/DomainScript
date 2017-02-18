@@ -674,6 +674,7 @@ function load_logs() {
 
 function whois_period() {
     var interval = $("#whois_period").val();
+    $("#cover").fadeIn(100);
     $.ajax({
         type: "POST",
         url: "/whois_period/",
@@ -699,4 +700,5 @@ function whois_period() {
             }
         }
     });
+    $("#cover").fadeOut(100);
 }
