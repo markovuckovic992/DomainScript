@@ -674,6 +674,7 @@ function load_logs() {
 
 function whois_period() {
     var interval = $("#whois_period").val();
+    console.log(interval)
     $.ajax({
         type: "POST",
         url: "/whois_period/",
