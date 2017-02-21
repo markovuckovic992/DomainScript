@@ -117,7 +117,11 @@ class CronJobs:
                             RawLeads.objects.filter(id=data.id).delete()
                             f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, STATUS! \n\r')
                         else:
-                            index = response.find('Registrant')
+                            index = response.find('Registrant Email')
+                            if index == -1:
+                                RawLeads.objects.filter(id=data.id).delete()
+                                f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, STATUS! \n\r')
+                                break
                             new = response[index:]
                             response = new.splitlines()[0]
                             email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')                       
