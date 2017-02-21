@@ -120,7 +120,7 @@ class CronJobs:
                             index = response.find('Registrant Email')
                             if index == -1:
                                 RawLeads.objects.filter(id=data.id).delete()
-                                f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, STATUS! \n\r')
+                                f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, NO EMAIL FOUND! \n\r')
                                 break
                             new = response[index:]
                             response = new.splitlines()[0]
