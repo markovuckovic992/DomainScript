@@ -114,13 +114,13 @@ class CronJobs:
                                      'r')
                         response = tube.read()
                         if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
-                            RawLeads.objects.filter(id=data.id).delete()
                             f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, STATUS! \n\r')
+                            RawLeads.objects.filter(id=data.id).delete()
                         else:
                             index = response.find('Registrant Email')
                             if index == -1:
-                                RawLeads.objects.filter(id=data.id).delete()
                                 f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, NO EMAIL FOUND! \n\r')
+                                RawLeads.objects.filter(id=data.id).delete()
                                 break
                             new = response[index:]
                             response = new.splitlines()[0]
