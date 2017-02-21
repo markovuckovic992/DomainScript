@@ -97,9 +97,7 @@ class CronJobs:
         number_of_days = Setting.objects.get(id=1).number_of_days
         margin = (datetime.now() - timedelta(days=number_of_days))
         datas = RawLeads.objects.filter(date__gte=margin, activated=1, mail__isnull=True)[0:200]
-        print len(datas)
         for data in datas:
-            print data.name_zone
             uslov = True
             i = 0
             email = None
@@ -153,6 +151,9 @@ class CronJobs:
                     else:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
+            elif email and '@' not in email:
+                f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, NO VALID EMAIL! \n\r')
+                RawLeads.objects.filter(id=data.id).delete()
 
         file = open('zone_with_no_emails.txt', 'w')
         file.seek(0)
