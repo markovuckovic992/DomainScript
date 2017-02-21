@@ -8,9 +8,10 @@ import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 
-from domain.models import BlackList, AllHash, RawLeads
+from domain.models import BlackList, AllHash, RawLeads, Setting
 from django.core import mail
 from django.conf import settings
+from os import popen
 
 
 class CronJobs:
@@ -90,9 +91,79 @@ class CronJobs:
         connection.send_messages(emails)
         connection.close()
 
+    def whois(self):
+        f = open('deleted.txt', 'a')
+
+        number_of_days = Setting.objects.get(id=1).number_of_days
+        margin = (datetime.now() - timedelta(days=number_of_days))
+        datas = RawLeads.objects.filter(date__gte=margin, activated=1, mail__isnull=True)[0:200]
+
+        for data in datas:
+            uslov = True
+            i = 0
+            email = None
+
+            try:
+                email = Emails.objects.get(name_zone=data.name_zone).email
+            except:
+                while uslov:
+                    try:
+                        tube = popen("whois '" + str(
+                            (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:'",
+                                     'r')
+                        response = tube.read()
+                        if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
+                            RawLeads.objects.filter(id=data.id).delete()
+                            f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, STATUS! \n\r')
+                        else:
+                            index = response.find('Registrant')
+                            new = response[index:]
+                            response = new.splitlines()[0]
+                            email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')                       
+                        break
+                    except:
+                        if i > 5:
+                            uslov = False
+                        else:
+                            i += 1
+            if email and '@' in email:
+                email = "".join(email.split())
+                blacklisted = BlackList.objects.filter(email=email)
+                same_shit = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
+                domain = email.split('@', 1)[1]
+                super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
+                super_same_shit = RawLeads.objects.filter(mail__endswith='@' + str(domain))
+                if blacklisted.exists():
+                    RawLeads.objects.filter(id=data.id).delete()
+                elif super_blacklisted.exists():
+                    RawLeads.objects.filter(id=data.id).delete()
+                elif same_shit.exists():
+                    RawLeads.objects.filter(id=data.id).delete()
+                elif super_same_shit.exists():
+                    RawLeads.objects.filter(id=data.id).delete()
+                else:
+                    RawLeads.objects.filter(id=data.id).update(mail=email)
+                    if Emails.objects.filter(name_zone=data.name_zone).exists():
+                        Emails.objects.filter(name_zone=data.name_zone).update(email=email)
+                    else:
+                        new = Emails(name_zone=data.name_zone, email=email)
+                        new.save()
+
+        file = open('zone_with_no_emails.txt', 'w')
+        file.seek(0)
+        file.truncate()
+
+        datas = RawLeads.objects.filter(date__gte=margin, activated=1, mail__isnull=True)
+        for data in datas:
+            file.write(data.name_zone + '\n')
+
+        f.close()
+
 c_j = CronJobs()
 if len(sys.argv) > 1:
     if sys.argv[1] == 'delete':
         c_j.deleteOldData()
     elif sys.argv[1] == 'send':
         c_j.send()
+    elif sys.argv[1] == 'whois':
+        c_j.whois()

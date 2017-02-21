@@ -54,3 +54,8 @@ class Emails(models.Model):
 
     class Meta:
         db_table = 'emails'
+
+class Setting(models.Model):
+    number_of_days = models.IntegerField(default=5)
+    class Meta:
+        db_table = 'settings'
