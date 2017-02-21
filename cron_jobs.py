@@ -97,8 +97,9 @@ class CronJobs:
         number_of_days = Setting.objects.get(id=1).number_of_days
         margin = (datetime.now() - timedelta(days=number_of_days))
         datas = RawLeads.objects.filter(date__gte=margin, activated=1, mail__isnull=True)[0:200]
-
+        print len(datas)
         for data in datas:
+            print data.name_zone
             uslov = True
             i = 0
             email = None
