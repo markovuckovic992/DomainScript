@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { size: 8.5in 11in; margin: 1in }
+		P { margin-bottom: 0.1in; direction: ltr; color: #00000a; line-height: 120%; text-align: left; widows: 2; orphans: 2 }
+		P.western { font-family: "Calibri", serif; font-size: 12pt; so-language: en-US }
+		P.cjk { font-family: "Calibri"; font-size: 12pt; so-language: en-US }
+		P.ctl { font-family: "Calibri"; font-size: 12pt; so-language: ar-SA }
+		A:link { color: #0563c1; so-language: zxx }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#00000a" LINK="#0563c1" DIR="LTR">
+	<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 100%">Hi
+	{{ items.name }},
+	</P>
+	<BR/>
+	<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 100%">I
+	saw that you were at the checkout page of <b>{{ items.domain_name }}</b> and didn’t
+	get a chance to complete your order. <p>I just wanted to see if you ran
+	into any problem, or anything I could help you with. If so, please
+	let me know in reply to this email.</p>
+	</P>
+	<BR/>
+	<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 100%">Here’s
+	what you were looking at:
+	</P>
+	<BR/>
+	<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 100%">1x
+	Premium Domain – <b>{{ items.domain_name }}</b></P>
+	<BR/>
+	<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 100%">Total
+	price: {{ items.price }}</P>
+	<BR/>
+	<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 100%"><FONT COLOR="#0070c0"><U><a href={{items.link_sales}}>Click
+	here to quickly get your shopping cart back</a></U></FONT>.
+	</P>
+	<BR/>
+	<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 100%">If
+	you have any questions, please let me know. Or give us a call at (+1)
+	234-</P>
+	<BR/>
+	<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 100%">Best
+	regards,</P>
+	<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 100%">Ronnie</P>
+</BODY>
+</HTML>
