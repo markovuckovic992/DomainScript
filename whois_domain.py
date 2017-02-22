@@ -83,7 +83,7 @@ def main(date):
     file.seek(0)
     file.truncate()
 
-    datas = RawLeads.objects.filter(date=date, activated=1, mail__isnull=True)
+    datas = RawLeads.objects.filter(activated=1, mail__isnull=True)
     for data in datas:
         file.write(data.name_zone + '\n')
 
@@ -168,7 +168,7 @@ def main_period(dates):
     file.seek(0)
     file.truncate()
 
-    datas = RawLeads.objects.filter(date=date, activated=1, mail__isnull=True)
+    datas = RawLeads.objects.filter(activated=1, mail__isnull=True)
     for data in datas:
         file.write(data.name_zone + '\n')
 
