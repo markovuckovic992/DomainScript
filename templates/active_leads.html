@@ -35,7 +35,7 @@
       </thead>
       <tbody>
         {% for entry in raw_leads %}
-        <tr>
+        <tr {% if entry.no_email_found == 1 %} style="background-color: #ff6666;" {% endif %}>
           <td>{{forloop.counter}}</td>
           <td class="redemption">{{entry.name_redemption}}</td>
           {% if entry.mark_to_send %}

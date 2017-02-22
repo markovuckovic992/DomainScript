@@ -18,7 +18,7 @@ def main(date):
     RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
 
     # hashes
-    non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True)
+    non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True, no_email_found=0)
     for non_hashed_lead in non_hashed_leads:
         hash = hashlib.md5()
         hash.update(str(non_hashed_lead.id))

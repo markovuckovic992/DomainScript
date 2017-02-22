@@ -96,7 +96,7 @@ class CronJobs:
 
         number_of_days = Setting.objects.get(id=1).number_of_days
         margin = (datetime.now() - timedelta(days=number_of_days))
-        datas = RawLeads.objects.filter(date__gte=margin, activated=1, mail__isnull=True)[0:200]
+        datas = RawLeads.objects.filter(date__gte=margin, activated=1, mail__isnull=True, no_email_found=0)[0:200]
         for data in datas:
             uslov = True
             i = 0
@@ -117,12 +117,11 @@ class CronJobs:
                         else:
                             index = response.find('Registrant Email')
                             if index == -1:
-                                f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, NO EMAIL FOUND! \n\r')
-                                RawLeads.objects.filter(id=data.id).delete()
+                                RawLeads.objects.filter(id=data.id).update(no_email_found=1)
                                 break
                             new = response[index:]
                             response = new.splitlines()[0]
-                            email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')                       
+                            email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
                         break
                     except:
                         if i > 5:
@@ -152,8 +151,7 @@ class CronJobs:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
             elif email and '@' not in email:
-                f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, NO VALID EMAIL! \n\r')
-                RawLeads.objects.filter(id=data.id).delete()
+                RawLeads.objects.filter(id=data.id).update(no_email_found=1)
 
         file = open('zone_with_no_emails.txt', 'w')
         file.seek(0)

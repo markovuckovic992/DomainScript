@@ -13,6 +13,7 @@ class RawLeads(models.Model):
     mark_to_send = models.SmallIntegerField(default=0)
     to_delete = models.SmallIntegerField(default=0)
     blacklist = models.SmallIntegerField(default=0)
+    no_email_found = models.SmallIntegerField(default=0)
 
     date = models.DateField(default=timezone.now)
     hash_base_id = models.CharField(max_length=32, unique=True, blank=True, null=True)
@@ -30,11 +31,11 @@ class Log(models.Model):
     date = models.DateField(default=timezone.now)
     number_of_redemption = models.IntegerField(default=0)
     number_of_all = models.IntegerField(default=0)
-    duration = models.IntegerField(default=0)    
-    number_act = models.IntegerField(default=0)    
-    number_act_2 = models.IntegerField(default=0)    
-    number_sent = models.IntegerField(default=0)    
-    number_sent_2 = models.IntegerField(default=0)    
+    duration = models.IntegerField(default=0)
+    number_act = models.IntegerField(default=0)
+    number_act_2 = models.IntegerField(default=0)
+    number_sent = models.IntegerField(default=0)
+    number_sent_2 = models.IntegerField(default=0)
 
 class BlackList(models.Model):
     email = models.CharField(max_length=320, blank=True, null=True)
