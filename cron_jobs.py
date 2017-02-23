@@ -98,7 +98,6 @@ class CronJobs:
         margin = (datetime.now() - timedelta(days=number_of_days))
         datas = RawLeads.objects.filter(date__gte=margin, activated=1, mail__isnull=True, no_email_found=0)[0:2100]
         for data in datas:
-            print data
             uslov = True
             i = 0
             email = None
@@ -113,11 +112,13 @@ class CronJobs:
                                      'r')
                         response = tube.read()
                         if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
+                            print data.name_zone, 'entry 1'
                             f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, STATUS! \n\r')
                             RawLeads.objects.filter(id=data.id).delete()
                         else:
                             index = response.find('Registrant Email')
                             if index == -1:
+                                print data.name_zone, 'entry 2'
                                 RawLeads.objects.filter(id=data.id).update(no_email_found=1)
                                 break
                             new = response[index:]
@@ -129,7 +130,7 @@ class CronJobs:
                             uslov = False
                         else:
                             i += 1
-            if email and '@' in email:
+            if email and '@' in email:                
                 email = "".join(email.split())
                 blacklisted = BlackList.objects.filter(email=email)
                 same_shit = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
@@ -137,14 +138,19 @@ class CronJobs:
                 super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
                 super_same_shit = RawLeads.objects.filter(mail__endswith='@' + str(domain))
                 if blacklisted.exists():
+                    print data.name_zone, 'entry 3'
                     RawLeads.objects.filter(id=data.id).delete()
                 elif super_blacklisted.exists():
+                    print data.name_zone, 'entry 4'
                     RawLeads.objects.filter(id=data.id).delete()
                 elif same_shit.exists():
+                    print data.name_zone, 'entry 5'
                     RawLeads.objects.filter(id=data.id).delete()
                 elif super_same_shit.exists():
+                    print data.name_zone, 'entry 5'
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
+                    print data.name_zone, 'entry 6'
                     RawLeads.objects.filter(id=data.id).update(mail=email)
                     if Emails.objects.filter(name_zone=data.name_zone).exists():
                         Emails.objects.filter(name_zone=data.name_zone).update(email=email)
@@ -152,6 +158,7 @@ class CronJobs:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
             elif email and '@' not in email:
+                print data.name_zone, 'entry 7'
                 RawLeads.objects.filter(id=data.id).update(no_email_found=1)
 
         file = open('zone_with_no_emails.txt', 'w')
