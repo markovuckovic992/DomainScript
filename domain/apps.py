@@ -105,3 +105,93 @@ def form_a_msg5(domain_name, link, unsubscribe):
 
     html_content = htmly.render(Context(d))
     return [subject, html_content]
+
+def form_a_msg6(domain_name, link, unsubscribe):
+    domain_name = domain_name.upper()
+
+    subject = domain_name + ' - Get Your Domain An Upgrade'
+    file = codecs.open(settings.EMAIL_TEMPLATES + '/template6.html', 'r')
+    content = file.read()
+    htmly = Template(content)
+    d = {
+        "items": {
+            'domain_name': domain_name,
+            'link_offer': link,
+            'link_un': unsubscribe,
+        }
+    }
+
+    html_content = htmly.render(Context(d))
+    return [subject, html_content]
+
+def form_a_msg7(domain_name, link, unsubscribe):
+    domain_name = domain_name.upper()
+
+    subject = domain_name + ' - Available For The First Time Since You Last Checked'
+    file = codecs.open(settings.EMAIL_TEMPLATES + '/template7.html', 'r')
+    content = file.read()
+    htmly = Template(content)
+    d = {
+        "items": {
+            'domain_name': domain_name,
+            'link_offer': link,
+            'link_un': unsubscribe,
+        }
+    }
+
+    html_content = htmly.render(Context(d))
+    return [subject, html_content]
+
+def form_a_msg8(domain_name, link, unsubscribe):
+    domain_name = domain_name.upper()
+
+    subject = 'Upgrade Your Domain to ' + domain_name
+    file = codecs.open(settings.EMAIL_TEMPLATES + '/template8.html', 'r')
+    content = file.read()
+    htmly = Template(content)
+    d = {
+        "items": {
+            'domain_name': domain_name,
+            'link_offer': link,
+            'link_un': unsubscribe,
+        }
+    }
+
+    html_content = htmly.render(Context(d))
+    return [subject, html_content]
+
+def form_a_msg9(domain_name, link, unsubscribe):
+    domain_name = domain_name.upper()
+
+    subject = domain_name + ' Get more traffic, more leads, more sales. Simple'
+    file = codecs.open(settings.EMAIL_TEMPLATES + '/template9.html', 'r')
+    content = file.read()
+    htmly = Template(content)
+    d = {
+        "items": {
+            'domain_name': domain_name,
+            'link_offer': link,
+            'link_un': unsubscribe,
+        }
+    }
+
+    html_content = htmly.render(Context(d))
+    return [subject, html_content]
+
+def form_a_msg10(domain_name, link, unsubscribe):
+    domain_name = domain_name.upper()
+
+    subject = domain_name + ' - Increase Traffic By Over 100% In Less Than 30 Days'
+    file = codecs.open(settings.EMAIL_TEMPLATES + '/template10.html', 'r')
+    content = file.read()
+    htmly = Template(content)
+    d = {
+        "items": {
+            'domain_name': domain_name,
+            'link_offer': link,
+            'link_un': unsubscribe,
+        }
+    }
+
+    html_content = htmly.render(Context(d))
+    return [subject, html_content]
