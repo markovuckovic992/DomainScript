@@ -161,6 +161,8 @@ class CronJobs:
                 print data.name_zone, 'entry 7'
                 RawLeads.objects.filter(id=data.id).update(no_email_found=1)
 
+            print data.name_zone, 'entry 8'
+
         file = open('zone_with_no_emails.txt', 'w')
         file.seek(0)
         file.truncate()
