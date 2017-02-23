@@ -8,7 +8,7 @@ import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 
-from domain.models import BlackList, AllHash, RawLeads, Setting
+from domain.models import BlackList, AllHash, RawLeads, Setting, SuperBlacklist
 from django.core import mail
 from django.conf import settings
 from os import popen
