@@ -14,7 +14,7 @@ class DomainConfig(AppConfig):
 def form_a_msg1(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = domain_name + ' Get more traffic, more leads, more sales. Simple'
+    subject = domain_name + ' Uh-oh! You are Missing Out on A Ton of Traffic. Perfect time to upgrade your domain'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template1.html', 'r')
     content = file.read()
     htmly = Template(content)
@@ -54,7 +54,7 @@ def form_a_msg2(domain_name, link, unsubscribe):
 def form_a_msg3(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = domain_name + ' - Get Your Domain An Upgrade'
+    subject = domain_name + ' - Be Visible With a SEO Domain | Experience Traffic Soar'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template3.html', 'r')
     content = file.read()
     htmly = Template(content)
@@ -91,7 +91,7 @@ def form_a_msg4(domain_name, link, unsubscribe):
 def form_a_msg5(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = domain_name + ' - Increase Traffic By Over 100% In Less Than 30 Days'
+    subject = domain_name + ' - Your Customers Click on Names they can Trust. Increase Traffic + Sales With The Right Domain'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template5.html', 'r')
     content = file.read()
     htmly = Template(content)
@@ -109,7 +109,7 @@ def form_a_msg5(domain_name, link, unsubscribe):
 def form_a_msg6(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = domain_name + ' - Get Your Domain An Upgrade'
+    subject = domain_name + ' - Get Your Domain An Upgrade | Use The #1 Traffic Hack to Increase Website Visitors'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template6.html', 'r')
     content = file.read()
     htmly = Template(content)
@@ -163,7 +163,7 @@ def form_a_msg8(domain_name, link, unsubscribe):
 def form_a_msg9(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = domain_name + ' Get more traffic, more leads, more sales. Simple'
+    subject = domain_name + ' Steal Traffic | Increase Organic Views upto 400% With This Premium Name'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template9.html', 'r')
     content = file.read()
     htmly = Template(content)
