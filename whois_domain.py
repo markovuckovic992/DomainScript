@@ -56,7 +56,7 @@ def main(date):
                         uslov = False
                     else:
                         i += 1
-                        
+
         if email and '@' in email:
             email = "".join(email.split())
             blacklisted = BlackList.objects.filter(email=email)
@@ -65,7 +65,7 @@ def main(date):
             domain = email.split('@', 1)[1]
             super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
             super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain))
-            super_same_shit_2 = ProcessTracker.objects.filter(mail__endswith='@' + str(domain))
+            super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain))
             if blacklisted.exists():
                 RawLeads.objects.filter(id=data.id).delete()
             elif super_blacklisted.exists():
