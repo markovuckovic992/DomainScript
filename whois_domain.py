@@ -76,7 +76,7 @@ def main(date):
                 RawLeads.objects.filter(id=data.id).delete()
             else:
                 RawLeads.objects.filter(id=data.id).update(mail=email)
-                new = ProcessTracker(email=email, name_redemption=data.name_redemption, date=date)
+                new = ProcessTracker(email=email, name_redemption=data.name_redemption)
                 new.save()
                 if Emails.objects.filter(name_zone=data.name_zone).exists():
                     Emails.objects.filter(name_zone=data.name_zone).update(email=email)
