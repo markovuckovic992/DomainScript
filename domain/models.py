@@ -60,3 +60,11 @@ class Setting(models.Model):
     number_of_days = models.IntegerField(default=5)
     class Meta:
         db_table = 'settings'
+
+class ProcessTracker(models.Model):
+    email = models.CharField(max_length=320, blank=True, null=True)
+    name_redemption = models.CharField(max_length=100)
+    date = models.DateField(default=timezone.now)
+    
+    class Meta:
+        db_table = 'process_tracker'

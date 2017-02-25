@@ -8,7 +8,7 @@ import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 
-from domain.models import BlackList, AllHash, RawLeads, Setting, SuperBlacklist, Emails
+from domain.models import BlackList, AllHash, RawLeads, Setting, SuperBlacklist, Emails, ProcessTracker
 from django.core import mail
 from django.conf import settings
 from os import popen
@@ -39,6 +39,9 @@ class CronJobs:
         for item in hashes:
             hash_base_id = item['fields']['hash_base_id']
             AllHash.objects.filter(hash_base_id=hash_base_id).delete()
+
+        margin = (datetime.now() - timedelta(days=7)).date()
+        ProcessTracker.objects.filter(date__lte=margin).delete()
 
     def send(self):
         potential_profits = RawLeads.objects.filter(mail__isnull=False, activated=1).order_by('id')[:15]
