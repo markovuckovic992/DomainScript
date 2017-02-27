@@ -710,7 +710,8 @@ function whois_period() {
 }
 
 function remove_unwanted() {
-     $.ajax({
+    $("#cover").fadeIn(100);
+    $.ajax({
         type: "POST",
         url: "/remove_unwanted/",
         headers: {
@@ -718,6 +719,7 @@ function remove_unwanted() {
         },
         success: function(msg){
             alert('It\'s cleared!');
+            $("#cover").fadeOut(100);
         }
     });
 }

@@ -6,6 +6,7 @@
     {% csrf_token %}
     <div bgcolor="#D3D3D3">
         Date: <input type="text" id="datepicker" onchange="load_logs()">
+        <button onclick="remove_unwanted()">Cleanse</button>
         <div>
             {% if log %}
                 <p>Number of dropping domains :{{log.number_of_redemption}} out of {{log.number_of_all}}</p>
@@ -24,7 +25,6 @@
     <div bgcolor="gray">
         <input type="number" placeholder="number of days" id="whois_period" />
         <button onclick="whois_period()">Run whois!</button>
-        <button onclick="remove_unwanted()">Cleanse</button>
     </div>
     <script type="text/javascript">
       $( function() {
