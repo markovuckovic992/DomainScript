@@ -242,7 +242,7 @@ def removeUnwanted(request):
 
     # # delete duplicates
     unique_fields = ['name_redemption', 'mail']
-    duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(max_id=models.Max('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated=1, date=date, mail__isnull=False))
+    duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(max_id=models.Max('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated=1, mail__isnull=False))
 
     for duplicate in duplicates:
         (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['max_id']).delete())
