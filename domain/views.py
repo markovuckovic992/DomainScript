@@ -53,13 +53,13 @@ def add_manual(request):
     with open(file, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-            print row
-            name_zone = row[0].strip('"').replace(" ", "")
-            email = row[1].strip('"').replace(" ", "")
-            if email:
-                new = Emails(name_zone=name_zone, email=email)
-                new.save()
-                RawLeads.objects.filter(name_zone=name_zone).update(mail=email)
+            if len(row) > 1:
+                name_zone = row[0].strip('"').replace(" ", "")
+                email = row[1].strip('"').replace(" ", "")
+                if email:
+                    new = Emails(name_zone=name_zone, email=email)
+                    new.save()
+                    RawLeads.objects.filter(name_zone=name_zone).update(mail=email)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 # EDITING
