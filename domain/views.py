@@ -53,6 +53,7 @@ def add_manual(request):
     with open(file, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
+            print row
             name_zone = row[0].strip('"').replace(" ", "")
             email = row[1].strip('"').replace(" ", "")
             if email:
