@@ -594,6 +594,7 @@ function search_manual(id, number, hash) {
 }
 
 function add_manual() {
+    $("#cover").fadeIn(100);
     var file = $("#red_file_name").val();
     $.ajax({
         type: "POST",
@@ -603,7 +604,8 @@ function add_manual() {
             'X-CSRFToken': csrftoken,
         },
         success: function(msg){
-            alert("it's uploaded")
+            alert("it's uploaded");
+            $("#cover").fadeOut(100);
         },
          statusCode: {
             400: function() {
@@ -703,6 +705,19 @@ function whois_period() {
                 $("#cover").fadeOut(100);
                 alert('gateway timeout!');
             }
+        }
+    });
+}
+
+function remove_unwanted() {
+     $.ajax({
+        type: "POST",
+        url: "/remove_unwanted/",
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            alert('It\'s cleared!');
         }
     });
 }

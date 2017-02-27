@@ -226,34 +226,37 @@ def truncate(request):
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+def removeUnwanted(request):
+    # # blacklisting
+    bads = BlackList.objects.all()
+    for bad in bads:
+        bad2 = "".join(bad.email.split())
+        regex = r"\s*" + str(bad2) + "\s*"
+        RawLeads.objects.filter(mail__regex=regex).delete()
+
+    sbads = SuperBlacklist.objects.all()
+    for sbad in sbads:
+        bad2 = "".join(sbad.domain.split())
+        RawLeads.objects.filter(mail__icontains=bad2).delete()
+    # # end blacklist #
+
+    # # delete duplicates
+    unique_fields = ['name_redemption', 'mail']
+    duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(max_id=models.Max('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated=1, date=date, mail__isnull=False))
+
+    for duplicate in duplicates:
+        (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['max_id']).delete())
+    # # end delete #
+
+    return HttpResponse('{"status": "success"}', content_type="application/json")
 
 # ACTIVE LEADS
 def activeLeads(request):
-    # # blacklisting
-    # bads = BlackList.objects.all()
-    # for bad in bads:
-    #     bad2 = "".join(bad.email.split())
-    #     regex = r"\s*" + str(bad2) + "\s*"
-    #     RawLeads.objects.filter(mail__regex=regex).delete()
-
-    # sbads = SuperBlacklist.objects.all()
-    # for sbad in sbads:
-    #     bad2 = "".join(sbad.domain.split())
-    #     RawLeads.objects.filter(mail__icontains=bad2).delete()
-    # # end blacklist #
     if 'date' in request.GET.keys():
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
         date = datetime.now()
 
-
-    # # delete duplicates
-    # unique_fields = ['name_redemption', 'mail']
-    # duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(max_id=models.Max('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated=1, date=date, mail__isnull=False))
-
-    # for duplicate in duplicates:
-    #     (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['max_id']).delete())
-    # # end delete #
 
     raw_leads = RawLeads.objects.filter(activated=1, date=date)
     return render(
