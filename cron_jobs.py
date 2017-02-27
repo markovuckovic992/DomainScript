@@ -121,7 +121,6 @@ class CronJobs:
                         else:
                             index = response.find('Registrant Email')
                             if index == -1:
-                                print data.name_zone, 'entry 2'
                                 RawLeads.objects.filter(id=data.id).update(no_email_found=1)
                                 break
                             new = response[index:]
@@ -133,7 +132,7 @@ class CronJobs:
                             uslov = False
                         else:
                             i += 1
-            if email and '@' in email:                
+            if email and '@' in email:
                 email = "".join(email.split())
                 blacklisted = BlackList.objects.filter(email=email)
                 same_shit = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
