@@ -20,17 +20,17 @@
     <button onclick="add_multiple()">Add multiple</button>
     <button onclick="truncate(1)">Truncate</button>
     <button onclick="send_pending()">Send All Pending</button>
-   <table id="mytable" class="sortable" style="margin-left: 1%; width: 70%;">
+   <table id="mytable" class="sortable">
       <thead>
         <tr>
           <th>&nbsp;</th>
           <th>Dropping domain</th>
-          <th>Mark to send</th>
+          <th class='no-sort'>Mark to send</th>
           <th>Zone file domain</th>
           <th>Registrant mail</th>
-          <th>&nbsp;</th>
-          <th>Blacklist</th>
-          <th>Delete</th>
+          <th class='no-sort'>&nbsp;</th>
+          <th class='no-sort'>Blacklist</th>
+          <th class='no-sort'>Delete</th>
         </tr>
       </thead>
       <tbody>
