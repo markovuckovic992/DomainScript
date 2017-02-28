@@ -16,17 +16,17 @@
       <option value=".com">.COM</option>
       <option value=".net">.NET</option>
     </select>
-    <button onclick="find_active()">find active</button>    
+    <button onclick="find_active()">find active</button>
    <table id="mytable" class="sortable" style="margin-left: 1%; width: 70%;">
       <thead>
         <tr>
-          <th>
+          <th class='no-sort'>
             &nbsp;
           </th>
           <th>
             Zone file domain
           </th>
-          <th>
+          <th class='no-sort'>
             Mark as good
           </th>
           <th>
@@ -39,11 +39,9 @@
         <tr class="raw_leads_raw{{entry.page}}">
           <td>{{forloop.counter}}</td>
           <td class="zone"><a href="http://{{entry.name_zone}}" target="_blank">{{entry.name_zone}}</a></td>
-          {% if entry.mark %}
-            <td><input type="checkbox" id={{entry.id}} class="check_{{entry.page}} r_{{entry.name_redemption}}" checked  onclick="changestate('{{entry.id}}', event)"/>
-          {% else %}
-            <td><input type="checkbox" id={{entry.id}} class="check_{{entry.page}} r_{{entry.name_redemption}}" onclick="changestate('{{entry.id}}', event)"/></td>
-          {% endif %}
+          <td>
+            <input type="checkbox" id={{entry.id}} class="check_{{entry.page}} r_{{entry.name_redemption}}" {% if entry.mark == 1 %} checked {% endif %} onclick="changestate('{{entry.id}}', event)"/>
+          </td>
           <td class="sell redemption">
             {{entry.name_redemption}} ||
             <span style="color: green;" onclick="add_this_name('{{entry.name_redemption}}', {{entry.page}})">   Select
@@ -66,8 +64,23 @@
     <script type="text/javascript">
       $( function() {
         $('#mytable').DataTable({
-          "iDisplayLength": 5000
+            iDisplayLength: 5000,
+            searching: true,
+            stateSave: true,
+            paging: false,
+
+            "aoColumnDefs" : [
+                 {
+                   'bSortable' : false,
+                   'aTargets' : [ 'no-sort' ]
+                 }
+            ],
         });
+
+        // paging: true,
+        // lengthMenu: [ [10, 50, 100, 500, 1000], [10, 50, 100, 500, 1000] ],
+        // pageLength: 100,
+
         $('#mytable_length').css( 'display', 'none' );
         $('#mytable_paginate').css( 'display', 'none' );
         $('#mytable_info').css( 'display', 'none' );
