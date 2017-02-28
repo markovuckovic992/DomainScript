@@ -64,16 +64,18 @@
     <script type="text/javascript">
       $( function() {
         $('#mytable').DataTable({
-            iDisplayLength: 5000,
             searching: true,
             stateSave: true,
-            paging: false,
+
+            paging: true,
+            lengthMenu: [ [10, 50, 100, 500, 1000, 2000, 5000], [10, 50, 100, 500, 1000, 2000, 5000] ],
+            pageLength: 1000,
 
             "aoColumnDefs" : [
-                 {
+                {
                    'bSortable' : false,
                    'aTargets' : [ 'no-sort' ]
-                 }
+                }
             ],
         });
 
