@@ -15,7 +15,7 @@ def main(date):
     Log.objects.filter(date=datetime.now().date()).update(number_act=(int(number_of_old) + int(number_of_new)))
     Log.objects.filter(date=date).update(number_act_2=(int(number_of_old_2) + int(number_of_new)))
 
-    RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
+    # RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
 
     # hashes
     non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True, no_email_found=0)
@@ -105,7 +105,7 @@ def main_period(dates):
         Log.objects.filter(date=datetime.now().date()).update(number_act=(int(number_of_old) + int(number_of_new)))
         Log.objects.filter(date=date).update(number_act_2=(int(number_of_old_2) + int(number_of_new)))
 
-        RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
+        # RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
 
         # hashes
         non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True)

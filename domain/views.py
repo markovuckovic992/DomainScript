@@ -212,6 +212,10 @@ def rem_this_name(request):
 def find_mails(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
+
+    if 'submit' in request.POST.keys():
+        RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
+
     main(date)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 

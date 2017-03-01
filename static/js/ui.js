@@ -179,7 +179,7 @@ function find_mails() {
     $.ajax({
         type: "POST",
         url: "/find_mails/",
-        data: "date=" + date,
+        data: "date=" + date + "&submit=1",
         headers: {
             'X-CSRFToken': csrftoken
         },
