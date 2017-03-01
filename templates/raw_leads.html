@@ -40,21 +40,20 @@
           <td>{{forloop.counter}}</td>
           <td class="zone"><a href="http://{{entry.name_zone}}" target="_blank">{{entry.name_zone}}</a></td>
           <td>
-            <input type="checkbox" id={{entry.id}} class="check_{{entry.page}} r_{{entry.name_redemption}}" {% if entry.mark == 1 %} checked {% endif %} onclick="changestate('{{entry.id}}', event)"/>
+            <input type="checkbox" id={{entry.id}} class="check_{{entry.page}} r_{{entry.name_redemption}}{{entry.page}}" {% if entry.mark == 1 %} checked {% endif %} onclick="changestate('{{entry.id}}', event)"/>
           </td>
           <td class="sell redemption">
             {{entry.name_redemption}} ||
-            <span style="color: green;" onclick="add_this_name('{{entry.name_redemption}}', {{entry.page}})">   Select
-            </span>
-            ||
-            <span style="color: red;" onclick="rem_this_name('{{entry.name_redemption}}', {{entry.page}})">   Unselect
+            <span style="color: green;" onclick="add_this_name('{{entry.name_redemption}}', {{entry.page}})"> Select
+            </span> ||
+            <span style="color: red;" onclick="rem_this_name('{{entry.name_redemption}}', {{entry.page}})"> Unselect
             </span>
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-    <table style="margin-left: 20%; width: 60%;">
+    <table>
       <tbody>
         <tr>
           <td colspan="3" align="center"><input type="button" onclick="find_mails()" value="Submit"/></td>
@@ -69,7 +68,7 @@
 
             paging: true,
             lengthMenu: [ [10, 50, 100, 500, 1000, 2000, 5000], [10, 50, 100, 500, 1000, 2000, 5000] ],
-            pageLength: 1000,
+            pageLength: 100,
 
             "aoColumnDefs" : [
                 {

@@ -246,7 +246,7 @@ function truncate(act) {
 
 function add_this_name(name_redemption, page) {
     var date = $("#datepicker").val(), i;
-    var items = document.getElementsByClassName("r_" + name_redemption);
+    var items = document.getElementsByClassName("r_" + name_redemption + page);
     $.ajax({
         type: "POST",
         url: "/add_this_name/",
@@ -264,7 +264,7 @@ function add_this_name(name_redemption, page) {
 
 function rem_this_name(name_redemption, page) {
     var date = $("#datepicker").val(), i;
-    var items = document.getElementsByClassName("r_" + name_redemption);
+    var items = document.getElementsByClassName("r_" + name_redemption + page);
     $.ajax({
         type: "POST",
         url: "/rem_this_name/",
@@ -450,7 +450,7 @@ function add_mail_man(id, name_zone) {
         headers: {
             'X-CSRFToken': csrftoken,
         },
-        success: function(msg){
+        success: function(msg) {
             for (i = 0; i < msg.ids.length; i += 1) {
                 $("#mail_field_" + msg.ids[i]).html(html);
             }
