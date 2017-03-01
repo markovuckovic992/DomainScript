@@ -247,10 +247,6 @@ function truncate(act) {
 function add_this_name(name_redemption, page) {
     var date = $("#datepicker").val(), i;
     var items = document.getElementsByClassName("r_" + name_redemption + page);
-
-    var rows = $("#myTable").dataTable().$('tr');
-    console.log(rows);
-
     $.ajax({
         type: "POST",
         url: "/add_this_name/",
