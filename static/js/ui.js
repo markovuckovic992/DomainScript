@@ -250,7 +250,7 @@ function add_this_name(name_redemption, page) {
     var items = document.getElementsByClassName("r_" + name_redemption + page);
 
     for (i = 0; i < items.length; i += 1) {
-        ids.push(items[i].id;
+        ids.push(items[i].id);
     };
 
     $.ajax({
@@ -280,7 +280,7 @@ function rem_this_name(name_redemption, page) {
     var items = document.getElementsByClassName("r_" + name_redemption + page);
 
     for (i = 0; i < items.length; i += 1) {
-        ids.push(items[i].id;
+        ids.push(items[i].id);
     };
 
     $.ajax({
