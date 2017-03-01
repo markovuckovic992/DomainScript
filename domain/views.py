@@ -190,21 +190,27 @@ def select_all(request):
 
 
 def add_this_name(request):
-    redemption = request.POST['redemption']
-    page = request.POST['page']
-    date = request.POST['date']
+    ids = request.POST.get('ids')
+    jd = json.dumps(ids)
+    ids = eval(json.loads(jd))
+    redemption = request.POST.get('redemption')
+    page = request.POST.get('page')
+    date = request.POST.get('date')
     date = datetime.strptime(date, '%d-%m-%Y').date()
-    raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date)
+    raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date, id__in=ids)
     raw_leads.update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
 def rem_this_name(request):
-    redemption = request.POST['redemption']
-    page = request.POST['page']
-    date = request.POST['date']
+    ids = request.POST.get('ids')
+    jd = json.dumps(ids)
+    ids = eval(json.loads(jd))
+    redemption = request.POST.get('redemption')
+    page = request.POST.get('page')
+    date = request.POST.get('date')
     date = datetime.strptime(date, '%d-%m-%Y').date()
-    raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date)
+    raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date, id__in=ids)
     raw_leads.update(mark=0)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 

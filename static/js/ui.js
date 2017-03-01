@@ -246,14 +246,26 @@ function truncate(act) {
 
 function add_this_name(name_redemption, page) {
     var date = $("#datepicker").val(), i;
+    var ids = [];
     var items = document.getElementsByClassName("r_" + name_redemption + page);
+
+    for (i = 0; i < items.length; i += 1) {
+        ids.push(items[i].id;
+    }
+
     $.ajax({
         type: "POST",
         url: "/add_this_name/",
         headers: {
             'X-CSRFToken': csrftoken
         },
-        data: "redemption=" + name_redemption + "&page=" + page + "&date=" + date,
+        // data: "redemption=" + name_redemption + "&page=" + page + "&date=" + date,
+        data: {
+            'ids': JSON.stringify(ids),
+            'redemption': name_redemption,
+            'page': page,
+            'date': date,
+        },
         success: function (msg) {
         	for (i = 0; i < items.length; i += 1) {
     			items[i].checked = true;
@@ -264,14 +276,25 @@ function add_this_name(name_redemption, page) {
 
 function rem_this_name(name_redemption, page) {
     var date = $("#datepicker").val(), i;
+    var ids = [];
     var items = document.getElementsByClassName("r_" + name_redemption + page);
+
+    for (i = 0; i < items.length; i += 1) {
+        ids.push(items[i].id;
+    }
+
     $.ajax({
         type: "POST",
         url: "/rem_this_name/",
         headers: {
             'X-CSRFToken': csrftoken
         },
-        data: "redemption=" + name_redemption + "&page=" + page + "&date=" + date,
+        data: {
+            'ids': JSON.stringify(ids),
+            'redemption': name_redemption,
+            'page': page,
+            'date': date,
+        },
         success: function (msg) {
             for (i = 0; i < items.length; i += 1) {
                 items[i].checked = false;
