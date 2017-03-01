@@ -251,7 +251,7 @@ function add_this_name(name_redemption, page) {
 
     for (i = 0; i < items.length; i += 1) {
         ids.push(items[i].id;
-    }
+    };
 
     $.ajax({
         type: "POST",
@@ -272,7 +272,7 @@ function add_this_name(name_redemption, page) {
         	}
         }
     });
-}
+};
 
 function rem_this_name(name_redemption, page) {
     var date = $("#datepicker").val(), i;
@@ -281,7 +281,7 @@ function rem_this_name(name_redemption, page) {
 
     for (i = 0; i < items.length; i += 1) {
         ids.push(items[i].id;
-    }
+    };
 
     $.ajax({
         type: "POST",
@@ -301,7 +301,7 @@ function rem_this_name(name_redemption, page) {
             }
         }
     });
-}
+};
 //ACTIVE LEADS
 function load_send() {
     var date = $("#datepicker").val();
