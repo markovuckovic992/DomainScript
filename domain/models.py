@@ -17,6 +17,7 @@ class RawLeads(models.Model):
 
     date = models.DateField(default=timezone.now)
     hash_base_id = models.CharField(max_length=32, unique=True, blank=True, null=True)
+    reminder = models.SmallIntegerField(default=0)
 
     class Meta:
         db_table = "raw_leads"
@@ -65,6 +66,6 @@ class ProcessTracker(models.Model):
     email = models.CharField(max_length=320, blank=True, null=True)
     name_redemption = models.CharField(max_length=100)
     date = models.DateField(default=timezone.now)
-    
+
     class Meta:
         db_table = 'process_tracker'

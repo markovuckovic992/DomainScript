@@ -16,7 +16,12 @@ from os import popen
 
 class CronJobs:
     def __init__(self):
-        pass
+        self.hosts = [
+            'webdomainexpert.us',
+            'webdomainexpert.host',
+            'webdomainexpert.site',
+            'webdomainexpert.club',
+        ]
 
     def deleteOldData(self):
         condition = True
@@ -44,26 +49,17 @@ class CronJobs:
         ProcessTracker.objects.filter(date__lte=margin).delete()
 
     def send(self):
-        potential_profits = RawLeads.objects.filter(mail__isnull=False, activated=1).order_by('id')[:15]
+        potential_profits = RawLeads.objects.filter(mail__isnull=False, activated=1).order_by('id')[:8]
         connection = mail.get_connection()
         connection.open()
-        emails = []
 
         for potential_profit in potential_profits:
-            hash = hashlib.md5()
-            hash.update(str(potential_profit.id))
-            hash_base_id = hash.hexdigest()
-            i = 0
-            while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-                hash.update(str(potential_profit.id + i))
-                hash_base_id = hash.hexdigest()
-                i += 1
-            new_entry = AllHash(hash_base_id=hash_base_id)
-            new_entry.save()
+            hash_base_id = potential_profit.hash_base_id
             try:
-                link = ('http://www.webdomainexpert.pw/offer/?id=' + str(hash_base_id))
-                unsubscribe = ('http://www.webdomainexpert.pw/unsubscribe/?id=' + str(hash_base_id))
-                case = randint(1, 4)
+                iterator = randint(0, 3)
+                link = ('http://www.' + str(hosts[iterator]) + '/offer/?id=' + str(hash_base_id))
+                unsubscribe = ('http://www.' + str(hosts[iterator]) + '/unsubscribe/?id=' + str(hash_base_id))
+                case = randint(1, 10)
                 msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
                     link) + '","' + str(unsubscribe) + '")')
 
@@ -77,22 +73,48 @@ class CronJobs:
                         'remail': potential_profit.mail,
                     }
                 )
-                if req.status_code == 200:
-                    RawLeads.objects.filter(id=potential_profit.id).delete()
+                if req.status_code == 204:
+                    hash = hashlib.md5()
+                    hash.update(str(potential_profit.id + 100000))
+                    hash_base_id = hash.hexdigest()
 
+                    req = requests.post(
+                        "http://www.webdomainexpert.pw/add_offer/",
+                        data={
+                            'base_id': potential_profit.id,
+                            'drop': potential_profit.name_redemption,
+                            'lead': potential_profit.name_zone,
+                            'hash_base_id': hash_base_id,
+                            'remail': potential_profit.mail,
+                        }
+                    )
+
+                if req.status_code == 200:
+                    AllHash.objects.filter(hash_base_id=hash_base_id)
+                    RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id)
+
+                    emails = []
                     email = mail.EmailMultiAlternatives(
                         msg[0],
                         'potential_profit.name_zone',
-                        'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
+                        'Web Domain Expert <' + str(settings.EMAIL_HOST_USER) + '>',
                         [potential_profit.mail],
+                        reply_to=("support@webdomainexpert.com", ),
+                        bcc=["bcc-webdomainexpert@outlook.com"],
                     )
-
                     email.attach_alternative(msg[1], "text/html")
                     emails.append(email)
+                    try:
+                        connection.send_messages(emails)
+                        asdi += 1
+                    except SMTPServerDisconnected:
+                        connection = mail.get_connection()
+                        connection.open()
+                        connection.send_messages(emails)
             except:
                 print traceback.format_exc()
-        connection.send_messages(emails)
         connection.close()
+
 
     def whois(self):
         f = open('deleted.txt', 'a')
@@ -175,6 +197,41 @@ class CronJobs:
 
         f.close()
 
+    def check(self):
+        req = requests.post("http://www.webdomainexpert.pw/check_for_offers/")
+        if req.status_code == 200:
+            items = req.json()
+            ids = items['ids']
+            RawLeads.objects.filter(hash_base_id__in=ids).delete()
+
+        # SENDING
+        reminders = RawLeads.objects.filter(reminder=1)[:7]
+
+        connection = mail.get_connection()
+        connection.open()
+        asdi = 0
+        emails = []
+
+        for reminder in reminders:
+            case = randint(1, 10)
+            index = randint(0, 3)
+            link = ('http://www.' + str(self.hosts[index]) + '/offer/?id=' + str(offer.hash_base_id))
+            unsubscribe = ('http://www.' + str(self.hosts[index]) + '/unsubscribe/?id=' + str(offer.hash_base_id))
+            sub, msg = eval('pr_msg("' + str(offer.drop) + '", "' + str(name) + '", "' + str(unsubscribe) + '", "' + str(link) + '")')
+
+            email = mail.EmailMultiAlternatives(
+                sub,
+                '',
+                'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
+                [reminder.mail],
+            )
+
+            email.attach_alternative(msg, "text/html")
+            emails.append(email)
+
+        connection.send_messages(emails)
+        connection.close()
+
 c_j = CronJobs()
 if len(sys.argv) > 1:
     if sys.argv[1] == 'delete':
@@ -183,3 +240,5 @@ if len(sys.argv) > 1:
         c_j.send()
     elif sys.argv[1] == 'whois':
         c_j.whois()
+    elif sys.argv[1] == 'dont_touch':
+        c_j.check()

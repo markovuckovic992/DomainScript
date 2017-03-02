@@ -245,7 +245,7 @@ def activeLeads(request):
         date = datetime.now()
 
 
-    raw_leads = RawLeads.objects.filter(activated=1, date=date)
+    raw_leads = RawLeads.objects.filter(activated=1, date=date, reminder=0)
     return render(
         request,
         'active_leads.html',
@@ -436,9 +436,9 @@ def send_mails(request):
                 )
 
             if req.status_code == 200:
-                hsbid = RawLeads.objects.get(id=potential_profit.id).hash_base_id
-                AllHash.objects.filter(hash_base_id=hsbid)
-                RawLeads.objects.filter(id=potential_profit.id).delete()
+                AllHash.objects.filter(hash_base_id=hash_base_id)
+                # RawLeads.objects.filter(id=potential_profit.id).delete()
+                RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id)
 
                 emails = []
                 email = mail.EmailMultiAlternatives(
@@ -644,9 +644,9 @@ def send_pending(request):
                 )
 
             if req.status_code == 200:
-                hsbid = RawLeads.objects.get(id=potential_profit.id).hash_base_id
-                AllHash.objects.filter(hash_base_id=hsbid)
-                RawLeads.objects.filter(id=potential_profit.id).delete()
+                AllHash.objects.filter(hash_base_id=hash_base_id)
+                # RawLeads.objects.filter(id=potential_profit.id).delete()
+                RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id)
 
                 emails = []
                 email = mail.EmailMultiAlternatives(
