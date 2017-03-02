@@ -4,7 +4,7 @@ import sys, requests, json, hashlib, traceback
 from datetime import datetime, timedelta
 from random import randint
 from domain.apps import *
-import os
+import os, pytz
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 
@@ -205,7 +205,10 @@ class CronJobs:
             RawLeads.objects.filter(hash_base_id__in=ids).delete()
 
         # SENDING
-        reminders = RawLeads.objects.filter(reminder=1)[:7]
+        two_days_ago = (datetime.now() - timedelta(days=2))
+        two_days_ago = pytz.timezone('Europe/Belgrade').localize(two_days_ago)
+
+        reminders = RawLeads.objects.filter(reminder=1, last_email_date__lt=two_days_ago)[:7]
 
         connection = mail.get_connection()
         connection.open()

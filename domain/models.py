@@ -18,6 +18,7 @@ class RawLeads(models.Model):
     date = models.DateField(default=timezone.now)
     hash_base_id = models.CharField(max_length=32, unique=True, blank=True, null=True)
     reminder = models.SmallIntegerField(default=0)
+    last_email_date = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = "raw_leads"
