@@ -202,7 +202,7 @@ class CronJobs:
         if req.status_code == 200:
             items = req.json()
             ids = items['ids']
-            RawLeads.objects.filter(hash_base_id__in=ids).delete()
+            RawLeads.objects.filter(hash_base_id__in=ids, reminder=1).delete()
 
         # SENDING
         two_days_ago = (datetime.now() - timedelta(days=2))
