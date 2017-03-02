@@ -664,7 +664,7 @@ def send_pending(request):
                     asdi += 1
 
                     number_of_old_2 = Log.objects.get(date=potential_profit.date).number_sent_2
-                    Log.objects.filter(date=date).update(number_sent_2=(1 + int(number_of_old_2)))
+                    Log.objects.filter(date=potential_profit.date).update(number_sent_2=(1 + int(number_of_old_2)))
 
                 except SMTPServerDisconnected:
                     connection = mail.get_connection()
