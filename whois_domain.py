@@ -64,8 +64,8 @@ def main(date):
             same_shit_2 = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
             domain = email.split('@', 1)[1]
             super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
-            super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain))
-            super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain))
+            super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain), name_redemption=data.name_redemption)
+            super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain), name_redemption=data.name_redemption)
             if blacklisted.exists():
                 RawLeads.objects.filter(id=data.id).delete()
             elif super_blacklisted.exists():
@@ -153,8 +153,8 @@ def main_period(dates):
                 same_shit_2 = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
                 domain = email.split('@', 1)[1]
                 super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
-                super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain))
-                super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain))
+                super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain), name_redemption=data.name_redemption)
+                super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain), name_redemption=data.name_redemption)
                 if blacklisted.exists():
                     RawLeads.objects.filter(id=data.id).delete()
                 elif super_blacklisted.exists():

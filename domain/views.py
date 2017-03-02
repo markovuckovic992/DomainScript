@@ -7,6 +7,7 @@ from django.db import models
 from urllib import unquote
 from domain.models import *
 from domain.apps import *
+from domain.lib import removeStuff
 from basic_editing import main_filter
 from whois_domain import main, main_period
 from django.core.mail import send_mail
@@ -56,10 +57,24 @@ def add_manual(request):
             if len(row) > 1:
                 name_zone = row[0].strip('"').replace(" ", "")
                 email = row[1].strip('"').replace(" ", "")
-                if email:
-                    new = Emails(name_zone=name_zone, email=email)
-                    new.save()
+                if email and '@' in email:
+                    if not Emails.objects.filter(name_zone=name_zone, email=email).exists():
+                        new = Emails(name_zone=name_zone, email=email)
+                        new.save()
+
+                    leads = RawLeads.objects.filter(name_zone=name_zone)
+                    for lead in leads:
+                        domain = email.split('@', 1)[1]
+                        super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain), name_redemption=lead.name_redemption)
+                        super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain), name_redemption=lead.name_redemption)
+
+                        if super_same_shit.exists() or super_same_shit_2.exists():
+                            RawLeads.objects.filter(id=lead.id).delete()
+
                     RawLeads.objects.filter(name_zone=name_zone).update(mail=email)
+
+    removeStuff()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 # EDITING
@@ -725,26 +740,5 @@ def admin(request):
 
 @login_required
 def removeUnwanted(request):
-    # # blacklisting
-    bads = BlackList.objects.all()
-    for bad in bads:
-        bad2 = "".join(bad.email.split())
-        regex = r"\s*" + str(bad2) + "\s*"
-        RawLeads.objects.filter(mail__regex=regex).delete()
-
-    sbads = SuperBlacklist.objects.all()
-    for sbad in sbads:
-        bad2 = "".join(sbad.domain.split())
-        bad2 = '@' + bad2
-        RawLeads.objects.filter(mail__icontains=bad2).delete()
-    # # end blacklist #
-
-    # # delete duplicates
-    unique_fields = ['name_redemption', 'mail']
-    duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(max_id=models.Max('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated=1, mail__isnull=False))
-
-    for duplicate in duplicates:
-        (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['max_id']).delete())
-    # # end delete #
-
+    removeStuff()
     return HttpResponse('{"status": "success"}', content_type="application/json")
