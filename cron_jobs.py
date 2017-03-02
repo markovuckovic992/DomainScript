@@ -57,8 +57,8 @@ class CronJobs:
             hash_base_id = potential_profit.hash_base_id
             try:
                 iterator = randint(0, 3)
-                link = ('http://www.' + str(hosts[iterator]) + '/offer/?id=' + str(hash_base_id))
-                unsubscribe = ('http://www.' + str(hosts[iterator]) + '/unsubscribe/?id=' + str(hash_base_id))
+                link = ('http://www.' + str(self.hosts[iterator]) + '/offer/?id=' + str(hash_base_id))
+                unsubscribe = ('http://www.' + str(self.hosts[iterator]) + '/unsubscribe/?id=' + str(hash_base_id))
                 case = randint(1, 10)
                 msg = eval('form_a_msg' + str(case) + '("' + str(potential_profit.name_redemption) + '","' + str(
                     link) + '","' + str(unsubscribe) + '")')
