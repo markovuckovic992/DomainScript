@@ -213,11 +213,12 @@ class CronJobs:
         emails = []
 
         for reminder in reminders:
+            name = ''
             case = randint(1, 10)
             index = randint(0, 3)
-            link = ('http://www.' + str(self.hosts[index]) + '/offer/?id=' + str(offer.hash_base_id))
-            unsubscribe = ('http://www.' + str(self.hosts[index]) + '/unsubscribe/?id=' + str(offer.hash_base_id))
-            sub, msg = eval('pr_msg("' + str(offer.drop) + '", "' + str(name) + '", "' + str(unsubscribe) + '", "' + str(link) + '")')
+            link = ('http://www.' + str(self.hosts[index]) + '/offer/?id=' + str(reminder.hash_base_id))
+            unsubscribe = ('http://www.' + str(self.hosts[index]) + '/unsubscribe/?id=' + str(reminder.hash_base_id))
+            sub, msg = eval('pr_msg' + str(case) + '("' + str(reminder.name_redemption) + '", "' + str(name) + '", "' + str(unsubscribe) + '", "' + str(link) + '")')
 
             email = mail.EmailMultiAlternatives(
                 sub,
@@ -228,6 +229,8 @@ class CronJobs:
 
             email.attach_alternative(msg, "text/html")
             emails.append(email)
+
+            RawLeads.objects.filter(id=reminder.id).delete()
 
         connection.send_messages(emails)
         connection.close()

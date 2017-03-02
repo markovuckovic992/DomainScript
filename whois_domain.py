@@ -82,15 +82,7 @@ def main(date):
                     Emails.objects.filter(name_zone=data.name_zone).update(email=email)
                 else:
                     new = Emails(name_zone=data.name_zone, email=email)
-                    new.save()
-
-    file = open('zone_with_no_emails.txt', 'w')
-    file.seek(0)
-    file.truncate()
-
-    datas = RawLeads.objects.filter(activated=1, mail__isnull=True)
-    for data in datas:
-        file.write(data.name_zone + '\n')
+                    new.save()   
 
 
 
@@ -172,15 +164,7 @@ def main_period(dates):
                     else:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
-
-
-    file = open('zone_with_no_emails.txt', 'w')
-    file.seek(0)
-    file.truncate()
-
-    datas = RawLeads.objects.filter(activated=1, mail__isnull=True)
-    for data in datas:
-        file.write(data.name_zone + '\n')
+    
 
 if __name__ == "__main__":
     main(datetime.now().date())

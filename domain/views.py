@@ -541,6 +541,14 @@ def remove_from_blacklist(request):
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def download(request):
+    file = open('zone_with_no_emails.txt', 'w')
+    file.seek(0)
+    file.truncate()
+
+    datas = RawLeads.objects.filter(activated=1, mail__isnull=True)
+    for data in datas:
+        file.write(data.name_zone + '\n')
+
     f = open('zone_with_no_emails.txt', "r")
     res = HttpResponse(f)
     res['Content-Disposition'] = 'attachment; filename=zone_with_no_email.txt'
