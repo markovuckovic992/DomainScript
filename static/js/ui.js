@@ -84,9 +84,13 @@ function run_script(arg) {
                         400: function() {
                           alert('400 status code! user error, reload page');
                         },
+                        403: function() {
+                          alert('CSRF error, reload page!');
+                        },
                         500: function() {
                           alert('500 status code! server error, reload page');
                         },
+
                         502: function() {
                             alert('gateway timeout!')
                         },
