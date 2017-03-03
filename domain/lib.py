@@ -1,7 +1,10 @@
 from django.db import models
 from domain.models import *
+from datetime import datetime, timedelta
 
 def removeStuff():
+    date = datetime.now().date() - timedelta(days=14)
+    RawLeads.objects.filter(date__lt=date).delete()
     # # blacklisting
     bads = BlackList.objects.all()
     for bad in bads:

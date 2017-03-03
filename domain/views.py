@@ -545,9 +545,12 @@ def download(request):
     file.seek(0)
     file.truncate()
 
+    all_ = []
     datas = RawLeads.objects.filter(activated=1, mail__isnull=True)
     for data in datas:
-        file.write(data.name_zone + '\n')
+        if data.name_zone not in all_:
+            file.write(data.name_zone + '\n')
+            all_.append(data.name_zone)
 
     f = open('zone_with_no_emails.txt', "r")
     res = HttpResponse(f)
