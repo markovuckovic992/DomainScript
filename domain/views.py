@@ -628,7 +628,7 @@ def search_results(request):
     return render(request, 'search.html', {'search_leads': search_leads})
 
 def send_pending(request):
-    potential_profits = RawLeads.objects.filter(activated=1, mail__isnull=False)
+    potential_profits = RawLeads.objects.filter(activated=1, mail__isnull=False, reminder=0)
 
     connection = mail.get_connection()
     connection.open()
