@@ -327,7 +327,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     gc.collect()
 
     threads = []
-    if org_path:
+    if org_path and org_path != 'none':
         file = open(org_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -340,7 +340,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     else:
         pass
 
-    if net_path:
+    if net_path and net_path != 'none':
         file = open(net_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -353,7 +353,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     else:
         pass
 
-    if info_path:
+    if info_path and info_path != 'none':
         file = open(info_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -368,7 +368,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     else:
         pass
 
-    if com_path:
+    if com_path and com_path != 'none':
         file = open(com_path, "r")
         all_domains = set(file.readlines())
         file.close()

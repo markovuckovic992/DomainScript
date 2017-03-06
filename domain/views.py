@@ -113,7 +113,24 @@ def runEditing(request):
 
 
         argument = "pypy " + path + "/" + script + ".py "
-        argument += (com + " " + net + " " + org + " " + info + " ")
+
+        if com:
+            argument += (com + " ")
+        else:
+            argument += "none "
+        if net:
+            argument += (net + " ")
+        else:
+            argument += "none "
+        if org:
+            argument += (org + " ")
+        else:
+            argument += "none "
+        if info:
+            argument += (info + " ")
+        else:
+            argument += "none "
+
 
         if us:
             argument += (us + " ")
