@@ -409,7 +409,7 @@ def send_mails(request):
 
     AllHash.objects.filter(hash_base_id__in=blacklist_ids + delete_ids)
 
-    potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1, mail__isnull=False)
+    potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1, mail__isnull=False, reminder=0)
 
     connection = mail.get_connection()
     connection.open()
@@ -628,7 +628,7 @@ def search_results(request):
     return render(request, 'search.html', {'search_leads': search_leads})
 
 def send_pending(request):
-    potential_profits = RawLeads.objects.filter(activated=1, mail__isnull=False)
+    potential_profits = RawLeads.objects.filter(activated=1, mail__isnull=False, reminder=0)
 
     connection = mail.get_connection()
     connection.open()

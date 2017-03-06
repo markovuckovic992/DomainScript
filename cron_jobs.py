@@ -24,6 +24,8 @@ class CronJobs:
         ]
 
     def deleteOldData(self):
+        date = datetime.now().date() - timedelta(days=14)
+        RawLeads.objects.filter(date__lt=date).delete()
         condition = True
         while condition:
             response = requests.post(
@@ -49,7 +51,7 @@ class CronJobs:
         ProcessTracker.objects.filter(date__lte=margin).delete()
 
     def send(self):
-        potential_profits = RawLeads.objects.filter(mail__isnull=False, activated=1).order_by('id')[:8]
+        potential_profits = RawLeads.objects.filter(mail__isnull=False, activated=1, reminder=0).order_by('id')[:8]
         connection = mail.get_connection()
         connection.open()
 
@@ -208,7 +210,7 @@ class CronJobs:
         two_days_ago = (datetime.now() - timedelta(days=2))
         two_days_ago = pytz.timezone('Europe/Belgrade').localize(two_days_ago)
 
-        reminders = RawLeads.objects.filter(reminder=1, last_email_date__lt=two_days_ago)[:7]
+        reminders = RawLeads.objects.filter(reminder=1, last_email_date__lt=two_days_ago)[:15]
 
         connection = mail.get_connection()
         connection.open()
