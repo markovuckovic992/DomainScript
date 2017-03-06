@@ -51,7 +51,7 @@ function run_script(arg) {
     var date = $("#datepicker").val()
     var len  = date.split("-").length;
     console.log(len);
-    if (org && com && net && info && redempt && (len === 3)) {
+    if (redempt && (len === 3)) {
         if (chkDuplicates([org, net, com, info, redempt])) {
             alert("You have selected some domain list twice");
         } else {
