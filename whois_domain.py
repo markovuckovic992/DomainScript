@@ -67,12 +67,45 @@ def main(date):
             super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain), name_redemption=data.name_redemption)
             super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain), name_redemption=data.name_redemption)
             if blacklisted.exists():
+                record = DeletedInfo(
+                    name_zone=data.name_zone,
+                    name_redemption=data.name_redemption,
+                    date=data.name,
+                    email=email,
+                    reason='email is blacklisted'
+                )
+                record.save()
                 RawLeads.objects.filter(id=data.id).delete()
+                record.save()
             elif super_blacklisted.exists():
+                record = DeletedInfo(
+                    name_zone=data.name_zone,
+                    name_redemption=data.name_redemption,
+                    date=data.name,
+                    email=email,
+                    reason='domain is blacklisted'
+                )
+                record.save()
                 RawLeads.objects.filter(id=data.id).delete()
             elif same_shit.exists() or same_shit_2.exists():
+                record = DeletedInfo(
+                    name_zone=data.name_zone,
+                    name_redemption=data.name_redemption,
+                    date=data.name,
+                    email=email,
+                    reason='duplicate'
+                )
+                record.save()
                 RawLeads.objects.filter(id=data.id).delete()
             elif super_same_shit.exists() or super_same_shit_2.exists():
+                record = DeletedInfo(
+                    name_zone=data.name_zone,
+                    name_redemption=data.name_redemption,
+                    date=data.name,
+                    email=email,
+                    reason='duplicate domain'
+                )
+                record.save()
                 RawLeads.objects.filter(id=data.id).delete()
             else:
                 RawLeads.objects.filter(id=data.id).update(mail=email)
@@ -82,7 +115,7 @@ def main(date):
                     Emails.objects.filter(name_zone=data.name_zone).update(email=email)
                 else:
                     new = Emails(name_zone=data.name_zone, email=email)
-                    new.save()   
+                    new.save()
 
 
 
@@ -148,12 +181,44 @@ def main_period(dates):
                 super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain), name_redemption=data.name_redemption)
                 super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain), name_redemption=data.name_redemption)
                 if blacklisted.exists():
+                    record = DeletedInfo(
+                        name_zone=data.name_zone,
+                        name_redemption=data.name_redemption,
+                        date=data.name,
+                        email=email,
+                        reason='email is blacklisted'
+                    )
+                    record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 elif super_blacklisted.exists():
+                    record = DeletedInfo(
+                        name_zone=data.name_zone,
+                        name_redemption=data.name_redemption,
+                        date=data.name,
+                        email=email,
+                        reason='domain is blacklisted'
+                    )
+                    record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 elif same_shit.exists() or same_shit_2.exists():
+                    record = DeletedInfo(
+                        name_zone=data.name_zone,
+                        name_redemption=data.name_redemption,
+                        date=data.name,
+                        email=email,
+                        reason='duplicate'
+                    )
+                    record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 elif super_same_shit.exists() or super_same_shit_2.exists():
+                    record = DeletedInfo(
+                        name_zone=data.name_zone,
+                        name_redemption=data.name_redemption,
+                        date=data.name,
+                        email=email,
+                        reason='duplicate domain'
+                    )
+                    record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
                     RawLeads.objects.filter(id=data.id).update(mail=email)
@@ -164,7 +229,7 @@ def main_period(dates):
                     else:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
-    
+
 
 if __name__ == "__main__":
     main(datetime.now().date())

@@ -69,7 +69,17 @@ def add_manual(request):
                         super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain), name_redemption=lead.name_redemption)
 
                         if super_same_shit.exists() or super_same_shit_2.exists():
-                            RawLeads.objects.filter(id=lead.id).delete()
+                            datas = RawLeads.objects.filter(id=lead.id)
+                            for data in datas:
+                                record = DeletedInfo(
+                                    name_zone=data.name_zone,
+                                    name_redemption=data.name_redemption,
+                                    date=data.name,
+                                    email=data.mail,
+                                    reason='domain is blacklisted'
+                                )
+                                record.save()
+                                RawLeads.objects.filter(id=data.id).delete()
 
                     RawLeads.objects.filter(name_zone=name_zone).update(mail=email)
 
@@ -264,7 +274,17 @@ def truncate(request):
     date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(activated=activated, date=date)
     hash_base_ids = map(attrgetter('hash_base_id'), raw_leads)
-    RawLeads.objects.filter(activated=activated, date=date).delete()
+    datas = RawLeads.objects.filter(activated=activated, date=date)
+    for data in datas:
+        record = DeletedInfo(
+            name_zone=data.name_zone,
+            name_redemption=data.name_redemption,
+            date=data.name,
+            email=data.mail,
+            reason='truncate'
+        )
+        record.save()
+        RawLeads.objects.filter(id=data.id).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -636,13 +656,22 @@ def search_results(request):
             name_zone__contains=name_zone,
             name_redemption__contains=name_redemption,
             date=date,
-        )[0:200]
+        )[0:150]
+        search_dels = DeletedInfo.objects.filter(
+            name_zone__contains=name_zone,
+            name_redemption__contains=name_redemption,
+            date=date,
+        )[0:50]
     except:
         search_leads = RawLeads.objects.filter(
             name_zone__contains=name_zone,
             name_redemption__contains=name_redemption
         )[0:200]
-    return render(request, 'search.html', {'search_leads': search_leads})
+        search_dels = DeletedInfo.objects.filter(
+            name_zone__contains=name_zone,
+            name_redemption__contains=name_redemption
+        )[0:50]
+    return render(request, 'search.html', {'search_leads': search_leads, 'search_dels': search_dels})
 
 def send_pending(request):
     potential_profits = RawLeads.objects.filter(activated=1, mail__isnull=False, reminder=0)

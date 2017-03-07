@@ -8,7 +8,7 @@ import os, pytz
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 
-from domain.models import BlackList, AllHash, RawLeads, Setting, SuperBlacklist, Emails, ProcessTracker
+from domain.models import BlackList, AllHash, RawLeads, Setting, SuperBlacklist, Emails, ProcessTracker, DeletedInfo
 from django.core import mail
 from django.conf import settings
 from os import popen
@@ -24,8 +24,10 @@ class CronJobs:
         ]
 
     def deleteOldData(self):
-        date = datetime.now().date() - timedelta(days=14)
+        date = datetime.now().date() - timedelta(days=21)
         RawLeads.objects.filter(date__lt=date).delete()
+        DeletedInfo.objects.filter(date__lt=date).delete()
+
         condition = True
         while condition:
             response = requests.post(
@@ -140,7 +142,8 @@ class CronJobs:
                         response = tube.read()
                         if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
                             print data.name_zone, 'entry 1'
-                            f.write((data.name_zone).replace('\n', '').replace('\r', '') + ': REASON, STATUS! \n\r')
+                            record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.name, reason='domain has bad status')
+                            record.save()
                             RawLeads.objects.filter(id=data.id).delete()
                         else:
                             index = response.find('Registrant Email')
@@ -165,15 +168,47 @@ class CronJobs:
                 super_same_shit = RawLeads.objects.filter(mail__endswith='@' + str(domain))
                 if blacklisted.exists():
                     print data.name_zone, 'entry 3'
+                    record = DeletedInfo(
+                        name_zone=data.name_zone,
+                        name_redemption=data.name_redemption,
+                        date=data.name,
+                        email=email,
+                        reason='email is blacklisted'
+                    )
+                    record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 elif super_blacklisted.exists():
                     print data.name_zone, 'entry 4'
+                    record = DeletedInfo(
+                        name_zone=data.name_zone,
+                        name_redemption=data.name_redemption,
+                        date=data.name,
+                        email=email,
+                        reason='domain is blacklisted'
+                    )
+                    record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 elif same_shit.exists():
                     print data.name_zone, 'entry 5'
+                    record = DeletedInfo(
+                        name_zone=data.name_zone,
+                        name_redemption=data.name_redemption,
+                        date=data.name,
+                        email=email,
+                        reason='duplicate'
+                    )
+                    record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 elif super_same_shit.exists():
                     print data.name_zone, 'entry 5'
+                    record = DeletedInfo(
+                        name_zone=data.name_zone,
+                        name_redemption=data.name_redemption,
+                        date=data.name,
+                        email=email,
+                        reason='duplicate domain'
+                    )
+                    record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
                     print data.name_zone, 'entry 6'

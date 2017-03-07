@@ -4,10 +4,10 @@
 {% endblock %}
 {% block content %}
     <form action="/search_results/" method="POST" style="margin-left: 20%; width: 60%;">{% csrf_token %}
-      <input type="text" name="zone_domain" id="zone_domain" placeholder="lead"/>    
-      <input type="text" name="drop_domain" id="drop_domain" placeholder="drop"/>    
-      <input type="text" name="datepicker" id="datepicker" placeholder="date">               
-      <input type="submit" value="Search" />          
+      <input type="text" name="zone_domain" id="zone_domain" placeholder="lead"/>
+      <input type="text" name="drop_domain" id="drop_domain" placeholder="drop"/>
+      <input type="text" name="datepicker" id="datepicker" placeholder="date">
+      <input type="submit" value="Search" />
     </form>
     {% if search_leads %}
    <table border='1px solid' style="margin-left: 20%; width: 60%;">
@@ -21,10 +21,10 @@
           </th>
           <th>
             Lead, Drop
-          </th>          
+          </th>
           <th>
             Date
-          </th>       
+          </th>
           <th>
             Hash
           </th>
@@ -44,7 +44,38 @@
           <td>{{entry.hash_base_id}} </td>
         </tr>
         {% endfor %}
-      </tbody>  
+      </tbody>
+    </table>
+      {% endif %}
+
+    {% if search_dels %}
+   <table border='1px solid' style="margin-left: 20%; width: 60%;">
+      <thead>
+        <tr>
+          <th>
+            Lead
+          </th>
+          <th>
+            Drop
+          </th>
+          <th>
+            Email
+          </th>
+          <th>
+            Date
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in search_dels %}
+        <tr>
+          <td>{{entry.name_zone}}</td>
+          <td>{{entry.name_redemption}}</td>
+          <td>{{entry.email}} </td>
+          <td>{{entry.date}} </td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
       {% endif %}
     <script type="text/javascript">
