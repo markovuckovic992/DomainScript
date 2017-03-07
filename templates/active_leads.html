@@ -96,6 +96,17 @@
                    'aTargets' : [ 'no-sort' ]
                 }
             ],
+            "fnDrawCallback": function( oSettings ) {
+                // $('#filter_by_dom').val('')
+                var rows = $('#mytable tbody tr');
+                var temp = $('#filter_by_dom').val().toLowerCase();
+                var n, text;
+                rows.show().filter(function() {
+                    text = $(this).find('td.redemption').text().toLowerCase();
+                    n = text.indexOf(temp);
+                    return n === -1;
+                }).hide();
+            },
         });
 
         // $('#mytable_length').css( 'display', 'none' );
