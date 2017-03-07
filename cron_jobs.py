@@ -137,12 +137,13 @@ class CronJobs:
                 while uslov:
                     try:
                         tube = popen("whois '" + str(
-                            (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:'",
+                            (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:|No match for'",
                                      'r')
                         response = tube.read()
+                        print response
                         if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
                             print data.name_zone, 'entry 1'
-                            record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.name, reason='domain has bad status')
+                            record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
                             record.save()
                             RawLeads.objects.filter(id=data.id).delete()
                         else:
@@ -171,7 +172,7 @@ class CronJobs:
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
-                        date=data.name,
+                        date=data.date,
                         email=email,
                         reason='email is blacklisted'
                     )
@@ -182,7 +183,7 @@ class CronJobs:
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
-                        date=data.name,
+                        date=data.date,
                         email=email,
                         reason='domain is blacklisted'
                     )
@@ -193,7 +194,7 @@ class CronJobs:
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
-                        date=data.name,
+                        date=data.date,
                         email=email,
                         reason='duplicate'
                     )
@@ -204,7 +205,7 @@ class CronJobs:
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
-                        date=data.name,
+                        date=data.date,
                         email=email,
                         reason='duplicate domain'
                     )

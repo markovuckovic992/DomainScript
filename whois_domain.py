@@ -70,7 +70,7 @@ def main(date):
                 record = DeletedInfo(
                     name_zone=data.name_zone,
                     name_redemption=data.name_redemption,
-                    date=data.name,
+                    date=data.date,
                     email=email,
                     reason='email is blacklisted'
                 )
@@ -81,7 +81,7 @@ def main(date):
                 record = DeletedInfo(
                     name_zone=data.name_zone,
                     name_redemption=data.name_redemption,
-                    date=data.name,
+                    date=data.date,
                     email=email,
                     reason='domain is blacklisted'
                 )
@@ -91,7 +91,7 @@ def main(date):
                 record = DeletedInfo(
                     name_zone=data.name_zone,
                     name_redemption=data.name_redemption,
-                    date=data.name,
+                    date=data.date,
                     email=email,
                     reason='duplicate'
                 )
@@ -101,7 +101,7 @@ def main(date):
                 record = DeletedInfo(
                     name_zone=data.name_zone,
                     name_redemption=data.name_redemption,
-                    date=data.name,
+                    date=data.date,
                     email=email,
                     reason='duplicate domain'
                 )
@@ -184,7 +184,7 @@ def main_period(dates):
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
-                        date=data.name,
+                        date=data.date,
                         email=email,
                         reason='email is blacklisted'
                     )
@@ -204,7 +204,7 @@ def main_period(dates):
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
-                        date=data.name,
+                        date=data.date,
                         email=email,
                         reason='duplicate'
                     )
@@ -214,7 +214,7 @@ def main_period(dates):
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
-                        date=data.name,
+                        date=data.date,
                         email=email,
                         reason='duplicate domain'
                     )

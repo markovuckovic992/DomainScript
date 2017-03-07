@@ -74,7 +74,7 @@ def add_manual(request):
                                 record = DeletedInfo(
                                     name_zone=data.name_zone,
                                     name_redemption=data.name_redemption,
-                                    date=data.name,
+                                    date=data.date,
                                     email=data.mail,
                                     reason='domain is blacklisted'
                                 )
@@ -279,7 +279,7 @@ def truncate(request):
         record = DeletedInfo(
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
-            date=data.name,
+            date=data.date,
             email=data.mail,
             reason='truncate'
         )

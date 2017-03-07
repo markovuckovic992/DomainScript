@@ -230,6 +230,7 @@ function find_mails_again() {
 function truncate(act) {
     var passwd = prompt("Enter Password : ", "your password here");
     if (passwd == 2011) {
+        $("#cover").fadeIn(100);
         var date = $("#datepicker").val();
         $.ajax({
             type: "POST",
@@ -239,7 +240,8 @@ function truncate(act) {
             },
             data: "date=" + date + "&activated=" + act,
             success: function (msg) {
-                alert("It's Done!")
+                $("#cover").fadeOut(100);
+                alert("It's Done!");
                 window.location.href=('/raw_leads/?date=' + date);
             }
         });
