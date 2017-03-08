@@ -164,6 +164,9 @@ def runEditing(request):
             argument += "none "
 
         argument += (redempt + " " + str(date))
+
+        print argument
+
         popen(argument)
         # main_filter(com, net, org, info, redempt, date)
         return HttpResponse('{"status": "success"}', content_type="application/json")
