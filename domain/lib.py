@@ -15,7 +15,7 @@ def removeStuff():
             record = DeletedInfo(
                 name_zone=data.name_zone,
                 name_redemption=data.name_redemption,
-                date=data.name,
+                date=data.date,
                 email=data.mail,
                 reason='email is blacklisted'
             )
@@ -31,7 +31,7 @@ def removeStuff():
             record = DeletedInfo(
                 name_zone=data.name_zone,
                 name_redemption=data.name_redemption,
-                date=data.name,
+                date=data.date,
                 email=data.mail,
                 reason='domain is blacklisted'
             )
@@ -49,7 +49,7 @@ def removeStuff():
             record = DeletedInfo(
                 name_zone=data.name_zone,
                 name_redemption=data.name_redemption,
-                date=data.name,
+                date=data.date,
                 email=data.mail,
                 reason='duplicate'
             )
