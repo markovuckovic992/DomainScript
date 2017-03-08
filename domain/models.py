@@ -76,7 +76,7 @@ class DeletedInfo(models.Model):
     name_redemption = models.CharField(max_length=100)
     date = models.DateField(default=timezone.now)
     email = models.CharField(max_length=320, blank=True, null=True)
-    reason = models.CharField(max_length=320, blank=True, null=True)
+    reason = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         db_table = 'delete_info'
