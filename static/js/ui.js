@@ -242,7 +242,11 @@ function truncate(act) {
             success: function (msg) {
                 $("#cover").fadeOut(100);
                 alert("It's Done!");
-                window.location.href=('/raw_leads/?date=' + date);
+                if (act == 1) {
+                    window.location.href=('/active_leads/?date=' + date);
+                } else {
+                    window.location.href=('/raw_leads/?date=' + date);
+                }
             }
         });
     } else {
