@@ -86,6 +86,10 @@
                     n = text.indexOf(temp);
                     return n === -1;
                 }).hide();
+
+                $('body,html').animate({
+                    scrollTop : 0
+                }, 500);
             },
         });
 
