@@ -144,6 +144,7 @@ def fcn(domain_data, pt):
                         parts = parts1
                     parts_no_numbers = [x for x in parts if not x.isdigit()]
                     digits = [x for x in parts if x.isdigit()]
+                    print '\n', parts_no_numbers, digits, '\n'
                     if len(parts_no_numbers) <= 3 and len(digits) <= 0:
                         super_tmp = ''
                         for part in parts_no_numbers:
