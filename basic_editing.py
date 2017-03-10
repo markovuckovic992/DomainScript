@@ -103,6 +103,8 @@ def fcn(domain_data, pt):
         pass
     elif len(domain) >= 60:
         pass
+    elif any(char.isdigit() for char in domain):
+        pass
     else:
         keywords = []
         bad_keywords = []
