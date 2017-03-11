@@ -12,7 +12,7 @@ import csv, sys, gc, os, django, hashlib
 os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, Log, AllHash
+from domain.models import RawLeads, Log, AllHash, Setting
 
 fname = 'No Path selected'
 fname2 = 'No Path selected'
@@ -21,6 +21,18 @@ start_time = time.time()
 word_man = ['online']
 bad_keywords_list = 'aaaaaaaaaaaabbbbbbbbbasdaaasdffdsa-abbabc'
 
+# SETTINGS!
+    sett = Setting.objects.get(id=1)
+
+    com_net = sett.com_net # 0 com, 1 net, 2 both
+    length = sett.length 
+    number_of_digits = sett.number_of_digits 
+    number_of_keywords = sett.number_of_keywords 
+    allow_bad_keywords = sett.allow_bad_keywords 
+    min_length = sett.min_length 
+    max_length = sett.max_length 
+
+# END!
 
 class progress_timer:
     def __init__(self, n_iter, description="Something"):
@@ -90,11 +102,18 @@ some_variable = 0
 def fcn(domain_data, pt):
     global words, link, some_variable, result_list, result_list_b
     domain = domain_data[0]
-    if domain.split(".")[1] not in ["com\n", "net\n ", "com\r\n", "net\r\n", "com", "net"]:
+    # FILTER 1
+    allowed_extensions = ["com\n", "com", "com\r\n", "net\n ", "net\r\n", "net"]
+    if com_net == 1:
+        allowed_extensions = allowed_extensions[3:]
+    elif com_net == 0:
+        allowed_extensions = allowed_extensions[:3]
+    # END FILTER 1
+    if domain.split(".")[1] not in allowed_extensions:
         pass
-    elif len(domain) >= 60:
+    elif len(domain) >= length:
         pass
-    elif any(char.isdigit() for char in domain):
+    elif sum(char.isdigit() for char in domain) > number_of_digits:
         pass
     else:
         keywords = []
@@ -104,13 +123,13 @@ def fcn(domain_data, pt):
         tmp = temp.split(".")[0]
         parts1 = [w for w in re.split(r'[`\-=~!@#$%^&*()_+\[\]{};\'\\:"|<,./<>?]', tmp)]
         parts = []
-        if len(parts1) <= 3:
+        if len(parts1) <= number_of_keywords:
             for part in parts1:
                 temp = (infer_spaces(part).split())
                 parts += (temp)
             parts_no_numbers = [x for x in parts if not x.isdigit()]
             digits = [x for x in parts if x.isdigit()]
-            if len(parts_no_numbers) <= 3 and len(digits) <= 0:
+            if len(parts_no_numbers) <= number_of_keywords and len(digits) <= 0:
                 super_tmp = ''
                 for part in parts_no_numbers:
                     if part not in words:
@@ -123,47 +142,17 @@ def fcn(domain_data, pt):
 
         if len(keywords) and len(bad_keywords) <= 0:
             result_list.append({'domain': domain, 'keywords': keywords})
-        else:
+        elif allow_bad_keywords:
             domain = domain_data[0]
             if domain.split(".")[1] not in ["com\n", "com\r\n", "com"]:
                 pass
-            elif len(domain) >= 60:
-                pass
             else:
-                keywords = []
-                bad_keywords = []
                 tmp = domain.split(".")[0]
                 temp = str(domain).lstrip('.')
                 tmp = temp.split(".")[0]
-                parts1 = [w for w in re.split(r'[`\-=~!@#$%^&*()_+\[\]{};\'\\:"|<,./<>?]', tmp)]
-                parts = []
-                if len(parts1) <= 3:
-                    if len(parts1) != 1:
-                        for part in parts1:
-                            temp = (infer_spaces(part).split())
-                            parts += (temp)
-                    else:
-                        parts = parts1
-                    parts_no_numbers = [x for x in parts if not x.isdigit()]
-                    digits = [x for x in parts if x.isdigit()]
-                    if len(parts_no_numbers) <= 3 and len(digits) <= 0:
-                        super_tmp = ''
-                        for part in parts_no_numbers:
-                            if part not in words:
-                                if (4 < len(part) < 11) and len(parts_no_numbers) == 1:
-                                    keywords.append(part)
-                                    super_tmp = tmp.replace(part, ' ')
-                                    tmp = deepcopy(super_tmp)
-                                else:
-                                    break
-                            elif len(part) > 3:
-                                keywords.append(part)
-                                super_tmp = tmp.replace(part, ' ')
-                                tmp = deepcopy(super_tmp)
-                        bad_keywords = super_tmp.split()
 
-                if len(keywords) and len(bad_keywords) <= 0:
-                    result_list_b.append({'domain': domain, 'keywords': keywords})
+                if (min_length < len(tmp) < max_length):
+                    result_list_b.append({'domain': domain, 'keywords': [tmp]})                
     return 1
 
 

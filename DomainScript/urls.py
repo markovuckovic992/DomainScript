@@ -23,6 +23,7 @@ urlpatterns = [
     #  editing
     url(r'^$', domain.views.editing),
     url(r'^run_script/', domain.views.runEditing),
+    url(r'^change_setting/', domain.views.changeSetting),
     #  raw leads
     url(r'^raw_leads/', domain.views.rawLeads),
     url(r'^reverse_state/', domain.views.reverse_state),

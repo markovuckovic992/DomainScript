@@ -105,6 +105,17 @@ function run_script(arg) {
         alert("Something is wrong, check entries!");
     }
 }
+
+function changeSetting(id, value) {
+    $.ajax({
+        type: "POST",
+        url: "/change_setting/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: "id=" + id + '&value=' + value,
+    });
+}
 //RAW LEADS
 var lastChecked = null;
 

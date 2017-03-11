@@ -91,7 +91,14 @@ def add_manual(request):
 def editing(request):
     if request.user:
         logout(request)
-    return render(request, 'editing.html', {})
+    sett = Setting.objects.get(id=1)
+    return render(request, 'editing.html', {'sett': sett})
+
+def changeSetting(request):
+    name = request.POST['id']
+    value = request.POST['value']
+    Setting.objects.filter(id=1).update(**{ name: value })
+    return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def runEditing(request):
     try:

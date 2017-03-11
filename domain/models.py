@@ -60,6 +60,14 @@ class Emails(models.Model):
 
 class Setting(models.Model):
     number_of_days = models.IntegerField(default=5)
+    com_net = models.SmallIntegerField(default=2) # 0 com, 1 net, 2 both
+    length = models.SmallIntegerField(default=60) 
+    number_of_digits = models.SmallIntegerField(default=0)
+    number_of_keywords = models.SmallIntegerField(default=3)
+    allow_bad_keywords = models.SmallIntegerField(default=1)
+    min_length = models.SmallIntegerField(default=4)
+    max_length = models.SmallIntegerField(default=11)
+
     class Meta:
         db_table = 'settings'
 
