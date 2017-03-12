@@ -330,7 +330,7 @@ result_list_b = []
 iterno = 0
 
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
-    global result_list, link, value, text
+    global result_list, link, value, text, iterno
     paths = [com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path]
     usefull_data = []
     with open(redemption_path, 'r') as csvfile:
@@ -363,20 +363,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     for path in paths:
         if path and path != 'none':
             fcn3(path, pt, date)
+            print iterno
             fcn5(path, pt, date)
+            print iterno
         else:
             pass
-
-def threadmain():
-    global value
-    tk = Tk()
-    progress = Progressbar(tk, orient=HORIZONTAL, length=100, mode='determinate')
-    v = StringVar()
-    Label(tk, textvariable=v).pack()
-    progress.pack()
-    tk.after(1, bar, tk, progress, v)
-    tk.mainloop()
-
 
 if __name__ == '__main__':
     value = 0.0
