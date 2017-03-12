@@ -319,6 +319,7 @@ def fcn4(domain_dict, pt, all_domains, date):
 
 def fcn5(path, pt, date):
     global result_list_b
+    print result_list_b
     file = open(path, "r")
     for result in result_list_b:
         file.seek(0, 0)
@@ -362,10 +363,8 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     pt = progress_timer(description='process : ', n_iter=(len(result_list + result_list_b) * nbr))
     for path in paths:
         if path and path != 'none':
-            fcn3(path, pt, date)
-            print iterno
+            # fcn3(path, pt, date)
             fcn5(path, pt, date)
-            print iterno
         else:
             pass
 
