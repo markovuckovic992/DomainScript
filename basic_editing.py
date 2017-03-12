@@ -276,6 +276,7 @@ def fcn4(domain_dict, pt, all_domains, date):
         for matched_domain in matched_lines:
             if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
                 iterno += 1
+                print iterno
                 page = floor(iterno / 5000) + 1
                 try:
                     base1 = matched_domain.split(".", 1)[0]
@@ -322,8 +323,6 @@ def fcn5(path, pt, date):
     file = open(path, "r")
     for result in result_list_b:
         file.seek(0, 0)
-        fcn4(result, pt, file, date)
-        print result
     file.close()
 
 result_list = []

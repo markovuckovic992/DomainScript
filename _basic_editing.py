@@ -242,6 +242,7 @@ def fcn3(domain_dict, pt, all_domains, date):
         for matched_domain in matched_lines:
             if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
                 iterno += 1
+                print iterno
                 page = floor(iterno / 5000) + 1
                 try:
                     base1 = matched_domain.split(".", 1)[0]
