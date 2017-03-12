@@ -789,6 +789,7 @@ def admin(request):
             'number_sent_2':log.number_sent_2 if log else 0,
             'number_of_redemption': log.number_of_redemption,
             'number_of_all': log.number_of_all,
+            'duration': log.duration,
         }
     else:
         data_to_show = None
