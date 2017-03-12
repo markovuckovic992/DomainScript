@@ -263,6 +263,7 @@ def fcn4(domain_dict, pt, all_domains, date):
                 while True:
                     local_data = all_domains.next()
                     data_to_compare = local_data.lower()
+                    print data_to_compare, keyword
                     if data_to_compare.startswith(keyword):
                         matched_lines.append(data_to_compare)
             except:
@@ -323,6 +324,7 @@ def fcn5(path, pt, date):
     file = open(path, "r")
     for result in result_list_b:
         file.seek(0, 0)
+        fcn4(result, pt, file, date)
     file.close()
 
 result_list = []
