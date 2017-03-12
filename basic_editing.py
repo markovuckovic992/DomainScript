@@ -361,7 +361,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     pt = progress_timer(description='process : ', n_iter=(len(result_list + result_list_b) * nbr))
     for path in paths:
         if path and path != 'none':
-            # fcn3(path, pt, date)
+            fcn3(path, pt, date)
             fcn5(path, pt, date)
         else:
             pass
