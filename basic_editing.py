@@ -253,6 +253,7 @@ def fcn4(domain_dict, pt, all_domains, date):
     global some_variable, link, iterno
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
+    all_domains = generator(file)
     some_variable += 1
     keywords = sorted(keywords, key=len, reverse=True)
     ready_to_write = True
@@ -261,11 +262,18 @@ def fcn4(domain_dict, pt, all_domains, date):
     matched_lines_copy = []
     for keyword in keywords:
         if len(matched_lines) == 0 and condition:
-            matched_lines = [line.lower() for line in all_domains if line.lower().startswith(keyword) or line.lower().endswith(keyword)]
+            try:
+                while True:
+                    local_data = all_domains.next()
+                    data_to_compare = local_data.lower()
+                    if data_to_compare.startswith(keyword):
+                        matched_lines.append(data_to_compare)
+            except:
+                pass
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
-            matched_lines_copy = [line for line in matched_lines_copy if line[0].startswith(keyword) or line[0].endswith(keyword)]
+            matched_lines_copy = [line for line in matched_lines_copy if keyword in line[0]]
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
