@@ -319,11 +319,11 @@ def fcn4(domain_dict, pt, all_domains, date):
 
 def fcn5(path, pt, date):
     global result_list_b
-    print result_list_b
     file = open(path, "r")
     for result in result_list_b:
         file.seek(0, 0)
         fcn4(result, pt, file, date)
+        print result
     file.close()
 
 result_list = []
