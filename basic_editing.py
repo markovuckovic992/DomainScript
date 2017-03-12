@@ -350,11 +350,15 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     usefull_data = None
     pt = None
     gc.collect()
-    Log.objects.filter(date=sys.argv[11]).update(number_of_redemption=len(result_list))
+    Log.objects.filter(date=sys.argv[11]).update(number_of_redemption=len(result_list + result_list_b))
     threads = []
-    increment = (100.0 / len(result_list))
-    value = 0
-    pt = progress_timer(description='process : ', n_iter=(len(result_list) * 4))
+
+    nbr = 0
+    for path in paths:
+        if path and path != 'none':
+            nbr += 1
+
+    pt = progress_timer(description='process : ', n_iter=(len(result_list + result_list_b) * nbr))
     for path in paths:
         if path and path != 'none':
             fcn3(path, pt, date)
