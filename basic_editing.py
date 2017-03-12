@@ -245,8 +245,7 @@ def fcn3(path, pt, date):
         fcn2(result, pt, file, date)
     file.close()
 
-
-def fcn4(domain_dict, pt, all_domains, date):
+def fcn4(domain_dict, pt, file, date):
     global some_variable, link, iterno
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
