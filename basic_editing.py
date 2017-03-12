@@ -15,7 +15,7 @@ import csv, sys, gc, os, django, hashlib
 os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, Log, AllHash
+from domain.models import RawLeads, Log, AllHash, Setting
 from datetime import datetime
 
 fname = 'No Path selected'
@@ -24,6 +24,19 @@ file_size = 0
 start_time = time.time()
 word_man = ['online']
 bad_keywords_list = 'aaaaaaaaaaaabbbbbbbbbasdaaasdffdsa-abbabc'
+
+# SETTINGS!
+sett = Setting.objects.get(id=1)
+
+com_net = sett.com_net # 0 com, 1 net, 2 both
+length = sett.length
+number_of_digits = sett.number_of_digits
+number_of_keywords = sett.number_of_keywords
+allow_bad_keywords = sett.allow_bad_keywords
+min_length = sett.min_length
+max_length = sett.max_length
+
+# END!
 
 def generator(file):
     for line in file:
@@ -97,13 +110,20 @@ some_variable = 0
 
 
 def fcn(domain_data, pt):
-    global words, link, some_variable, result_list
+    global words, link, some_variable, result_list, result_list_b
     domain = domain_data[0]
-    if domain.split(".")[1] not in ["com\n", "net\n ", "com\r\n", "net\r\n", "com", "net"]:
+    # FILTER 1
+    allowed_extensions = ["com\n", "com", "com\r\n", "net\n ", "net\r\n", "net"]
+    if com_net == 1:
+        allowed_extensions = allowed_extensions[3:]
+    elif com_net == 0:
+        allowed_extensions = allowed_extensions[:3]
+    # END FILTER 1
+    if domain.split(".")[1] not in allowed_extensions:
         pass
-    elif len(domain) >= 60:
+    elif len(domain) >= length:
         pass
-    elif any(char.isdigit() for char in domain):
+    elif sum(char.isdigit() for char in domain) > number_of_digits:
         pass
     else:
         keywords = []
@@ -113,22 +133,17 @@ def fcn(domain_data, pt):
         tmp = temp.split(".")[0]
         parts1 = [w for w in re.split(r'[`\-=~!@#$%^&*()_+\[\]{};\'\\:"|<,./<>?]', tmp)]
         parts = []
-        if len(parts1) <= 3:
+        if len(parts1) <= number_of_keywords:
             for part in parts1:
                 temp = (infer_spaces(part).split())
                 parts += (temp)
             parts_no_numbers = [x for x in parts if not x.isdigit()]
             digits = [x for x in parts if x.isdigit()]
-            if len(parts_no_numbers) <= 3 and len(digits) <= 0:
+            if len(parts_no_numbers) <= number_of_keywords and len(digits) <= 0:
                 super_tmp = ''
                 for part in parts_no_numbers:
                     if part not in words:
-                        if (4 < len(part) < 11) and len(parts_no_numbers) == 1:
-                            keywords.append(part)
-                            super_tmp = tmp.replace(part, ' ')
-                            tmp = deepcopy(super_tmp)
-                        else:
-                            break
+                        break
                     elif len(part) > 3:
                         keywords.append(part)
                         super_tmp = tmp.replace(part, ' ')
@@ -137,7 +152,17 @@ def fcn(domain_data, pt):
 
         if len(keywords) and len(bad_keywords) <= 0:
             result_list.append({'domain': domain, 'keywords': keywords})
-    pt.update()
+        elif allow_bad_keywords:
+            domain = domain_data[0]
+            if domain.split(".")[1] not in ["com\n", "com\r\n", "com"]:
+                pass
+            else:
+                tmp = domain.split(".")[0]
+                temp = str(domain).lstrip('.')
+                tmp = temp.split(".")[0]
+
+                if (min_length < len(tmp) < max_length):
+                    result_list_b.append({'domain': domain, 'keywords': [tmp]})
     return 1
 
 
@@ -221,7 +246,79 @@ def fcn3(path, pt, date):
     file.close()
 
 result_list = []
+result_list_b = []
 iterno = 0
+
+def fcn4(domain_dict, pt, all_domains, date):
+    global some_variable, link, iterno
+    domain = domain_dict['domain']
+    keywords = domain_dict['keywords']
+    some_variable += 1
+    keywords = sorted(keywords, key=len, reverse=True)
+    ready_to_write = True
+    condition = True
+    matched_lines = []
+    matched_lines_copy = []
+    for keyword in keywords:
+        if len(matched_lines) == 0 and condition:
+            matched_lines = [line.lower() for line in all_domains if line.lower().startswith(keyword) or line.lower().endswith(keyword)]
+            matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
+            condition = False
+        else:
+            matched_lines_copy = [line for line in matched_lines_copy if line[0].startswith(keyword) or line[0].endswith(keyword)]
+    matched_lines = [line[1] for line in matched_lines_copy]
+    if len(matched_lines) and ready_to_write:
+        for matched_domain in matched_lines:
+            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
+                iterno += 1
+                page = floor(iterno / 5000) + 1
+                try:
+                    base1 = matched_domain.split(".", 1)[0]
+                    base2 = domain.split(".", 1)[0]
+                    if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
+                        activated = 1
+                    else:
+                        activated = 0
+                except:
+                    activated = 0
+                entry = RawLeads(
+                    name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                    name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                    date=date,
+                    page=page,
+                    activated=activated
+                )
+                entry.save()
+
+                _id = RawLeads.objects.get(
+                       name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                       name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                       date=date,
+                       page=page,
+                       activated=activated
+                ).id
+
+                hash = hashlib.md5()
+                hash.update(str(_id))
+                hash_base_id = hash.hexdigest()
+                jj = 0
+                while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+                    hash.update(str(_id + jj))
+                    hash_base_id = hash.hexdigest()
+                    jj += 1
+                new_entry = AllHash(hash_base_id=hash_base_id)
+                new_entry.save()
+                RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+
+    pt.update()
+
+def fcn5(path, pt, date):
+    global result_list_b
+    file = open(path, "r")
+    for result in result_list_b:
+        file.seek(0, 0)
+        fcn4(result, pt, file, date)
+    file.close()
 
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
     global result_list, link, value, text
@@ -253,6 +350,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     for path in paths:
         if path and path != 'none':
             fcn3(path, pt, date)
+            fcn5(path, pt, date)
         else:
             pass
 
