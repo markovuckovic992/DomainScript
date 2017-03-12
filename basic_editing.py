@@ -267,7 +267,7 @@ def fcn4(domain_dict, pt, all_domains, date):
                     if data_to_compare.startswith(keyword):
                         matched_lines.append(data_to_compare)
             except:
-                pass
+                print traceback.format_exc()
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
