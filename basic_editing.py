@@ -245,9 +245,6 @@ def fcn3(path, pt, date):
         fcn2(result, pt, file, date)
     file.close()
 
-result_list = []
-result_list_b = []
-iterno = 0
 
 def fcn4(domain_dict, pt, all_domains, date):
     global some_variable, link, iterno
@@ -327,6 +324,10 @@ def fcn5(path, pt, date):
         file.seek(0, 0)
         fcn4(result, pt, file, date)
     file.close()
+
+result_list = []
+result_list_b = []
+iterno = 0
 
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
     global result_list, link, value, text
