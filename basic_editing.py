@@ -262,11 +262,10 @@ def fcn4(domain_dict, pt, file, date):
                 while True:
                     local_data = all_domains.next()
                     data_to_compare = local_data.lower()
-                    print data_to_compare, keyword
                     if data_to_compare.startswith(keyword):
                         matched_lines.append(data_to_compare)
             except:
-                print traceback.format_exc()
+                pass
             matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
@@ -276,7 +275,6 @@ def fcn4(domain_dict, pt, file, date):
         for matched_domain in matched_lines:
             if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
                 iterno += 1
-                print iterno
                 page = floor(iterno / 5000) + 1
                 try:
                     base1 = matched_domain.split(".", 1)[0]
