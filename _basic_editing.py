@@ -143,7 +143,7 @@ def fcn(domain_data, pt):
 
         if len(keywords) and len(bad_keywords) <= 0:
             result_list.append({'domain': domain, 'keywords': keywords})
-            file.write(str({'domain': domain, 'keywords': keywords}))
+            file.write(str({'domain': domain, 'keywords': keywords}) + '\n')
         elif allow_bad_keywords:
             domain = domain_data[0]
             if domain.split(".")[1] not in ["com\n", "com\r\n", "com"]:
@@ -155,7 +155,7 @@ def fcn(domain_data, pt):
 
                 if (min_length < len(tmp) < max_length):
                     result_list_b.append({'domain': domain, 'keywords': [tmp]})
-                    file.write(str({'domain': domain, 'keywords': [tmp]}))
+                    file.write(str({'domain': domain, 'keywords': [tmp]}) + '\n')
     file.close()
     return 1
 
@@ -295,6 +295,11 @@ iterno = 0
 
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
     global result_list, result_list_b, all_domains, link, value, text
+
+    file = open('filtered_domains.txt', 'a')
+    file.truncate()
+    file.close()
+
     usefull_data = []
     with open(redemption_path, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
