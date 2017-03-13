@@ -100,6 +100,7 @@ words = set(list(wd.words()) + list(brown.words()) + word_man)
 some_variable = 0
 
 def fcn(domain_data, pt):
+    file = open('filtered_domains.txt', 'a')
     global words, link, some_variable, result_list, result_list_b
     domain = domain_data[0]
     # FILTER 1
@@ -142,6 +143,7 @@ def fcn(domain_data, pt):
 
         if len(keywords) and len(bad_keywords) <= 0:
             result_list.append({'domain': domain, 'keywords': keywords})
+            file.write(str({'domain': domain, 'keywords': keywords}))
         elif allow_bad_keywords:
             domain = domain_data[0]
             if domain.split(".")[1] not in ["com\n", "com\r\n", "com"]:
@@ -153,6 +155,8 @@ def fcn(domain_data, pt):
 
                 if (min_length < len(tmp) < max_length):
                     result_list_b.append({'domain': domain, 'keywords': [tmp]})
+                    file.write(str({'domain': domain, 'keywords': [tmp]}))
+    file.close()
     return 1
 
 
