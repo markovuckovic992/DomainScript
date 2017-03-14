@@ -60,8 +60,8 @@ class Emails(models.Model):
 
 class Setting(models.Model):
     number_of_days = models.IntegerField(default=5)
-    com_net = models.SmallIntegerField(default=2) # 0 com, 1 net, 2 both
-    length = models.SmallIntegerField(default=60) 
+    com_net = models.SmallIntegerField(default=2)  # 0 com, 1 net, 2 both
+    length = models.SmallIntegerField(default=60)
     number_of_digits = models.SmallIntegerField(default=0)
     number_of_keywords = models.SmallIntegerField(default=3)
     allow_bad_keywords = models.SmallIntegerField(default=1)
@@ -85,6 +85,15 @@ class DeletedInfo(models.Model):
     date = models.DateField(default=timezone.now)
     email = models.CharField(max_length=320, blank=True, null=True)
     reason = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'delete_info'
+
+
+class EventLogger(models.Model):
+    ip = models.CharField(max_length=16)
+    action = models.CharField(max_length=100)
+    date = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = 'delete_info'

@@ -194,7 +194,7 @@ def main_period(dates):
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
-                        date=data.name,
+                        date=data.date,
                         email=email,
                         reason='domain is blacklisted'
                     )

@@ -220,12 +220,23 @@ def reverse_state(request):
         else:
             mark = 0
         RawLeads.objects.filter(id__in=ids).update(mark=mark)
+        action = 'Marked ' if mark == 1 else 'Unmarked '
+
+        ip = get_client_ip(request)
+        el = EventLogger(ip=ip, action=(action + str(ids) + ""))
+        el.save()
+
     else:
         raw_leads_id = int(unquote(request.POST['id']))
         mark = RawLeads.objects.get(id=raw_leads_id).mark
         mark += 1
         mark %= 2
         RawLeads.objects.filter(id=raw_leads_id).update(mark=mark)
+        action = 'Marked ' if mark == 1 else 'Unmarked '
+
+        ip = get_client_ip(request)
+        el = EventLogger(ip=ip, action=(action + str(raw_leads_id) + ""))
+        el.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -248,6 +259,12 @@ def add_this_name(request):
     date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date, id__in=ids)
     raw_leads.update(mark=1)
+
+
+    ip = get_client_ip(request)
+    el = EventLogger(ip=ip, action="Marked " + str(ids) + " as good(1) ")
+    el.save()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -261,6 +278,11 @@ def rem_this_name(request):
     date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date, id__in=ids)
     raw_leads.update(mark=0)
+
+    ip = get_client_ip(request)
+    el = EventLogger(ip=ip, action="Unmarked " + str(ids) + "")
+    el.save()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -807,3 +829,12 @@ def admin(request):
 def removeUnwanted(request):
     removeStuff()
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
