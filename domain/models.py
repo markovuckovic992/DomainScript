@@ -95,5 +95,3 @@ class EventLogger(models.Model):
     action = models.CharField(max_length=100)
     date = models.DateTimeField(default=timezone.now)
 
-    class Meta:
-        db_table = 'delete_info'
