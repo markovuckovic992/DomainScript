@@ -92,6 +92,6 @@ class DeletedInfo(models.Model):
 
 class EventLogger(models.Model):
     ip = models.CharField(max_length=16)
-    action = models.CharField(max_length=100)
+    action = models.CharField(max_length=10000)
     date = models.DateTimeField(default=timezone.now)
 
