@@ -97,16 +97,16 @@ def main(date):
                 )
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
-            elif super_same_shit.exists() or super_same_shit_2.exists():
-                record = DeletedInfo(
-                    name_zone=data.name_zone,
-                    name_redemption=data.name_redemption,
-                    date=data.date,
-                    email=email,
-                    reason='duplicate domain'
-                )
-                record.save()
-                RawLeads.objects.filter(id=data.id).delete()
+            # elif super_same_shit.exists() or super_same_shit_2.exists():
+            #     record = DeletedInfo(
+            #         name_zone=data.name_zone,
+            #         name_redemption=data.name_redemption,
+            #         date=data.date,
+            #         email=email,
+            #         reason='duplicate domain'
+            #     )
+            #     record.save()
+            #     RawLeads.objects.filter(id=data.id).delete()
             else:
                 RawLeads.objects.filter(id=data.id).update(mail=email)
                 new = ProcessTracker(email=email, name_redemption=data.name_redemption)
@@ -190,16 +190,16 @@ def main_period(dates):
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
-                elif super_blacklisted.exists():
-                    record = DeletedInfo(
-                        name_zone=data.name_zone,
-                        name_redemption=data.name_redemption,
-                        date=data.date,
-                        email=email,
-                        reason='domain is blacklisted'
-                    )
-                    record.save()
-                    RawLeads.objects.filter(id=data.id).delete()
+                # elif super_blacklisted.exists():
+                #     record = DeletedInfo(
+                #         name_zone=data.name_zone,
+                #         name_redemption=data.name_redemption,
+                #         date=data.date,
+                #         email=email,
+                #         reason='domain is blacklisted'
+                #     )
+                #     record.save()
+                #     RawLeads.objects.filter(id=data.id).delete()
                 elif same_shit.exists() or same_shit_2.exists():
                     record = DeletedInfo(
                         name_zone=data.name_zone,
