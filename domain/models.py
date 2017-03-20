@@ -95,3 +95,5 @@ class EventLogger(models.Model):
     action = models.CharField(max_length=10000)
     date = models.DateTimeField(default=timezone.now)
 
+class DomainException(models.Model):
+    domain = models.CharField(max_length=60)
