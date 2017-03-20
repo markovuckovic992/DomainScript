@@ -46,6 +46,7 @@ class BlackList(models.Model):
         db_table = 'blacklist'
 
 class AllHash(models.Model):
+    date = models.DateField(default=timezone.now)
     hash_base_id = models.CharField(max_length=32, unique=True)
 
     class Meta:
