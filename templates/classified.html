@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
     {% csrf_token %}
-    <div bgcolor="#D3D3D3">
+    <div bgcolor="#D3D3D3" style="width: 33%; float: left;">
         Date: <input type="text" id="datepicker" onchange="load_logs()">
         <div>
             {% if log %}
@@ -21,15 +21,13 @@
             {% endif %}
         </div>
     </div>
-    <div>
-        <button onclick="remove_unwanted()">Cleanse</button>
-    </div>
-    <div bgcolor="gray">
+    <div bgcolor="gray" style="width: 33%; float: left;">
         <input type="number" placeholder="number of days" id="whois_period" />
         <button onclick="whois_period()">Run whois!</button>
     </div>
-    <div>
-        <table>
+    <div style="width: 33%; float: left;">
+    <button onclick="remove_unwanted()">Cleanse</button>
+        <table border="1px solid">
             <thead>
                 <tr>
                     <th>domains</th>
