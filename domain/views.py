@@ -823,6 +823,7 @@ def admin(request):
             "log": data_to_show,
             'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
             'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
+            'exceptions': DomainException.objects.all()
         })
 
 @login_required
