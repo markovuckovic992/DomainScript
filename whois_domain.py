@@ -76,6 +76,7 @@ def main(date):
                     reason='email is blacklisted'
                 )
                 record.save()
+                AllHash.objects.filter(hash_base_id=data.hash_base_id).delete()
                 RawLeads.objects.filter(id=data.id).delete()
                 record.save()
             elif super_blacklisted.exists():
@@ -87,6 +88,7 @@ def main(date):
                     reason='domain is blacklisted'
                 )
                 record.save()
+                AllHash.objects.filter(hash_base_id=data.hash_base_id).delete()
                 RawLeads.objects.filter(id=data.id).delete()
             elif same_shit.exists() or same_shit_2.exists():
                 record = DeletedInfo(
@@ -97,6 +99,7 @@ def main(date):
                     reason='duplicate'
                 )
                 record.save()
+                AllHash.objects.filter(hash_base_id=data.hash_base_id).delete()
                 RawLeads.objects.filter(id=data.id).delete()
             elif (super_same_shit.exists() or super_same_shit_2.exists()) and not DomainException.objects.filter(domain=c_domain).exists():
                 record = DeletedInfo(
@@ -107,6 +110,7 @@ def main(date):
                     reason='duplicate domain'
                 )
                 record.save()
+                AllHash.objects.filter(hash_base_id=data.hash_base_id).delete()
                 RawLeads.objects.filter(id=data.id).delete()
             else:
                 RawLeads.objects.filter(id=data.id).update(mail=email)
@@ -191,6 +195,7 @@ def main_period(dates):
                         reason='email is blacklisted'
                     )
                     record.save()
+                    AllHash.objects.filter(hash_base_id=data.hash_base_id).delete()
                     RawLeads.objects.filter(id=data.id).delete()
                 elif super_blacklisted.exists() and not DomainException.objects.filter(domain=c_domain).exists():
                     record = DeletedInfo(
@@ -201,6 +206,7 @@ def main_period(dates):
                         reason='domain is blacklisted'
                     )
                     record.save()
+                    AllHash.objects.filter(hash_base_id=data.hash_base_id).delete()
                     RawLeads.objects.filter(id=data.id).delete()
                 elif same_shit.exists() or same_shit_2.exists():
                     record = DeletedInfo(
@@ -211,6 +217,7 @@ def main_period(dates):
                         reason='duplicate'
                     )
                     record.save()
+                    AllHash.objects.filter(hash_base_id=data.hash_base_id).delete()
                     RawLeads.objects.filter(id=data.id).delete()
                 elif super_same_shit.exists() or super_same_shit_2.exists():
                     record = DeletedInfo(
@@ -221,6 +228,7 @@ def main_period(dates):
                         reason='duplicate domain'
                     )
                     record.save()
+                    AllHash.objects.filter(hash_base_id=data.hash_base_id).delete()
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
                     RawLeads.objects.filter(id=data.id).update(mail=email)
