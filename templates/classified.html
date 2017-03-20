@@ -28,7 +28,30 @@
         <input type="number" placeholder="number of days" id="whois_period" />
         <button onclick="whois_period()">Run whois!</button>
     </div>
-    <div
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>domains</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exception in exceptions %}
+                    <tr>
+                        <td>{{exception.domain}}</td>
+                        <td><button onclick="delete_exception({{exception.id}})">Delete</button></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><input type="text" id="name_exception" name="name_exception" /></td>
+                    <td><button onclick="add_exception()">Add</button></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
     <script type="text/javascript">
       $( function() {
         var selected_date = (window.location.search).replace('?date=', '').split("-");

@@ -839,3 +839,13 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+def deleteException(request):
+    id_ = request.POST['id']
+    DomainException.objects.filter(id=id_).delete()
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def addException(request):
+    domain = request.POST['name']
+    DomainException(domain=domain).save()
+    return HttpResponse('{"status": "success"}', content_type="application/json")

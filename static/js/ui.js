@@ -767,3 +767,33 @@ function remove_unwanted() {
         }
     });
 }
+
+
+function delete_exception(id) {
+    $.ajax({
+        type: "POST",
+        url: "/delete_exception/",
+        data: "id=" + id,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            location.reload()
+        }
+    });
+}
+
+function add_exception() {
+    var name = $('#name_exception').val();
+    $.ajax({
+        type: "POST",
+        url: "/add_exception/",
+        data: "name=" + name,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            location.reload();
+        }
+    });
+}

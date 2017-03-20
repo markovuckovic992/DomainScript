@@ -64,4 +64,6 @@ urlpatterns = [
     url(r'^classified/', domain.views.admin),
     url(r'^whois_period/', domain.views.whois_period),
     url(r'^remove_unwanted/', domain.views.removeUnwanted),
+    url(r'^delete_exception/', domain.views.deleteException),
+    url(r'^add_exception/', domain.views.addException),
 ]
