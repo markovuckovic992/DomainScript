@@ -24,7 +24,7 @@ class CronJobs:
         ]
 
     def deleteOldData(self):
-        date = datetime.now().date() - timedelta(days=27)
+        date = datetime.now().date() - timedelta(days=28)
         RawLeads.objects.filter(date__lt=date).delete()
         AllHash.objects.filter(date__lt=date).delete()
         DeletedInfo.objects.filter(date__lt=date).delete()

@@ -3,7 +3,7 @@ from domain.models import *
 from datetime import datetime, timedelta
 
 def removeStuff():
-    date = datetime.now().date() - timedelta(days=27)
+    date = datetime.now().date() - timedelta(days=28)
     RawLeads.objects.filter(date__lt=date).delete()
     # # blacklisting
     bads = BlackList.objects.all()
