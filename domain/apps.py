@@ -14,7 +14,7 @@ class DomainConfig(AppConfig):
 def form_a_msg1(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = domain_name + ' Uh-oh! You are Missing Out on A Ton of Traffic. Perfect time to upgrade your domain'
+    subject = domain_name + ' Be Google Friendly and Increase Visibility'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template1.html', 'r')
     content = file.read()
     htmly = Template(content)
@@ -35,7 +35,7 @@ def form_a_msg1(domain_name, link, unsubscribe):
 def form_a_msg2(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = 'Upgrade Your Domain to ' + domain_name
+    subject = domain_name + ' Be Google Friendly and Increase Visibility'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template2.html', 'r')
     content = file.read()
     htmly = Template(content)
@@ -219,7 +219,7 @@ def pr_msg1(domain_name, name, link_un, link_offer):
 def pr_msg2(domain_name, name, link_un, link_offer):
     domain_name = domain_name.upper()
 
-    subject = domain_name + ' - Don\'t rue on missing the chance to grab this traffic enhancer'
+    subject = domain_name + '- Will Make Your Site  Googles Best Friend'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template2r.html', 'r')
     content = file.read()
     htmly = Template(content)
