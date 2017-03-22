@@ -256,7 +256,8 @@ class CronJobs:
 
         for reminder in reminders:
             name = ''
-            case = randint(1, 10)
+            # case = randint(1, 10)
+            case = 1
             index = randint(0, 3)
             link = ('http://www.' + str(self.hosts[index]) + '/offer/?id=' + str(reminder.hash_base_id))
             unsubscribe = ('http://www.' + str(self.hosts[index]) + '/unsubscribe/?id=' + str(reminder.hash_base_id))
