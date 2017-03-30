@@ -620,9 +620,10 @@ def download(request):
             all_.append(data.name_zone)
 
     f = open('zone_with_no_emails.txt', "r")
+    size = f.tell()
     res = HttpResponse(f)
     res['Content-Disposition'] = 'attachment; filename=zone_with_no_email.txt'
-    res['Content-Length'] = f.tell()
+    res['Content-Length'] = size
     return res
 
 def add_multiple(request):
