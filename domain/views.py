@@ -622,6 +622,7 @@ def download(request):
     f = open('zone_with_no_emails.txt', "r")
     res = HttpResponse(f)
     res['Content-Disposition'] = 'attachment; filename=zone_with_no_email.txt'
+    res['Content-Length'] = f.tell()
     return res
 
 def add_multiple(request):
