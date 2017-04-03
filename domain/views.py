@@ -371,7 +371,7 @@ def blacklist_selected(request):
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
             date=data.date,
-            email=email,
+            email=data.mail,
             reason='--blacklist_selected--'
         )
         record.save()
@@ -478,7 +478,7 @@ def send_mails(request):
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
             date=data.date,
-            email=email,
+            email=data.mail,
             reason='--send_mails 1--'
         )
         record.save()
@@ -503,7 +503,7 @@ def send_mails(request):
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
             date=data.date,
-            email=email,
+            email=data.mail,
             reason='--send_mails 2--'
         )
         record.save()
@@ -621,7 +621,7 @@ def super_blacklist(request):
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
             date=data.date,
-            email=email,
+            email=data.mail,
             reason='--super_blacklist--'
         )
         record.save()
@@ -651,7 +651,7 @@ def regular_blacklist(request):
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
             date=data.date,
-            email=email,
+            email=data.mail,
             reason='--regular_blacklist--'
         )
         record.save()
