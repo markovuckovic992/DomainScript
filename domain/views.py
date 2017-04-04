@@ -131,7 +131,7 @@ def runEditing(request):
         AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
 
-        argument = "python " + path + "/" + script + ".py "
+        argument = "pypy " + path + "/" + script + ".py "
 
         if com:
             argument += (com + " ")
@@ -939,6 +939,7 @@ def restoreDeleted(request):
             condition = False
         except:
             pass
+    DeletedInfo.objects.filter(id=id_).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
