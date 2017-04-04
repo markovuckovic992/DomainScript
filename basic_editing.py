@@ -362,6 +362,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     for path in paths:
         if path and path != 'none':
             fcn3(path, pt, date)
+        else:
+            pass
+
+    for path in paths:
+        if path and path != 'none':
             fcn5(path, pt, date)
         else:
             pass
