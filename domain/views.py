@@ -22,6 +22,8 @@ from random import randint
 import re
 from django.core import mail
 from smtplib import SMTPServerDisconnected
+import os
+import binascii
 
 hosts = [
     'webdomainexpert.us',
@@ -918,3 +920,24 @@ def addException(request):
     domain = request.POST['name']
     DomainException(domain=domain).save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def restoreDeleted(request):
+    condition = True
+    while condition:
+        try:
+            entry = RawLeads(
+                name_zone=name_zone,
+                name_redemption=name_redemption,
+                date=date,
+                page=1,
+                activated=1,
+                hash_base_id=binascii.hexlify(os.urandom(16))
+            )
+            entry.save()
+            condition = False
+        except:
+            pass
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+
+
