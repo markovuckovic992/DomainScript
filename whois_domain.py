@@ -77,7 +77,6 @@ def main(date):
                 )
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
-                record.save()
             elif super_blacklisted.exists():
                 record = DeletedInfo(
                     name_zone=data.name_zone,

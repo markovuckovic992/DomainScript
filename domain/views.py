@@ -236,6 +236,7 @@ def reverse_state(request):
 
         ip = get_client_ip(request)
         el = EventLogger(ip=ip, action=(action + str(raw_leads_id) + ""))
+        el = EventLogger(ip=ip, action=(action + str(raw_leads_id) + ""))
         el.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -620,9 +621,10 @@ def download(request):
             all_.append(data.name_zone)
 
     f = open('zone_with_no_emails.txt', "r")
+    size = len(f)
     res = HttpResponse(f)
     res['Content-Disposition'] = 'attachment; filename=zone_with_no_email.txt'
-    res['Content-Length'] = 8495
+    res['Content-Length'] = size
     return res
 
 def add_multiple(request):
