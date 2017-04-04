@@ -131,7 +131,7 @@ def runEditing(request):
         AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
 
-        argument = "pypy " + path + "/" + script + ".py "
+        argument = "python " + path + "/" + script + ".py "
 
         if com:
             argument += (com + " ")
