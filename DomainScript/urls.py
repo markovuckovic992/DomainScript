@@ -66,4 +66,5 @@ urlpatterns = [
     url(r'^remove_unwanted/', domain.views.removeUnwanted),
     url(r'^delete_exception/', domain.views.deleteException),
     url(r'^add_exception/', domain.views.addException),
+    url(r'^restore_lead/', domain.views.restoreDeleted),
 ]

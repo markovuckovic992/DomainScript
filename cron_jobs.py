@@ -197,7 +197,7 @@ class CronJobs:
                         name_redemption=data.name_redemption,
                         date=data.date,
                         email=email,
-                        reason='duplicate'
+                        reason='duplicate -- 3'
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
@@ -208,7 +208,7 @@ class CronJobs:
                         name_redemption=data.name_redemption,
                         date=data.date,
                         email=email,
-                        reason='duplicate domain'
+                        reason='duplicate domain -- 3'
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()

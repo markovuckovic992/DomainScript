@@ -797,3 +797,20 @@ function add_exception() {
         }
     });
 }
+
+function restore_lead(id) {
+    var r = confirm("Are you sure that you want to restore this deleted lead?");
+    if (r == true) {
+        $.ajax({
+            type: "POST",
+            url: "/restore_lead/",
+            data: "id=" + id,
+            headers: {
+                'X-CSRFToken': csrftoken,
+            },
+            success: function(msg) {
+                location.reload();
+            }
+        });
+    }
+}

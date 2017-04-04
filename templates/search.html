@@ -28,6 +28,9 @@
           <th>
             Hash
           </th>
+          <th>
+            Email
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -42,6 +45,7 @@
           <td>{{entry.name_zone}},{{entry.name_redemption}} </td>
           <td>{{entry.date}} </td>
           <td>{{entry.hash_base_id}} </td>
+          <td>{{entry.mail}} </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -67,6 +71,9 @@
           <th>
             Reason
           </th>
+          <th>
+            &nbsp;
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -77,6 +84,7 @@
           <td>{{entry.email}} </td>
           <td>{{entry.date}} </td>
           <td>{{entry.reason}} </td>
+          <td><button onclick="restore_lead({{entry.id}})">Restore</button></td>
         </tr>
         {% endfor %}
       </tbody>

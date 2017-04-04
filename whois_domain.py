@@ -77,7 +77,6 @@ def main(date):
                 )
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
-                record.save()
             elif super_blacklisted.exists():
                 record = DeletedInfo(
                     name_zone=data.name_zone,
@@ -94,7 +93,7 @@ def main(date):
                     name_redemption=data.name_redemption,
                     date=data.date,
                     email=email,
-                    reason='duplicate'
+                    reason='duplicate -- 1'
                 )
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
@@ -104,7 +103,7 @@ def main(date):
                     name_redemption=data.name_redemption,
                     date=data.date,
                     email=email,
-                    reason='duplicate domain'
+                    reason='duplicate domain -- 1'
                 )
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
@@ -208,7 +207,7 @@ def main_period(dates):
                         name_redemption=data.name_redemption,
                         date=data.date,
                         email=email,
-                        reason='duplicate'
+                        reason='duplicate -- 2'
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
@@ -218,7 +217,7 @@ def main_period(dates):
                         name_redemption=data.name_redemption,
                         date=data.date,
                         email=email,
-                        reason='duplicate domain'
+                        reason='duplicate domain -- 2'
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()

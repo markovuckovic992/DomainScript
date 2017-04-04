@@ -22,6 +22,8 @@ from random import randint
 import re
 from django.core import mail
 from smtplib import SMTPServerDisconnected
+import os
+import binascii
 
 hosts = [
     'webdomainexpert.us',
@@ -129,7 +131,7 @@ def runEditing(request):
         AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
 
-        argument = "pypy " + path + "/" + script + ".py "
+        argument = "python " + path + "/" + script + ".py "
 
         if com:
             argument += (com + " ")
@@ -235,6 +237,7 @@ def reverse_state(request):
         action = 'Marked ' if mark == 1 else 'Unmarked '
 
         ip = get_client_ip(request)
+        el = EventLogger(ip=ip, action=(action + str(raw_leads_id) + ""))
         el = EventLogger(ip=ip, action=(action + str(raw_leads_id) + ""))
         el.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -495,7 +498,7 @@ def send_mails(request):
             new.save()
     _to_blacklist = RawLeads.objects.filter(mail__in=eml)
     blacklist_ids = map(attrgetter('hash_base_id'), _to_delete)
-    
+
     # logging
     datas = RawLeads.objects.filter(mail__in=eml)
     for data in datas:
@@ -509,7 +512,7 @@ def send_mails(request):
         record.save()
     # end logging
     delete = RawLeads.objects.filter(mail__in=eml).delete()
-    
+
     AllHash.objects.filter(hash_base_id__in=blacklist_ids + delete_ids)
 
     potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1, mail__isnull=False, reminder=0)
@@ -917,3 +920,26 @@ def addException(request):
     domain = request.POST['name']
     DomainException(domain=domain).save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
+
+def restoreDeleted(request):
+    id_ = request.POST['id']
+    deleted = DeletedInfo.objects.get(id=id_)
+    condition = True
+    while condition:
+        try:
+            entry = RawLeads(
+                name_zone=deleted.name_zone,
+                name_redemption=deleted.name_redemption,
+                date=deleted.date,
+                page=1,
+                activated=1,
+                hash_base_id=binascii.hexlify(os.urandom(16))
+            )
+            entry.save()
+            condition = False
+        except:
+            pass
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+
+
