@@ -357,15 +357,27 @@ def blacklist(request):
 
 
 def blacklist_selected(request):
-    blacklists = RawLeads.objects.filter(blacklist=1)
+    blacklists = RawLeads.objects.filter(blacklist=1, activated=1)
     for blacklist in blacklists:
         entry = BlackList.objects.filter(email=blacklist.mail)
         if not entry.exists():
             new = BlackList(email=blacklist.mail)
             new.save()
-    raw_leads = RawLeads.objects.filter(blacklist=1)
+    raw_leads = RawLeads.objects.filter(blacklist=1, activated=1)
     hash_base_ids = map(attrgetter('hash_base_id'), raw_leads)
-    RawLeads.objects.filter(blacklist=1).delete()
+
+    datas = RawLeads.objects.filter(blacklist=1, activated=1)
+    for data in datas:
+        record = DeletedInfo(
+            name_zone=data.name_zone,
+            name_redemption=data.name_redemption,
+            date=data.date,
+            email=data.mail,
+            reason='--blacklist_selected--'
+        )
+        record.save()
+
+    RawLeads.objects.filter(blacklist=1, activated=1).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -380,13 +392,13 @@ def delete(request):
             to_delete = 1
         else:
             to_delete = 0
-        RawLeads.objects.filter(id__in=ids).update(to_delete=to_delete)
+        RawLeads.objects.filter(id__in=ids, activated=1).update(to_delete=to_delete)
     else:
         leads_id = int(unquote(request.POST['id']))
         to_delete = RawLeads.objects.get(id=leads_id).to_delete
         to_delete += 1
         to_delete %= 2
-        RawLeads.objects.filter(id=leads_id).update(to_delete=to_delete)
+        RawLeads.objects.filter(id=leads_id, activated=1).update(to_delete=to_delete)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -399,25 +411,25 @@ def mark_to_send(request):
             mark_to_send = 1
         else:
             mark_to_send = 0
-        RawLeads.objects.filter(id__in=ids).update(mark_to_send=mark_to_send)
+        RawLeads.objects.filter(id__in=ids, activated=1).update(mark_to_send=mark_to_send)
     else:
         if 'id' in request.POST.keys():
             leads_id = int(unquote(request.POST['id']))
             mark_to_send = RawLeads.objects.get(id=leads_id).mark_to_send
             mark_to_send += 1
             mark_to_send %= 2
-            RawLeads.objects.filter(id=leads_id).update(mark_to_send=mark_to_send)
+            RawLeads.objects.filter(id=leads_id, activated=1).update(mark_to_send=mark_to_send)
         else:
             date = request.POST['date']
             date = datetime.strptime(date, '%d-%m-%Y').date()
-            RawLeads.objects.filter(date=date).update(mark_to_send=1)
+            RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
 def un_mark_to_send(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
-    RawLeads.objects.filter(date=date).update(mark_to_send=0)
+    RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=0)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -460,9 +472,21 @@ def send_mails(request):
 
     _to_delete = RawLeads.objects.filter(to_delete=1)
     delete_ids = map(attrgetter('hash_base_id'), _to_delete)
-    delete = RawLeads.objects.filter(to_delete=1).delete()
+    # logging
+    datas = RawLeads.objects.filter(to_delete=1, activated=1)
+    for data in datas:
+        record = DeletedInfo(
+            name_zone=data.name_zone,
+            name_redemption=data.name_redemption,
+            date=data.date,
+            email=data.mail,
+            reason='--send_mails 1--'
+        )
+        record.save()
+    # end logging
+    delete = RawLeads.objects.filter(to_delete=1, activated=1).delete()
 
-    blacklists = RawLeads.objects.filter(blacklist=1)
+    blacklists = RawLeads.objects.filter(blacklist=1, activated=1)
     eml = []
     for blacklist in blacklists:
         entry = BlackList.objects.filter(email=blacklist.mail)
@@ -472,6 +496,19 @@ def send_mails(request):
             new.save()
     _to_blacklist = RawLeads.objects.filter(mail__in=eml)
     blacklist_ids = map(attrgetter('hash_base_id'), _to_delete)
+
+    # logging
+    datas = RawLeads.objects.filter(mail__in=eml)
+    for data in datas:
+        record = DeletedInfo(
+            name_zone=data.name_zone,
+            name_redemption=data.name_redemption,
+            date=data.date,
+            email=data.mail,
+            reason='--send_mails 2--'
+        )
+        record.save()
+    # end logging
     delete = RawLeads.objects.filter(mail__in=eml).delete()
 
     AllHash.objects.filter(hash_base_id__in=blacklist_ids + delete_ids)
@@ -577,6 +614,20 @@ def super_blacklist(request):
 
     super_b_l = RawLeads.objects.filter(mail__endswith=exclude_email)
     hash_base_ids = map(attrgetter('hash_base_id'), super_b_l)
+
+    # logging
+    datas = RawLeads.objects.filter(hash_base_id__in=hash_base_ids)
+    for data in datas:
+        record = DeletedInfo(
+            name_zone=data.name_zone,
+            name_redemption=data.name_redemption,
+            date=data.date,
+            email=data.mail,
+            reason='--super_blacklist--'
+        )
+        record.save()
+    # end logging
+
     RawLeads.objects.filter(hash_base_id__in=hash_base_ids).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
@@ -593,6 +644,20 @@ def regular_blacklist(request):
 
     b_l = RawLeads.objects.filter(mail=email)
     hash_base_ids = map(attrgetter('hash_base_id'), b_l)
+
+    # logging
+    datas = RawLeads.objects.filter(hash_base_id__in=hash_base_ids)
+    for data in datas:
+        record = DeletedInfo(
+            name_zone=data.name_zone,
+            name_redemption=data.name_redemption,
+            date=data.date,
+            email=data.mail,
+            reason='--regular_blacklist--'
+        )
+        record.save()
+    # end logging
+
     RawLeads.objects.filter(hash_base_id__in=hash_base_ids).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
@@ -619,12 +684,11 @@ def download(request):
         if data.name_zone not in all_:
             file.write(data.name_zone + '\n')
             all_.append(data.name_zone)
+    file.close()
 
-    f = open('zone_with_no_emails.txt', "r")
-    size = len(f)
+    f = open('zone_with_no_emails.txt', "rb")
     res = HttpResponse(f)
     res['Content-Disposition'] = 'attachment; filename=zone_with_no_email.txt'
-    res['Content-Length'] = size
     return res
 
 def add_multiple(request):
