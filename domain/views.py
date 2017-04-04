@@ -931,6 +931,7 @@ def restoreDeleted(request):
                 name_zone=deleted.name_zone,
                 name_redemption=deleted.name_redemption,
                 date=deleted.date,
+                mail=deleted.email,
                 page=1,
                 activated=1,
                 hash_base_id=binascii.hexlify(os.urandom(16))
