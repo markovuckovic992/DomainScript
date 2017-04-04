@@ -922,13 +922,15 @@ def addException(request):
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 def restoreDeleted(request):
+    id_ = request.POST['id']
+    deleted = DeletedInfo.objects.get(id=id_)
     condition = True
     while condition:
         try:
             entry = RawLeads(
-                name_zone=name_zone,
-                name_redemption=name_redemption,
-                date=date,
+                name_zone=deleted.name_zone,
+                name_redemption=deleted.name_redemption,
+                date=deleted.date,
                 page=1,
                 activated=1,
                 hash_base_id=binascii.hexlify(os.urandom(16))

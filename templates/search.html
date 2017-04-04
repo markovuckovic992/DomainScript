@@ -67,6 +67,9 @@
           <th>
             Reason
           </th>
+          <th>
+            &nbsp;
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -77,6 +80,7 @@
           <td>{{entry.email}} </td>
           <td>{{entry.date}} </td>
           <td>{{entry.reason}} </td>
+          <td><button onclick="restore_lead({{entry.id}})">Restore</button></td>
         </tr>
         {% endfor %}
       </tbody>
