@@ -114,7 +114,7 @@ def fcn(domain_data, pt):
     forbids = ['[', '`', '\\', '-', '=', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\\', '[', '\\', ']', '{', '}', ';', "'", '\\', ':', '"', '|', '<', ',', '.', '/', '<', '>', '?', ']']
     global words, link, some_variable, result_list, result_list_b
     domain = domain_data[0]
-    inter = list(set(forbids).intersection(domain))
+    inter = list(set(forbids) & set(domain))
     # FILTER 1
     allowed_extensions = ["com\n", "com", "com\r\n", "net\n ", "net\r\n", "net"]
     if com_net == 1:
@@ -123,7 +123,7 @@ def fcn(domain_data, pt):
         allowed_extensions = allowed_extensions[:3]
     # END FILTER 1
     if len(inter) > 0:
-        pass    
+        pass
     elif domain.split(".")[1] not in allowed_extensions:
         pass
     elif len(domain) >= length:
