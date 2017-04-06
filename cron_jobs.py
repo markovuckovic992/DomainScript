@@ -253,6 +253,7 @@ class CronJobs:
         emails = []
 
         for reminder in reminders:
+            print reminder
             name = ''
             # case = randint(1, 10)
             case = 1
