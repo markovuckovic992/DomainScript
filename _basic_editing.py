@@ -105,7 +105,7 @@ def fcn(domain_data, pt):
     file = open('filtered_domains.txt', 'a')
     global words, link, some_variable, result_list, result_list_b
     domain = domain_data[0]
-    inter = list(set(forbids).intersection(domain))
+    inter = list(forbids.intersection(domain))
     # FILTER 1
     allowed_extensions = ["com\n", "com", "com\r\n", "net\n ", "net\r\n", "net"]
     if com_net == 1:
@@ -326,7 +326,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         # t.start()
     # for t in threads:
     #     t.join()
-    print 'asdadsasd'
     Log.objects.filter(date=sys.argv[11]).update(number_of_redemption=len(result_list + result_list_b))
     usefull_data = None
     pt = None
