@@ -316,6 +316,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     Log.objects.filter(date=sys.argv[11]).update(number_of_all=len(usefull_data))
     increment = (100.0/len(usefull_data))
     text = 'phase 1 '
+    print usefull_data
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
     for domain_data in usefull_data:
