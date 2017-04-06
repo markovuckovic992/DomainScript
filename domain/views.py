@@ -110,8 +110,8 @@ def runEditing(request):
             script = '_basic_editing'
             language = 'pypy '
         else:
-            script = 'basic_editing'
-            language = 'pypy '
+            script = '_basic_editing'
+            language = 'python '
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
         org = request.POST['org'].replace('C:\\fakepath\\', '')

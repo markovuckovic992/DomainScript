@@ -114,7 +114,7 @@ def fcn(domain_data, pt):
         allowed_extensions = allowed_extensions[:3]
     # END FILTER 1
     if len(inter) > 0:
-        file.write(str({'domain': domain, 'inter': inter}) + '\n')
+        pass
     elif domain.split(".")[1] not in allowed_extensions:
         pass
     elif len(domain) >= length:
