@@ -248,7 +248,7 @@ class CronJobs:
         two_days_ago = pytz.timezone('Europe/Belgrade').localize(two_days_ago)
         print two_days_ago
         reminders = RawLeads.objects.filter(reminder=1, last_email_date__lt=two_days_ago)[:15]
-
+        print reminders
         connection = mail.get_connection()
         connection.open()
         asdi = 0
