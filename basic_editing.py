@@ -111,8 +111,10 @@ some_variable = 0
 
 def fcn(domain_data, pt):
     file = open('filtered_domains.txt', 'a')
+    forbids = ['[', '`', '\\', '-', '=', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\\', '[', '\\', ']', '{', '}', ';', "'", '\\', ':', '"', '|', '<', ',', '.', '/', '<', '>', '?', ']']
     global words, link, some_variable, result_list, result_list_b
     domain = domain_data[0]
+    inter = list(set(forbids).intersection(domain))
     # FILTER 1
     allowed_extensions = ["com\n", "com", "com\r\n", "net\n ", "net\r\n", "net"]
     if com_net == 1:
@@ -120,7 +122,9 @@ def fcn(domain_data, pt):
     elif com_net == 0:
         allowed_extensions = allowed_extensions[:3]
     # END FILTER 1
-    if domain.split(".")[1] not in allowed_extensions:
+    if len(inter) > 0:
+        pass    
+    elif domain.split(".")[1] not in allowed_extensions:
         pass
     elif len(domain) >= length:
         pass

@@ -108,8 +108,10 @@ def runEditing(request):
         arg = request.POST['arg']
         if int(arg) == 1:
             script = '_basic_editing'
+            language = 'pypy '
         else:
             script = 'basic_editing'
+            language = 'pypy '
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
         org = request.POST['org'].replace('C:\\fakepath\\', '')
@@ -131,7 +133,7 @@ def runEditing(request):
         AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
 
-        argument = "pypy " + path + "/" + script + ".py "
+        argument = language + path + "/" + script + ".py "
 
         if com:
             argument += (com + " ")
