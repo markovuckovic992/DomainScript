@@ -51,7 +51,7 @@ def removeStuff():
                 name_redemption=data.name_redemption,
                 date=data.date,
                 email=data.mail,
-                reason=('duplicate ' + duplicate['min_id'])
+                reason=('duplicate, min id=' + str(duplicate['min_id']))
             )
             record.save()
             RawLeads.objects.filter(id=data.id).delete()
