@@ -14,7 +14,7 @@ class DomainConfig(AppConfig):
 def form_a_msg1(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = 'Acquire'  + domain_name + ' With Your Own Offer. Get 25,000 Traffic/Month'
+    subject = 'Acquire '  + domain_name + ' With Your Own Offer. Get 25,000 Traffic/Month'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template1.html', 'r')
     content = file.read()
     htmly = Template(content)
@@ -35,7 +35,7 @@ def form_a_msg1(domain_name, link, unsubscribe):
 def form_a_msg2(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = 'Acquire' + domain_name + ' With Your Own Offer. Get 25K Traffic/Month'
+    subject = 'Acquire ' + domain_name + ' With Your Own Offer. Get 25K Traffic/Month'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template2.html', 'r')
     content = file.read()
     htmly = Template(content)
