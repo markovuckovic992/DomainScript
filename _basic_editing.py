@@ -105,7 +105,7 @@ def fcn(domain_data, pt):
     file = open('filtered_domains.txt', 'a')
     global words, link, some_variable, result_list, result_list_b
     domain = domain_data[0]
-    inter = list(set(forbids) & set(domain))
+    inter = list(set(forbids) & set(domain.split(".")[0]))
     # FILTER 1
     allowed_extensions = ["com\n", "com", "com\r\n", "net\n ", "net\r\n", "net"]
     if com_net == 1:
@@ -114,7 +114,7 @@ def fcn(domain_data, pt):
         allowed_extensions = allowed_extensions[:3]
     # END FILTER 1
     if len(inter) > 0:
-        file.write(str({'domain': domain, 'keywords': inter}) + '\n')
+        file.write(str({'domain': domain, 'inter': inter}) + '\n')
     elif domain.split(".")[1] not in allowed_extensions:
         pass
     elif len(domain) >= length:
