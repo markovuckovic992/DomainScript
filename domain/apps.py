@@ -14,7 +14,7 @@ class DomainConfig(AppConfig):
 def form_a_msg1(domain_name, link, unsubscribe):
     domain_name = domain_name.upper()
 
-    subject = 'Acquire '  + domain_name + ' With Your Own Offer. Get 25,000 Traffic/Month'
+    subject = 'Acquire '  + domain_name + ' Increase Your Page Authority, Organic and Referral Traffic'
     file = codecs.open(settings.EMAIL_TEMPLATES + '/template1.html', 'r')
     content = file.read()
     htmly = Template(content)
