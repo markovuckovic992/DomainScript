@@ -248,7 +248,7 @@ class CronJobs:
                     name_redemption=data.name_redemption,
                     date=data.date,
                     email=data.mail,
-                    reason='--check_for_offers 1--'
+                    reason='--duplicated id--'
                 )
                 record.save()
             RawLeads.objects.filter(hash_base_id__in=ids, reminder=1).delete()
