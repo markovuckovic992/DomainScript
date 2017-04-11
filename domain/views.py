@@ -24,6 +24,7 @@ from django.core import mail
 from smtplib import SMTPServerDisconnected
 import os
 import binascii
+from django.utils import timezone
 
 hosts = [
     'webdomainexpert.us',
@@ -562,7 +563,7 @@ def send_mails(request):
             if req.status_code == 200:
                 AllHash.objects.filter(hash_base_id=hash_base_id)
                 # RawLeads.objects.filter(id=potential_profit.id).delete()
-                RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id)
+                RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id, last_email_date=timezone.now())
 
                 emails = []
                 email = mail.EmailMultiAlternatives(
@@ -820,7 +821,7 @@ def send_pending(request):
             if req.status_code == 200:
                 AllHash.objects.filter(hash_base_id=hash_base_id)
                 # RawLeads.objects.filter(id=potential_profit.id).delete()
-                RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id)
+                RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id, last_email_date=timezone.now())
 
                 emails = []
                 email = mail.EmailMultiAlternatives(

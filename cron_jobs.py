@@ -241,6 +241,16 @@ class CronJobs:
         if req.status_code == 200:
             items = req.json()
             ids = items['ids']
+            datas = RawLeads.objects.filter(hash_base_id__in=ids, reminder=1)
+            for data in datas:
+                record = DeletedInfo(
+                    name_zone=data.name_zone,
+                    name_redemption=data.name_redemption,
+                    date=data.date,
+                    email=data.mail,
+                    reason='--check_for_offers 1--'
+                )
+                record.save()
             RawLeads.objects.filter(hash_base_id__in=ids, reminder=1).delete()
 
         # SENDING
@@ -271,6 +281,15 @@ class CronJobs:
 
             email.attach_alternative(msg, "text/html")
             emails.append(email)
+
+            record = DeletedInfo(
+                name_zone=reminder.name_zone,
+                name_redemption=reminder.name_redemption,
+                date=reminder.date,
+                email=reminder.mail,
+                reason='--reminder--'
+            )
+            record.save()
 
             RawLeads.objects.filter(id=reminder.id).delete()
 
