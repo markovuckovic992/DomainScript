@@ -277,6 +277,7 @@ class CronJobs:
                 '',
                 'Web Domain Expert <' + settings.EMAIL_HOST_USER + '>',
                 [reminder.mail],
+                bcc=["bcc-webdomainexpert@outlook.com"],
             )
 
             email.attach_alternative(msg, "text/html")
