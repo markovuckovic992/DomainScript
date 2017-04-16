@@ -5,18 +5,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 from domain.models import *
 
-def main(date):
-    usefull_data = []
-    if not Log.objects.filter(date=datetime.now().date()).exists():
-        Log().save()
-    number_of_new = len(RawLeads.objects.filter(date=date, mark=1, activated=0))
-    number_of_old = Log.objects.get(date=datetime.now().date()).number_act
-    number_of_old_2 = Log.objects.get(date=datetime.now().date()).number_act_2
-    Log.objects.filter(date=datetime.now().date()).update(number_act=(int(number_of_old) + int(number_of_new)))
-    Log.objects.filter(date=date).update(number_act_2=(int(number_of_old_2) + int(number_of_new)))
-
-    # RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
-
+def main(date):  
     # hashes
     non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True, no_email_found=0)
     for non_hashed_lead in non_hashed_leads:
@@ -45,11 +34,23 @@ def main(date):
             while uslov:
                 try:
                     tube = popen("whois '" + str(
-                        (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email'",
+                        (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:|No match for'",
                                  'r')
-                    email = tube.read()
-                    email = email.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
-                    tube.close()
+                    response = tube.read()
+                    print response
+                    if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
+                        print data.name_zone, 'entry 1'
+                        record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
+                        record.save()
+                        RawLeads.objects.filter(id=data.id).delete()
+                    else:
+                        index = response.find('Registrant Email')
+                        if index == -1:
+                            RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                            break
+                        new = response[index:]
+                        response = new.splitlines()[0]
+                        email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
                     break
                 except:
                     if i > 5:
@@ -97,14 +98,22 @@ def main(date):
                 )
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
-            elif (super_same_shit.exists() or super_same_shit_2.exists()) and not DomainException.objects.filter(domain=c_domain).exists():
+            elif (super_same_shit.exists() or super_same_shit_2.exists()) and not (DomainException.objects.filter(domain=c_domain).exists() or DomainException.objects.filter(domain=domain).exists):
+                reason = 'duplicate domain -- 1 '
+                # if super_same_shit.exists():
+                #     for asd in super_same_shit:
+                #         reason += (asd.name_redemption + asd.email + ' ')
+                # if super_same_shit_2.exists():
+                #     for asd in super_same_shit_2:
+                #         reason += (' ' + asd.name_redemption + asd.mail)
                 record = DeletedInfo(
                     name_zone=data.name_zone,
                     name_redemption=data.name_redemption,
                     date=data.date,
                     email=email,
-                    reason='duplicate domain -- 1'
+                    reason=reason
                 )
+
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
             else:
@@ -121,28 +130,16 @@ def main(date):
 
 def main_period(dates):
     for date in dates:
-        usefull_data = []
-        if not Log.objects.filter(date=datetime.now().date()).exists():
-            Log().save()
-        number_of_new = len(RawLeads.objects.filter(date=date, mark=1, activated=0))
-        number_of_old = Log.objects.get(date=datetime.now().date()).number_act
-        number_of_old_2 = Log.objects.get(date=datetime.now().date()).number_act_2
-        Log.objects.filter(date=datetime.now().date()).update(number_act=(int(number_of_old) + int(number_of_new)))
-        Log.objects.filter(date=date).update(number_act_2=(int(number_of_old_2) + int(number_of_new)))
-
-        # RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
-
         # hashes
         non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True)
         for non_hashed_lead in non_hashed_leads:
             hash = hashlib.md5()
             hash.update(str(non_hashed_lead.id))
             hash_base_id = hash.hexdigest()
-            i = 0
+
             while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-                hash.update(str(non_hashed_lead.id + i))
-                hash_base_id = hash.hexdigest()
-                i += 1
+                hash_base_id = binascii.hexlify(os.urandom(16))
+
             new_entry = AllHash(hash_base_id=hash_base_id)
             new_entry.save()
             RawLeads.objects.filter(id=non_hashed_lead.id).update(hash_base_id=hash_base_id)
@@ -160,11 +157,23 @@ def main_period(dates):
                 while uslov:
                     try:
                         tube = popen("whois '" + str(
-                            (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email'",
+                            (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:|No match for'",
                                      'r')
-                        email = tube.read()
-                        email = email.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
-                        tube.close()
+                        response = tube.read()
+                        print response
+                        if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
+                            print data.name_zone, 'entry 1'
+                            record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
+                            record.save()
+                            RawLeads.objects.filter(id=data.id).delete()
+                        else:
+                            index = response.find('Registrant Email')
+                            if index == -1:
+                                RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                                break
+                            new = response[index:]
+                            response = new.splitlines()[0]
+                            email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
                         break
                     except:
                         if i > 5:
@@ -211,7 +220,7 @@ def main_period(dates):
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
-                elif super_same_shit.exists() or super_same_shit_2.exists():
+                elif (super_same_shit.exists() or super_same_shit_2.exists()) and not (DomainException.objects.filter(domain=c_domain).exists() or DomainException.objects.filter(domain=domain).exists):
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
@@ -232,6 +241,5 @@ def main_period(dates):
                         new.save()
 
 
-if __name__ == "__main__":
-    main(datetime.now().date())
-
+# if __name__ == "__main__":
+#     main(datetime.now().date())

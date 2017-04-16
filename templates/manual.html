@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block head %}
    <title>manual</title>
+   <script type="text/javascript" src="/static/js/other.js"></script>
 {% endblock %}
 {% block content %}
     <p>
@@ -14,7 +15,7 @@
         </tr>
         <tr>
           <td colspan="2" style="text-align: center; background: rgba(255,0,0,0.4);">
-            <input type="button" onclick="add_manual()" name="" value="Enter emails"/>
+            <input type="button" onclick="add_manual_whois()" name="" value="Enter emails"/>
           </td>
         <tr>
       </thead>
@@ -23,7 +24,7 @@
       $("#MAN").addClass('active');
       $("#Base").removeClass();
       $( document ).ready(function() {
-          $("#log_div").hide();
+        $("#log_div").hide();
       });
     </script>
 {% endblock %}

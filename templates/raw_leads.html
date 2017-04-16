@@ -1,12 +1,13 @@
 {% extends "layout.html" %}
 {% block head %}
-   <title>Filtering</title>
+    <title>Filtering</title>
+    <script type="text/javascript" src="/static/js/raw_leads.js"></script>
 {% endblock %}
 {% block content %}
     <h1 id="empty_page" class="hide">This page is empty</h1>
     {% csrf_token %}
    Date: <input type="text" id="datepicker" onchange="load()">
-   <button onclick="truncate(0)">Truncate</button>
+   <button onclick="truncate_raw()">Truncate</button>
    Show page:
    {% for i in range %}
         <button id="button_{{i}}" class="buttons" onclick="show({{i}})">{{ i }}</button>
@@ -80,7 +81,6 @@
             "order": [[ 3, "asc" ]],
 
             "fnDrawCallback": function( oSettings ) {
-                // $('#filter_by_dom').val('')
                 var rows = $('#mytable tbody tr');
                 var temp = $('#filter_by_dom').val().toLowerCase();
                 var n, text;

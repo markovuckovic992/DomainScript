@@ -68,10 +68,11 @@ def add_manual(request):
                     leads = RawLeads.objects.filter(name_zone=name_zone)
                     for lead in leads:
                         domain = email.split('@', 1)[1]
+                        c_domain = domain.split('.', 1)[0]
                         super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain), name_redemption=lead.name_redemption)
                         super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain), name_redemption=lead.name_redemption)
-
-                        if super_same_shit.exists() or super_same_shit_2.exists():
+                        
+                        if (super_same_shit.exists() or super_same_shit_2.exists()) and not (DomainException.objects.filter(domain=c_domain).exists() or DomainException.objects.filter(domain=domain).exists):
                             datas = RawLeads.objects.filter(id=lead.id)
                             for data in datas:
                                 record = DeletedInfo(
@@ -266,7 +267,6 @@ def add_this_name(request):
     raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date, id__in=ids)
     raw_leads.update(mark=1)
 
-
     ip = get_client_ip(request)
     el = EventLogger(ip=ip, action="Marked " + str(ids) + " as good(1) ")
     el.save()
@@ -297,8 +297,17 @@ def find_mails(request):
     date = datetime.strptime(date, '%d-%m-%Y').date()
 
     if 'submit' in request.POST.keys():
-        RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1)
+        if not Log.objects.filter(date=datetime.now().date()).exists():
+            Log().save()
+        number_of_new = len(RawLeads.objects.filter(date=date, mark=1, activated=0))
+        
+        number_of_old = Log.objects.get(date=datetime.now().date()).number_act
+        Log.objects.filter(date=datetime.now().date()).update(number_act=(int(number_of_old) + int(number_of_new)))
 
+        number_of_old_2 = Log.objects.get(date=date).number_act_2
+        Log.objects.filter(date=date).update(number_act_2=(int(number_of_old_2) + int(number_of_new)))
+
+        RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1, mark=0)
     main(date)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -307,10 +316,10 @@ def truncate(request):
     date = request.POST['date']
     activated = request.POST['activated']
     date = datetime.strptime(date, '%d-%m-%Y').date()
-    raw_leads = RawLeads.objects.filter(activated=activated, date=date)
-    hash_base_ids = map(attrgetter('hash_base_id'), raw_leads)
+    hash_base_ids = []
     datas = RawLeads.objects.filter(activated=activated, date=date)
     for data in datas:
+        hash_base_ids.append(data.hash_base_id)
         record = DeletedInfo(
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
@@ -352,7 +361,7 @@ def blacklist(request):
     blacklist += 1
     blacklist %= 2
     mail = RawLeads.objects.get(id=leads_id).mail
-    RawLeads.objects.filter(mail=mail, activated=1, date=date).update(blacklist=blacklist)
+    RawLeads.objects.filter(mail=mail, activated=1).update(blacklist=blacklist)
     ids = map(attrgetter('id'), RawLeads.objects.filter(mail=mail, activated=1, date=date))
     response = {
         'ids': ids,
@@ -362,17 +371,19 @@ def blacklist(request):
 
 
 def blacklist_selected(request):
-    blacklists = RawLeads.objects.filter(blacklist=1, activated=1)
+    date = request.POST['date']
+    date = datetime.strptime(date, '%d-%m-%Y').date()
+    blacklists = RawLeads.objects.filter(blacklist=1, activated=1, date=date)
     for blacklist in blacklists:
         entry = BlackList.objects.filter(email=blacklist.mail)
         if not entry.exists():
             new = BlackList(email=blacklist.mail)
             new.save()
-    raw_leads = RawLeads.objects.filter(blacklist=1, activated=1)
-    hash_base_ids = map(attrgetter('hash_base_id'), raw_leads)
 
-    datas = RawLeads.objects.filter(blacklist=1, activated=1)
+    hash_base_ids = []
+    datas = RawLeads.objects.filter(blacklist=1, activated=1, date=date)
     for data in datas:
+        hash_base_ids.append(data.hash_base_id)
         record = DeletedInfo(
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
@@ -382,7 +393,7 @@ def blacklist_selected(request):
         )
         record.save()
 
-    RawLeads.objects.filter(blacklist=1, activated=1).delete()
+    RawLeads.objects.filter(blacklist=1, activated=1, date=date).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -475,21 +486,21 @@ def send_mails(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
 
-    _to_delete = RawLeads.objects.filter(to_delete=1)
-    delete_ids = map(attrgetter('hash_base_id'), _to_delete)
+    delete_ids = []
     # logging
     datas = RawLeads.objects.filter(to_delete=1, activated=1)
     for data in datas:
+        delete_ids.append(data.hash_base_id)
         record = DeletedInfo(
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
             date=data.date,
             email=data.mail,
-            reason='--send_mails 1--'
+            reason='--send_mails 1, to_delete=1--'
         )
         record.save()
     # end logging
-    delete = RawLeads.objects.filter(to_delete=1, activated=1).delete()
+    RawLeads.objects.filter(to_delete=1, activated=1).delete()
 
     blacklists = RawLeads.objects.filter(blacklist=1, activated=1)
     eml = []
@@ -499,24 +510,23 @@ def send_mails(request):
         if not entry.exists():
             new = BlackList(email=blacklist.mail)
             new.save()
-    _to_blacklist = RawLeads.objects.filter(mail__in=eml)
-    blacklist_ids = map(attrgetter('hash_base_id'), _to_delete)
 
     # logging
     datas = RawLeads.objects.filter(mail__in=eml)
     for data in datas:
+        delete_ids.append(data.hash_base_id)
         record = DeletedInfo(
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
             date=data.date,
             email=data.mail,
-            reason='--send_mails 2--'
+            reason='--send_mails 2, blacklist=1--'
         )
         record.save()
     # end logging
     delete = RawLeads.objects.filter(mail__in=eml).delete()
 
-    AllHash.objects.filter(hash_base_id__in=blacklist_ids + delete_ids)
+    AllHash.objects.filter(hash_base_id__in=delete_ids)
 
     potential_profits = RawLeads.objects.filter(date=date, mark_to_send=1, mail__isnull=False, reminder=0)
 
@@ -544,10 +554,8 @@ def send_mails(request):
                     'remail': potential_profit.mail,
                 }
             )
-            if req.status_code == 204:
-                hash = hashlib.md5()
-                hash.update(str(potential_profit.id + 100000))
-                hash_base_id = hash.hexdigest()
+            while req.status_code == 204:
+                hash_base_id = binascii.hexlify(os.urandom(16))
 
                 req = requests.post(
                     "http://www.webdomainexpert.pw/add_offer/",
@@ -561,8 +569,7 @@ def send_mails(request):
                 )
 
             if req.status_code == 200:
-                AllHash.objects.filter(hash_base_id=hash_base_id)
-                # RawLeads.objects.filter(id=potential_profit.id).delete()
+                AllHash.objects.filter(hash_base_id=potential_profit.hash_base_id).update(hash_base_id=hash_base_id)
                 RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id, last_email_date=timezone.now())
 
                 emails = []
@@ -583,6 +590,7 @@ def send_mails(request):
                     connection = mail.get_connection()
                     connection.open()
                     connection.send_messages(emails)
+                    asdi += 1
         except:
             print traceback.format_exc()
     connection.close()
@@ -617,12 +625,11 @@ def super_blacklist(request):
         new_entry.save()
     exclude_email = '@' + str(domain)
 
-    super_b_l = RawLeads.objects.filter(mail__endswith=exclude_email)
-    hash_base_ids = map(attrgetter('hash_base_id'), super_b_l)
-
+    hash_base_ids = []
     # logging
-    datas = RawLeads.objects.filter(hash_base_id__in=hash_base_ids)
+    datas = RawLeads.objects.filter(mail__endswith=exclude_email)
     for data in datas:
+        hash_base_ids.append(data.hash_base_id)
         record = DeletedInfo(
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
@@ -632,8 +639,7 @@ def super_blacklist(request):
         )
         record.save()
     # end logging
-
-    RawLeads.objects.filter(hash_base_id__in=hash_base_ids).delete()
+    RawLeads.objects.filter(mail__endswith=exclude_email).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -647,12 +653,11 @@ def regular_blacklist(request):
         new_entry = BlackList(email=email)
         new_entry.save()
 
-    b_l = RawLeads.objects.filter(mail=email)
-    hash_base_ids = map(attrgetter('hash_base_id'), b_l)
-
+    hash_base_ids = []
     # logging
-    datas = RawLeads.objects.filter(hash_base_id__in=hash_base_ids)
+    datas = RawLeads.objects.filter(mail=email)
     for data in datas:
+        hash_base_ids.append(data.hash_base_id)
         record = DeletedInfo(
             name_zone=data.name_zone,
             name_redemption=data.name_redemption,
@@ -663,7 +668,7 @@ def regular_blacklist(request):
         record.save()
     # end logging
 
-    RawLeads.objects.filter(hash_base_id__in=hash_base_ids).delete()
+    RawLeads.objects.filter(mail=email).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -717,7 +722,7 @@ def active_manual(request):
             'remail': potential_profit.mail,
         }
     )
-    if req.status_code == 200:
+    if req.status_code == 200 or req.status_code == 203:
         return HttpResponse('{"status": "success"}', content_type="application/json")
     else:
         return HttpResponse(status=req.status_code)
@@ -802,10 +807,8 @@ def send_pending(request):
                     'remail': potential_profit.mail,
                 }
             )
-            if req.status_code == 204:
-                hash = hashlib.md5()
-                hash.update(str(potential_profit.id + 100000))
-                hash_base_id = hash.hexdigest()
+            while req.status_code == 204:
+                hash_base_id = binascii.hexlify(os.urandom(16))
 
                 req = requests.post(
                     "http://www.webdomainexpert.pw/add_offer/",
@@ -819,8 +822,7 @@ def send_pending(request):
                 )
 
             if req.status_code == 200:
-                AllHash.objects.filter(hash_base_id=hash_base_id)
-                # RawLeads.objects.filter(id=potential_profit.id).delete()
+                AllHash.objects.filter(hash_base_id=potential_profit.hash_base_id).update(hash_base_id=hash_base_id)
                 RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id, last_email_date=timezone.now())
 
                 emails = []
@@ -904,7 +906,6 @@ def admin(request):
 def removeUnwanted(request):
     removeStuff()
     return HttpResponse('{"status": "success"}', content_type="application/json")
-
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')

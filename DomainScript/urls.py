@@ -53,18 +53,18 @@ urlpatterns = [
     url(r'^download/', domain.views.download),
     #  manual add
     url(r'^manual/', domain.views.manual),
-    url(r'^add_manual/', domain.views.add_manual),
+    url(r'^add_manual_whois/', domain.views.add_manual),
     url(r'^add_multiple/', domain.views.add_multiple),
     url(r'^active_manual/', domain.views.active_manual),
     url(r'^del_hash/', domain.views.del_hash),
     # search
     url(r'^search/', domain.views.search),
     url(r'^search_results/', domain.views.search_results),
+    url(r'^restore_lead/', domain.views.restoreDeleted),
     # admin
     url(r'^classified/', domain.views.admin),
     url(r'^whois_period/', domain.views.whois_period),
     url(r'^remove_unwanted/', domain.views.removeUnwanted),
     url(r'^delete_exception/', domain.views.deleteException),
     url(r'^add_exception/', domain.views.addException),
-    url(r'^restore_lead/', domain.views.restoreDeleted),
 ]

@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% block head %}
-
-  {% endblock %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/static/css/bootstrap.min.css">
@@ -12,7 +9,7 @@
   <link rel="stylesheet" href="/static/css/jquery-ui.css">
   <script src="/static/js/jquery-1.12.4.js"></script>
   <script src="/static/js/jquery-ui.js"></script>
-  <script type="text/javascript" src="/static/js/ui.js"></script>
+  <script type="text/javascript" src="/static/js/index.js"></script>
   <script src="/static/js/sorttable.js"></script>
   <style>
     /* Remove the navbar's default margin-bottom and rounded borders */
@@ -47,6 +44,9 @@
       .row.content {height:auto;}
     }
   </style>
+  {% block head %}
+
+  {% endblock %}
 </head>
 <body>
 <nav class="navbar navbar-inverse">

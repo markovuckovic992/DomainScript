@@ -4,7 +4,19 @@ from datetime import datetime, timedelta
 
 def removeStuff():
     date = datetime.now().date() - timedelta(days=28)
-    RawLeads.objects.filter(date__lt=date).delete()
+
+    datas = RawLeads.objects.filter(date__lt=date)
+    for data in datas:
+        record = DeletedInfo(
+            name_zone=data.name_zone,
+            name_redemption=data.name_redemption,
+            date=data.date,
+            email=data.mail,
+            reason='older then 28'
+        )
+        record.save()
+        RawLeads.objects.filter(id=data.id).delete()
+
     # # blacklisting
     bads = BlackList.objects.all()
     for bad in bads:

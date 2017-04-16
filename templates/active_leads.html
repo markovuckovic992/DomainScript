@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block head %}
    <title>Sending</title>
+    <script type="text/javascript" src="/static/js/active_leads.js"></script>
 {% endblock %}
 {% block content %}
     {% csrf_token %}
@@ -18,7 +19,7 @@
       <button>Download!</button>
     </a>
     <button onclick="add_multiple()">Add multiple</button>
-    <button onclick="truncate(1)">Truncate</button>
+    <button onclick="truncate_active()">Truncate</button>
     <button onclick="send_pending()">Send All Pending</button>
    <table id="mytable" class="sortable">
       <thead>
@@ -55,12 +56,16 @@
             {%endif%}
           </td>
           <td>
-            <button onclick="search_manual({{entry.id}}, {{forloop.counter}}, '{{entry.hash_base_id}}')">HASH</button>
+            <button onclick="active_manual_hash({{entry.id}}, {{forloop.counter}}, '{{entry.hash_base_id}}')">HASH</button>
           </td>
           {% if entry.blacklist %}
-            <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" checked onclick="blacklist('{{entry.id}}')" class="blacklist"/>
+            <td style="background: black; color: white;">
+              <input id="blacklist_{{entry.id}}" type="checkbox" checked onclick="blacklist('{{entry.id}}')" class="blacklist" {% if not entry.mail %} disabled {% endif %} />
+            </td>
            {% else %}
-            <td style="background: black; color: white;"><input id="blacklist_{{entry.id}}" type="checkbox" onclick="blacklist('{{entry.id}}')" class="blacklist"/></td>
+            <td style="background: black; color: white;">
+              <input id="blacklist_{{entry.id}}" type="checkbox" onclick="blacklist('{{entry.id}}')" class="blacklist" {% if not entry.mail %} disabled {% endif %}/>
+            </td>
           {% endif %}
 
           {% if entry.to_delete %}

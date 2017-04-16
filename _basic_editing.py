@@ -24,7 +24,6 @@ bad_keywords_list = 'aaaaaaaaaaaabbbbbbbbbasdaaasdffdsa-abbabc'
 
 # SETTINGS!
 sett = Setting.objects.get(id=1)
-
 com_net = sett.com_net # 0 com, 1 net, 2 both
 length = sett.length
 number_of_digits = sett.number_of_digits
@@ -32,7 +31,6 @@ number_of_keywords = sett.number_of_keywords
 allow_bad_keywords = sett.allow_bad_keywords
 min_length = sett.min_length
 max_length = sett.max_length
-
 # END!
 
 class progress_timer:
@@ -217,7 +215,7 @@ def fcn2(domain_dict, pt, all_domains, date):
                 hash = hashlib.md5()
                 hash.update(str(_id))
                 hash_base_id = hash.hexdigest()
-                jj = 0
+                jj = 1
                 while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
                     hash.update(str(_id + jj))
                     hash_base_id = hash.hexdigest()

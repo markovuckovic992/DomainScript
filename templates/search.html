@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block head %}
-   <title>Search</title>
+  <title>Search</title>
+  <script type="text/javascript" src="/static/js/other.js"></script>
 {% endblock %}
 {% block content %}
-    <form action="/search_results/" method="POST" style="margin-left: 20%; width: 60%;">{% csrf_token %}
+    <form action="/search_results/" id="forma_za_pretragu" method="POST" style="margin-left: 20%; width: 60%;">{% csrf_token %}
       <input type="text" name="zone_domain" id="zone_domain" placeholder="lead"/>
       <input type="text" name="drop_domain" id="drop_domain" placeholder="drop"/>
       <input type="text" name="datepicker" id="datepicker" placeholder="date">

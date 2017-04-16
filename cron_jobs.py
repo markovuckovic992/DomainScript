@@ -25,9 +25,23 @@ class CronJobs:
 
     def deleteOldData(self):
         date = datetime.now().date() - timedelta(days=28)
-        RawLeads.objects.filter(date__lt=date).delete()
+        
+        # START LOG
+        datas = RawLeads.objects.filter(date__lt=date)
+        for data in datas:
+            record = DeletedInfo(
+                name_zone=data.name_zone,
+                name_redemption=data.name_redemption,
+                date=data.date,
+                email=data.mail,
+                reason='older then 28'
+            )
+            record.save()
+            RawLeads.objects.filter(id=data.id).delete()
+        # END LOGGING
+
         AllHash.objects.filter(date__lt=date).delete()
-        DeletedInfo.objects.filter(date__lt=date).delete()
+        DeletedInfo.objects.filter(datetime__lt=date).delete()
 
         condition = True
         while condition:
@@ -122,8 +136,6 @@ class CronJobs:
 
 
     def whois(self):
-        f = open('deleted.txt', 'a')
-
         number_of_days = Setting.objects.get(id=1).number_of_days
         margin = (datetime.now() - timedelta(days=number_of_days))
         datas = RawLeads.objects.filter(date__gte=margin, activated=1, mail__isnull=True, no_email_found=0)[0:2100]
@@ -164,64 +176,63 @@ class CronJobs:
             if email and '@' in email:
                 email = "".join(email.split())
                 blacklisted = BlackList.objects.filter(email=email)
-                same_shit = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
+                same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
+                same_shit_2 = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
                 domain = email.split('@', 1)[1]
+                c_domain = domain.split('.', 1)[0]
                 super_blacklisted = SuperBlacklist.objects.filter(domain=domain)
-                super_same_shit = RawLeads.objects.filter(mail__endswith='@' + str(domain))
+                super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain), name_redemption=data.name_redemption)
+                super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain), name_redemption=data.name_redemption)
                 if blacklisted.exists():
-                    print data.name_zone, 'entry 3'
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
                         date=data.date,
                         email=email,
-                        reason='email is blacklisted'
+                        reason='email is blacklisted, cron'
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
-                elif super_blacklisted.exists():
-                    print data.name_zone, 'entry 4'
+                elif super_blacklisted.exists() and not DomainException.objects.filter(domain=c_domain).exists():
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
                         date=data.date,
                         email=email,
-                        reason='domain is blacklisted'
+                        reason='domain is blacklisted, cron'
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
-                elif same_shit.exists():
-                    print data.name_zone, 'entry 5'
+                elif same_shit.exists() or same_shit_2.exists():
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
                         date=data.date,
                         email=email,
-                        reason='duplicate -- 3'
+                        reason='duplicate --, cron'
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
-                elif super_same_shit.exists():
-                    print data.name_zone, 'entry 5'
+                elif (super_same_shit.exists() or super_same_shit_2.exists()) and not (DomainException.objects.filter(domain=c_domain).exists() or DomainException.objects.filter(domain=domain).exists):
                     record = DeletedInfo(
                         name_zone=data.name_zone,
                         name_redemption=data.name_redemption,
                         date=data.date,
                         email=email,
-                        reason='duplicate domain -- 3'
+                        reason='duplicate domain --, cron'
                     )
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
-                    print data.name_zone, 'entry 6'
                     RawLeads.objects.filter(id=data.id).update(mail=email)
+                    new = ProcessTracker(email=email, name_redemption=data.name_redemption, date=datetime.now().date())
+                    new.save()
                     if Emails.objects.filter(name_zone=data.name_zone).exists():
                         Emails.objects.filter(name_zone=data.name_zone).update(email=email)
                     else:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
             elif email and '@' not in email:
-                print data.name_zone, 'entry 7'
                 RawLeads.objects.filter(id=data.id).update(no_email_found=1)
 
             print data.name_zone, 'entry 8'
@@ -233,8 +244,6 @@ class CronJobs:
         datas = RawLeads.objects.filter(date__gte=margin, activated=1, mail__isnull=True)
         for data in datas:
             file.write(data.name_zone + '\n')
-
-        f.close()
 
     def check(self):
         req = requests.post("http://www.webdomainexpert.pw/check_for_offers/")
@@ -248,7 +257,7 @@ class CronJobs:
                     name_redemption=data.name_redemption,
                     date=data.date,
                     email=data.mail,
-                    reason='--duplicated id--'
+                    reason='--already left an offer, no reminders needed--'
                 )
                 record.save()
             RawLeads.objects.filter(hash_base_id__in=ids, reminder=1).delete()
@@ -288,7 +297,7 @@ class CronJobs:
                 name_redemption=reminder.name_redemption,
                 date=reminder.date,
                 email=reminder.mail,
-                reason='--reminder--'
+                reason='--reminder sent--'
             )
             record.save()
 
