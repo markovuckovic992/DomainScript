@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+{% block head %}
+    <title>Filtering</title>
+    <script type="text/javascript" src="/static/js/raw_leads.js"></script>
+{% endblock %}
+{% block content %}
+    <h1 id="empty_page" class="hide">This page is empty</h1>
+    {% csrf_token %}
+   Date: <input type="text" id="datepicker" onchange="load()">
+   <button onclick="truncate_raw()">Truncate</button>
+   Show page:
+   {% for i in range %}
+        <button id="button_{{i}}" class="buttons" onclick="show({{i}})">{{ i }}</button>
+   {% endfor %}
+    <select id="filter_by_dom" onclick="filter_by_dom()">
+      <option value="">-All-</option>
+      <option value=".com">.COM</option>
+      <option value=".net">.NET</option>
+    </select>
+    <button onclick="find_active()">find active</button>
+   <table id="mytable" class="sortable" >
+      <thead>
+        <tr>
+          <th>
+            &nbsp;
+          </th>
+          <th>
+            Zone file domain
+          </th>
+          <th class='no-sort'>
+            Mark as good
+          </th>
+          <th>
+            Domain to sell
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in raw_leads %}
+        <tr class="raw_leads_raw{{entry.page}}" id="{{entry.id}}">
+          <td>{{forloop.counter}}</td>
+          <td class="zone"><a href="http://{{entry.name_zone}}" target="_blank">{{entry.name_zone}}</a></td>
+          <td>
+            <input type="checkbox" id={{entry.id}} class="check_{{entry.page}} r_{{entry.name_redemption}}{{entry.page}}" {% if entry.mark == 1 %} checked {% endif %} onclick="changestate('{{entry.id}}', event)"/>
+          </td>
+          <td class="sell redemption">
+            {{entry.name_redemption}} ||
+            <span style="color: green;" onclick="add_this_name('{{entry.name_redemption}}', {{entry.page}})"> Select
+            </span> ||
+            <span style="color: red;" onclick="rem_this_name('{{entry.name_redemption}}', {{entry.page}})"> Unselect
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <table>
+      <tbody>
+        <tr>
+          <td colspan="3" align="center"><input type="button" onclick="find_mails()" value="Submit"/></td>
+        </tr>
+      </tbody>
+    </table>
+    <script type="text/javascript">
+      $( function() {
+        $('#mytable').DataTable({
+            searching: true,
+            stateSave: true,
+
+            paging: true,
+            lengthMenu: [ [10, 50, 100, 500, 1000, 2000, 5000], [10, 50, 100, 500, 1000, 2000, 5000] ],
+            pageLength: 1000,
+
+            "aoColumnDefs" : [
+                {
+                   // 'bSortable' : false,
+                   'aTargets' : [ 'no-sort' ]
+                }
+            ],
+
+            "order": [[ 3, "asc" ]],
+
+            "fnDrawCallback": function( oSettings ) {
+                var rows = $('#mytable tbody tr');
+                var temp = $('#filter_by_dom').val().toLowerCase();
+                var n, text;
+                rows.show().filter(function() {
+                    text = $(this).find('td.redemption').text().toLowerCase();
+                    n = text.indexOf(temp);
+                    return n === -1;
+                }).hide();
+
+                $('body,html').animate({
+                    scrollTop : 0
+                }, 500);
+            },
+        });
+
+
+
+        // paging: true,
+        // lengthMenu: [ [10, 50, 100, 500, 1000], [10, 50, 100, 500, 1000] ],
+        // pageLength: 100,
+
+        // $('#mytable_length').css( 'display', 'none' );
+        // $('#mytable_paginate').css( 'display', 'none' );
+        // $('#mytable_info').css( 'display', 'none' );
+        // $('.dataTables_empty').css( 'display', 'none' );
+        $("#button_{{page}}").css({"background-color": "LightGreen"})
+
+        var selected_date = (window.location.search).replace('?date=', '').split("-");
+        var temp;
+        if (selected_date[2] && selected_date[2].indexOf('&') !== -1) {
+            temp = (selected_date[2].split('&', 1))[0]
+        } else {
+            temp = selected_date[2]
+        }
+        var new_date = new Date(temp, selected_date[1] - 1, selected_date[0]);
+        $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
+        $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
+
+      } );
+      $("#Filt").addClass('active');
+      $("#Base").removeClass();
+    </script>
+{% endblock %}

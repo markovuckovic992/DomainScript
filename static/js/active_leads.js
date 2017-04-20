@@ -24,8 +24,20 @@ function find_mails_again() {
             400: function() {
               alert('400 status code! user error, reload page');
             },
+            404: function() {
+              alert('404 error, reload the page');
+            },
+            403: function() {
+              alert('403 error, reload the page');
+            },
             500: function() {
               alert('500 status code! server error, reload page');
+            },
+            502: function() {
+                alert('gateway timeout!');
+            },
+            504: function() {
+                alert('gateway timeout!');
             }
         }
     });
@@ -247,6 +259,12 @@ function active_manual_hash(id, number, hash) {
                 400: function() {
                   alert('400 status code! user error, reload page');
                 },
+                404: function() {
+                  alert('404 error, reload the page');
+                },
+                403: function() {
+                  alert('403 error, reload the page');
+                },
                 500: function() {
                   alert('500 status code! server error, reload page');
                 },
@@ -329,8 +347,20 @@ function send_mails() {
             400: function() {
               alert('400 status code! user error, reload page');
             },
+            404: function() {
+              alert('404 error, reload the page');
+            },
+            403: function() {
+              alert('403 error, reload the page');
+            },
             500: function() {
               alert('500 status code! server error, reload page');
+            },
+            502: function() {
+                alert('gateway timeout!');
+            },
+            504: function() {
+                alert('gateway timeout!');
             }
         }
     });

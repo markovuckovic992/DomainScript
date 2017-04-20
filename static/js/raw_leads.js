@@ -31,7 +31,7 @@ function truncate_raw() {
 
 function show (i) {
     var date = $("#datepicker").val();
-    window.location.href=('/raw_leads/?date=' + date + '&page=' + i);
+    window.location.href=('/raw_leads/?date=' + date + '&pages=' + i);
 };
 
 function filter_by_dom() {
@@ -63,8 +63,20 @@ function find_active() {
             400: function() {
               alert('400 status code! user error, reload page');
             },
+            404: function() {
+              alert('404 error, reload the page');
+            },
+            403: function() {
+              alert('403 error, reload the page');
+            },
             500: function() {
               alert('500 status code! server error, reload page');
+            },
+            502: function() {
+                alert('gateway timeout!');
+            },
+            504: function() {
+                alert('gateway timeout!');
             }
         }
     });
@@ -179,8 +191,20 @@ function find_mails() {
             400: function() {
               alert('400 status code! user error, reload page');
             },
+            404: function() {
+              alert('404 error, reload the page');
+            },
+            403: function() {
+              alert('403 error, reload the page');
+            },
             500: function() {
               alert('500 status code! server error, reload page');
+            },
+            502: function() {
+                alert('gateway timeout!');
+            },
+            504: function() {
+                alert('gateway timeout!');
             }
         }
     });
