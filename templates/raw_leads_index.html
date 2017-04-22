@@ -1,5 +1,5 @@
 {% load el_pagination_tags %}
-{% lazy_paginate 100 raw_leads %}
+{% lazy_paginate 10 raw_leads %}
   {% for entry in raw_leads %}
   <tr class="raw_leads_raw{{entry.page}}" id="{{entry.id}}">
     <td>{{forloop.counter|add:offset}}</td>
@@ -16,4 +16,10 @@
     </td>
   </tr>
   {% endfor %}
+  <script type="text/javascript">      
+    $( document ).ready(function() {
+        var count = $(":checkbox:checked").length;
+        $("#counter").html(count);
+    });
+  </script>
 {% show_more %}

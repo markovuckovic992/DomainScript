@@ -210,45 +210,43 @@ def rawLeads(request, template='raw_leads.html', extra_context=None):
     context = {
         "raw_leads": raw_leads,
         'range': range(1, number_of_pages + 1),
-        'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
-        'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
         'page': page,
         'offset': (int(request.GET['page']) - 1) * 100 if 'page' in request.GET.keys() else 0,
+        'date': datetime.strftime(date, '%d-%m-%Y'),
         'page_template': page_template,
+        'total_raw': len(RawLeads.objects.filter(date=date, page=page, activated=0)),
     }
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template, context)
 
-# RAW LEADS
-# def rawLeads(request):
-#     if request.user:
-#         logout(request)
-#     if 'date' in request.GET.keys() and len(request.GET['date']) > 6:
-#         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
-#     else:
-#         date = datetime.now()
-#     if 'page' in request.GET.keys():
-#         page = int(request.GET['page'])
-#     else:
-#         page = 1
-#     raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page)
-#     numbers = [1]
-#     try:
-#         numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
-#     except:
-#         pass
-#     number_of_pages = max(set(numbers))
-#     return render(
-#         request,
-#         'raw_leads.html',
-#         {
-#             "raw_leads": raw_leads,
-#             'range': range(1, number_of_pages + 1),
-#             'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
-#             'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
-#             'page': page,
-#         })
+def rawLeadsAll(request):
+    if request.user:
+        logout(request)
+    if 'date' in request.GET.keys() and len(request.GET['date']) > 6:
+        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
+    else:
+        date = datetime.now()
+    if 'pages' in request.GET.keys():
+        page = int(request.GET['pages'])
+    else:
+        page = 1
+    raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page)
+    numbers = [1]
+    try:
+        numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
+    except:
+        pass
+    number_of_pages = max(set(numbers))
+    return render(
+        request,
+        'raw_leads_all.html',
+        {
+            "raw_leads": raw_leads,
+            'range': range(1, number_of_pages + 1),
+            'page': page,
+            'total_raw': len(RawLeads.objects.filter(date=date, page=page, activated=0)),
+        })
 
 
 def reverse_state(request):

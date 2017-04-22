@@ -4,6 +4,9 @@
     <script type="text/javascript" src="/static/js/raw_leads.js"></script>
 {% endblock %}
 {% block content %}
+    <div style="position: fixed; top: 50px; right: 20px">
+      <span id="counter"></span> out of {{total_raw}}
+    </div>
     <h1 id="empty_page" class="hide">This page is empty</h1>
     {% csrf_token %}
    Date: <input type="text" id="datepicker" onchange="load()">
@@ -57,19 +60,27 @@
     <table>
       <tbody>
         <tr>
-          <td colspan="3" align="center"><input type="button" onclick="find_mails()" value="Submit"/></td>
+          <td colspan="3" align="cente3r"><input type="button" onclick="find_mails()" value="Submit"/></td>
         </tr>
       </tbody>
     </table>
+    <script type="text/javascript">      
+      $( document ).ready(function() {
+          var count = $(":checkbox:checked").length;
+          $("#counter").html(count);
+          document.body.addEventListener('click', function() { 
+            var count = $(":checkbox:checked").length;
+            $("#counter").html(count);
+          }, true); 
+      });
+    </script>
     <script type="text/javascript">
       $( function() {
         $('#mytable').DataTable({
             searching: true,
             stateSave: true,
-
-            paging: true,
-            lengthMenu: [ [10, 50, 100, 500, 1000, 2000, 5000], [10, 50, 100, 500, 1000, 2000, 5000] ],
-            pageLength: 1000,
+            paging: false,
+            pageLength: 5000,
 
             "aoColumnDefs" : [
                 {

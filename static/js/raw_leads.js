@@ -22,7 +22,10 @@ function truncate_raw() {
                 $("#cover").fadeOut(100);
                 alert("It's Done!");
                 window.location.href=('/raw_leads/?date=' + date);
-            }
+            },
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     } else {
         alert('Incorrect password');
@@ -58,6 +61,9 @@ function find_active() {
         success: function(msg){
             $("#cover").fadeOut(100);
             window.location.href=('/raw_leads/?date=' + date);
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
         },
         statusCode: {
             400: function() {
@@ -101,6 +107,9 @@ function changestate(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     } else {
         $.ajax({
@@ -140,7 +149,10 @@ function add_this_name(name_redemption, page) {
         	for (i = 0; i < items.length; i += 1) {
     			items[i].checked = true;
         	}
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -169,7 +181,10 @@ function rem_this_name(name_redemption, page) {
             for (i = 0; i < items.length; i += 1) {
                 items[i].checked = false;
             }
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -186,6 +201,9 @@ function find_mails() {
         success: function(msg){
             $("#cover").fadeOut(100);
             window.location='/active_leads/'
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
         },
         statusCode: {
             400: function() {

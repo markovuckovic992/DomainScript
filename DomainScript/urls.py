@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^change_setting/', domain.views.changeSetting),
     #  raw leads
     url(r'^raw_leads/', domain.views.rawLeads),
+    url(r'^raw_leads_all/', domain.views.rawLeadsAll),
     url(r'^reverse_state/', domain.views.reverse_state),
     url(r'^find_mails/', domain.views.find_mails),
     url(r'^truncate/', domain.views.truncate),

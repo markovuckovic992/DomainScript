@@ -45,6 +45,9 @@ function run_script(arg) {
                             alert('Something went wrong!')
                         }
                     },
+                    error: function(ts) { 
+                        alert(ts.responseText) 
+                    },
                     statusCode: {
                         400: function() {
                           alert('400 status code! user error, reload page');
@@ -81,6 +84,9 @@ function changeSetting(id, value) {
             'X-CSRFToken': csrftoken
         },
         data: "id=" + id + '&value=' + value,
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 //SEARCH
@@ -96,7 +102,10 @@ function restore_lead(id) {
             },
             success: function(msg) {
                 $('#forma_za_pretragu').submit();
-            }
+            },
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     }
 }
@@ -113,7 +122,10 @@ function super_blacklist() {
         success: function(msg){
             $("#super_blacklist").val('');
             location.reload();
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 }
 
@@ -129,7 +141,10 @@ function regular_blacklist() {
         success: function(msg){
             $("#super_blacklist").val('');
             location.reload();
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 }
 
@@ -143,7 +158,10 @@ function remove_from_blacklist(id, type) {
         },
         success: function(msg){
             location.reload()
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 }
 // MAN
@@ -160,6 +178,9 @@ function add_manual_whois() {
         success: function(msg){
             alert("it's uploaded");
             $("#cover").fadeOut(100);
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
         },
         statusCode: {
             400: function() {
@@ -203,6 +224,9 @@ function whois_period() {
             $("#cover").fadeOut(100);
             alert("Done!");
         },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
         statusCode: {
             400: function() {
               alert('400 status code! user error, reload page');
@@ -237,7 +261,10 @@ function remove_unwanted() {
         success: function(msg){
             alert('It\'s cleared!');
             $("#cover").fadeOut(100);
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -251,7 +278,10 @@ function delete_exception(id) {
         },
         success: function(msg){
             location.reload()
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -266,6 +296,9 @@ function add_exception() {
         },
         success: function(msg){
             location.reload();
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };

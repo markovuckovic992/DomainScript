@@ -20,6 +20,9 @@ function find_mails_again() {
             $("#cover").fadeOut(100);
             location.reload();
         },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
         statusCode: {
             400: function() {
               alert('400 status code! user error, reload page');
@@ -54,7 +57,10 @@ function select_all() {
         data: "date=" + date,
         success: function(msg){
             $('input:checkbox.prim').prop('checked', true);
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -69,7 +75,10 @@ function un_select_all() {
         data: "date=" + date,
         success: function(msg){
             $('input:checkbox.prim').prop('checked', false);
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -87,7 +96,10 @@ function blacklist_selected() {
                 this.checked = false;
             });
             location.reload()
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -122,7 +134,10 @@ function add_multiple() {
             },
             success: function(msg){
                 window.location.reload()
-            }
+            },
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     }
 };
@@ -143,7 +158,10 @@ function truncate_active() {
                 $("#cover").fadeOut(100);
                 alert("It's Done!");
                 window.location.href=('/active_leads/?date=' + date);
-            }
+            },
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     } else {
         alert('Incorrect password');
@@ -163,7 +181,10 @@ function send_pending(argument) {
         success: function(msg){
             $("#cover").fadeOut(100);
             window.location.reload();
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
     } else {
         alert('Incorrect password');
@@ -189,6 +210,9 @@ function mark_to_send(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     } else {
         $.ajax({
@@ -198,6 +222,9 @@ function mark_to_send(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: "id=" + id,
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     }
     lastChecked = e.target;
@@ -218,7 +245,10 @@ function rem_mail(id, name_zone) {
                 $("#mail_field_" + msg.ids[i]).html(html + '<a href="http://bgp.he.net/dns/' + name_zone + '#_whois" target="_blank">bgd.he.net</a>'
 );
             }
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -237,7 +267,10 @@ function add_mail_man(id, name_zone) {
             for (i = 0; i < msg.ids.length; i += 1) {
                 $("#mail_field_" + msg.ids[i]).html(html);
             }
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -274,7 +307,10 @@ function active_manual_hash(id, number, hash) {
                 504: function() {
                     alert('gateway timeout!');
                 }
-            }
+            },
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     }
 };
@@ -292,7 +328,10 @@ function blacklist(id) {
             for (i = 0; i < msg.ids.length; i += 1) {
                 $("#blacklist_" + msg.ids[i]).prop('checked', msg.command);
             }
-        }
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
+        },
     });
 };
 
@@ -314,6 +353,9 @@ function to_delete(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     } else {
         $.ajax({
@@ -323,6 +365,9 @@ function to_delete(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: "id=" + id,
+            error: function(ts) { 
+                alert(ts.responseText) 
+            },
         });
     }
     lastChecked = e.target;
@@ -342,6 +387,9 @@ function send_mails() {
             $("#cover").fadeOut(100);
             location.reload();
             $('input:checkbox').removeAttr('checked');
+        },
+        error: function(ts) { 
+            alert(ts.responseText) 
         },
         statusCode: {
             400: function() {
