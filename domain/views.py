@@ -110,11 +110,13 @@ def runEditing(request):
         path = settings.BASE_DIR
         arg = request.POST['arg']
         if int(arg) == 1:
+            # script = '_basic_editing'
             script = '_basic_editing'
             language = 'pypy '
         else:
-            script = '_basic_editing'
-            language = 'python '
+            script = 'testing'
+            language = 'pypy '
+            
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
         org = request.POST['org'].replace('C:\\fakepath\\', '')
@@ -178,7 +180,8 @@ def runEditing(request):
             argument += "none "
 
         argument += (redempt + " " + str(date))
-        popen(argument)
+        print argument
+        # popen(argument)
         # main_filter(com, net, org, info, redempt, date)
         return HttpResponse('{"status": "success"}', content_type="application/json")
     except:
