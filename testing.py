@@ -337,6 +337,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, all_domains, date, raw.lower())
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
+        pt2 = None
+        raw = None       
+        all_domains = None    
         gc.collect()
     else:
         pass
@@ -351,6 +354,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, all_domains, date, raw.lower())
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
+        pt2 = None
+        raw = None 
+        all_domains = None       
         gc.collect()
     else:
         pass
@@ -365,8 +371,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, all_domains, date, raw.lower())
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
-        all_domains = None
         pt2 = None
+        raw = None 
+        all_domains = None   
         gc.collect()
     else:
         pass
@@ -381,8 +388,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, all_domains, date, raw.lower())
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
-        all_domains = None
         pt2 = None
+        raw = None 
+        all_domains = None   
         gc.collect()
     else:
         pass
@@ -397,8 +405,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, all_domains, date, raw.lower())
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
-        all_domains = None
         pt2 = None
+        raw = None 
+        all_domains = None   
         gc.collect()
     else:
         pass
@@ -413,8 +422,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, all_domains, date, raw.lower())
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
-        all_domains = None
         pt2 = None
+        raw = None 
+        all_domains = None   
         gc.collect()
     else:
         pass
@@ -429,8 +439,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, all_domains, date, raw.lower())
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
-        all_domains = None
         pt2 = None
+        raw = None 
+        all_domains = None   
         gc.collect()
     else:
         pass
@@ -444,8 +455,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, all_domains, date, raw.lower())
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
-        all_domains = None
         pt2 = None
+        raw = None 
+        all_domains = None   
         gc.collect()
     else:
         pass
@@ -460,8 +472,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, all_domains, date, raw.lower())
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
-        all_domains = None
         pt2 = None
+        raw = None 
+        all_domains = None   
         gc.collect()
     else:
         pass
