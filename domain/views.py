@@ -72,7 +72,7 @@ def add_manual(request):
                         c_domain = domain.split('.', 1)[0]
                         super_same_shit = ProcessTracker.objects.filter(email__endswith='@' + str(domain), name_redemption=lead.name_redemption)
                         super_same_shit_2 = RawLeads.objects.filter(mail__endswith='@' + str(domain), name_redemption=lead.name_redemption)
-                        
+
                         if (super_same_shit.exists() or super_same_shit_2.exists()) and not (DomainException.objects.filter(domain=c_domain).exists() or DomainException.objects.filter(domain=domain).exists):
                             datas = RawLeads.objects.filter(id=lead.id)
                             for data in datas:
@@ -189,7 +189,7 @@ def runEditing(request):
         return HttpResponse('{"status": "failed"}', content_type="application/json")
 
 #RAW LEADS
-@page_template('raw_leads_index.html')  
+@page_template('raw_leads_index.html')
 def rawLeads(request, template='raw_leads.html', extra_context=None):
     if request.user:
         logout(request)
@@ -201,14 +201,14 @@ def rawLeads(request, template='raw_leads.html', extra_context=None):
         page = int(request.GET['pages'])
     else:
         page = 1
-    raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page)
+    raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page).order_by('name_redemption')
     numbers = [1]
     try:
         numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
     except:
         pass
     number_of_pages = max(set(numbers))
-  
+
     context = {
         "raw_leads": raw_leads,
         'range': range(1, number_of_pages + 1),
@@ -337,7 +337,7 @@ def find_mails(request):
         if not Log.objects.filter(date=datetime.now().date()).exists():
             Log().save()
         number_of_new = len(RawLeads.objects.filter(date=date, mark=1, activated=0))
-        
+
         number_of_old = Log.objects.get(date=datetime.now().date()).number_act
         Log.objects.filter(date=datetime.now().date()).update(number_act=(int(number_of_old) + int(number_of_new)))
 
