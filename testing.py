@@ -513,41 +513,41 @@ if __name__ == '__main__':
     value = 0.0
     text = ''
     
-    argv = ['', 'biz_zone_27Mar.txt', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'RD_28_2_17.csv', '2017-04-19']
-    if not Log.objects.filter(date=argv[11]).exists():
-        entry = Log(date=argv[11])
-        entry.save()
-    main_filter(
-        argv[1],
-        argv[2],
-        argv[3],
-        argv[4],
-        argv[5],
-        argv[6],
-        argv[7],
-        argv[8],
-        argv[9],
-        argv[10],
-        argv[11],
-    )
-    duration = int(time.time() - start_time)
-    Log.objects.filter(date=argv[11]).update(duration=duration)
-
-    # if not Log.objects.filter(date=sys.argv[11]).exists():
-    #     entry = Log(date=sys.argv[11])
+    # argv = ['', 'biz_zone_27Mar.txt', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'RD_28_2_17.csv', '2017-04-19']
+    # if not Log.objects.filter(date=argv[11]).exists():
+    #     entry = Log(date=argv[11])
     #     entry.save()
     # main_filter(
-    #     sys.argv[1],
-    #     sys.argv[2],
-    #     sys.argv[3],
-    #     sys.argv[4],
-    #     sys.argv[5],
-    #     sys.argv[6],
-    #     sys.argv[7],
-    #     sys.argv[8],
-    #     sys.argv[9],
-    #     sys.argv[10],
-    #     sys.argv[11],
+    #     argv[1],
+    #     argv[2],
+    #     argv[3],
+    #     argv[4],
+    #     argv[5],
+    #     argv[6],
+    #     argv[7],
+    #     argv[8],
+    #     argv[9],
+    #     argv[10],
+    #     argv[11],
     # )
     # duration = int(time.time() - start_time)
-    # Log.objects.filter(date=sys.argv[11]).update(duration=duration)
+    # Log.objects.filter(date=argv[11]).update(duration=duration)
+
+    if not Log.objects.filter(date=sys.argv[11]).exists():
+        entry = Log(date=sys.argv[11])
+        entry.save()
+    main_filter(
+        sys.argv[1],
+        sys.argv[2],
+        sys.argv[3],
+        sys.argv[4],
+        sys.argv[5],
+        sys.argv[6],
+        sys.argv[7],
+        sys.argv[8],
+        sys.argv[9],
+        sys.argv[10],
+        sys.argv[11],
+    )
+    duration = int(time.time() - start_time)
+    Log.objects.filter(date=sys.argv[11]).update(duration=duration)
