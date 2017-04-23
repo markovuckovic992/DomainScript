@@ -19,7 +19,10 @@ for offer in offers:
 offers = AllHash.objects.raw("SELECT * FROM hashes_hzn")
 for offer in offers:
 	if offer.hash_base_id:
-	    AllHash(
-	        hash_base_id=offer.hash_base_id,
-	        date=offer.date,
-	    ).save()
+		try:
+		    AllHash(
+		        hash_base_id=offer.hash_base_id,
+		        date=offer.date,
+		    ).save()
+	    except:
+	    	pass
