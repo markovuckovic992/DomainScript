@@ -381,7 +381,6 @@ def activeLeads(request):
         {
             "raw_leads": raw_leads,
             'range': range(1, int(ceil(len(raw_leads) / 5000)) + 2),
-            'total_r': len(RawLeads.objects.filter(activated=0, date=date)),
             'total_a': len(raw_leads),
         })
 

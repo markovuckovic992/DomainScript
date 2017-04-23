@@ -4,6 +4,12 @@
     <script type="text/javascript" src="/static/js/active_leads.js"></script>
 {% endblock %}
 {% block content %}
+    <div style="position: fixed; bottom: 0px; right: 20px">
+      Total leads on page: {{total_a}}.
+      Marked for sending: <span id="counter1"></span>, 
+      Marked for blacklisting: <span id="counter2"></span>,  
+      Marked for deleting: <span id="counter3"></span>.
+    </div>
     {% csrf_token %}
     Date: <input type="text" id="datepicker" onchange="load_send()">
     <button onclick="find_mails_again()">Run whois scipt again</button>
@@ -85,6 +91,24 @@
         </tr>
       </tbody>
     </table>
+    <script type="text/javascript">      
+      $( document ).ready(function() {
+          var count1 = $(":checkbox:checked.prim").length;
+          var count2 = $(":checkbox:checked.blacklist").length;
+          var count3 = $(":checkbox:checked.delete__").length;
+          $("#counter1").html(count1);
+          $("#counter2").html(count2);
+          $("#counter3").html(count3);
+          document.body.addEventListener('click', function() { 
+            var count1 = $(":checkbox:checked.prim").length;
+            var count2 = $(":checkbox:checked.blacklist").length;
+            var count3 = $(":checkbox:checked.delete__").length;
+            $("#counter1").html(count1);
+            $("#counter2").html(count2);
+            $("#counter3").html(count3);
+          }, true); 
+      });
+    </script>
     <script type="text/javascript">
       $( function() {
         $('#mytable').DataTable({
