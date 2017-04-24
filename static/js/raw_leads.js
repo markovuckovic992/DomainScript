@@ -23,8 +23,8 @@ function truncate_raw() {
                 alert("It's Done!");
                 window.location.href=('/raw_leads/?date=' + date);
             },
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     } else {
@@ -62,10 +62,14 @@ function find_active() {
             $("#cover").fadeOut(100);
             window.location.href=('/raw_leads/?date=' + date);
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
         statusCode: {
+            200: function() {
+                $("#cover").fadeOut(100);
+                window.location.href=('/raw_leads/?date=' + date);
+            },
             400: function() {
               alert('400 status code! user error, reload page');
             },
@@ -107,8 +111,8 @@ function changestate(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     } else {
@@ -150,8 +154,8 @@ function add_this_name(name_redemption, page) {
     			items[i].checked = true;
         	}
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -182,8 +186,8 @@ function rem_this_name(name_redemption, page) {
                 items[i].checked = false;
             }
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -202,10 +206,14 @@ function find_mails() {
             $("#cover").fadeOut(100);
             window.location='/active_leads/'
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
         statusCode: {
+            200: function() {
+                $("#cover").fadeOut(100);
+                window.location='/active_leads/'
+            },
             400: function() {
               alert('400 status code! user error, reload page');
             },

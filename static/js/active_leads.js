@@ -20,10 +20,14 @@ function find_mails_again() {
             $("#cover").fadeOut(100);
             location.reload();
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
         statusCode: {
+            200: function() {
+                $("#cover").fadeOut(100);
+                location.reload();
+            },
             400: function() {
               alert('400 status code! user error, reload page');
             },
@@ -58,8 +62,8 @@ function select_all() {
         success: function(msg){
             $('input:checkbox.prim').prop('checked', true);
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -76,8 +80,8 @@ function un_select_all() {
         success: function(msg){
             $('input:checkbox.prim').prop('checked', false);
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -97,8 +101,8 @@ function blacklist_selected() {
             });
             location.reload()
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -135,8 +139,8 @@ function add_multiple() {
             success: function(msg){
                 window.location.reload()
             },
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     }
@@ -159,8 +163,8 @@ function truncate_active() {
                 alert("It's Done!");
                 window.location.href=('/active_leads/?date=' + date);
             },
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     } else {
@@ -182,8 +186,8 @@ function send_pending(argument) {
             $("#cover").fadeOut(100);
             window.location.reload();
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
     } else {
@@ -210,8 +214,8 @@ function mark_to_send(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     } else {
@@ -222,8 +226,8 @@ function mark_to_send(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: "id=" + id,
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     }
@@ -246,8 +250,8 @@ function rem_mail(id, name_zone) {
 );
             }
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -268,8 +272,8 @@ function add_mail_man(id, name_zone) {
                 $("#mail_field_" + msg.ids[i]).html(html);
             }
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -308,8 +312,8 @@ function active_manual_hash(id, number, hash) {
                     alert('gateway timeout!');
                 }
             },
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     }
@@ -329,8 +333,8 @@ function blacklist(id) {
                 $("#blacklist_" + msg.ids[i]).prop('checked', msg.command);
             }
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -353,8 +357,8 @@ function to_delete(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     } else {
@@ -365,8 +369,8 @@ function to_delete(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: "id=" + id,
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     }
@@ -383,15 +387,20 @@ function send_mails() {
         headers: {
             'X-CSRFToken': csrftoken
         },
-        success: function(msg){
+        success: function(msg) {
             $("#cover").fadeOut(100);
             location.reload();
             $('input:checkbox').removeAttr('checked');
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
         statusCode: {
+            200: function() {
+                $("#cover").fadeOut(100);
+                location.reload();
+                $('input:checkbox').removeAttr('checked');
+            },
             400: function() {
               alert('400 status code! user error, reload page');
             },
