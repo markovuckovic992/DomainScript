@@ -344,56 +344,56 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     gc.collect()
 
     threads = []
-    if org_path and org_path != 'none':
-        file = open(org_path, "r")
-        all_domains = set(file.readlines())
-        file.close()
-        raw = "".join(all_domains)
-        pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, all_domains, date, raw.lower())
-        for result in result_list_b:
-            fcn3(result, pt2, all_domains, date, raw.lower())
-        pt2 = None
-        raw = None       
-        all_domains = None    
-        gc.collect()
-    else:
-        pass
+    # if org_path and org_path != 'none':
+    #     file = open(org_path, "r")
+    #     all_domains = set(file.readlines())
+    #     file.close()
+    #     raw = "".join(all_domains)
+    #     pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, all_domains, date, raw.lower())
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, all_domains, date, raw.lower())
+    #     pt2 = None
+    #     raw = None
+    #     all_domains = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if net_path and net_path != 'none':
-        file = open(net_path, "r")
-        all_domains = set(file.readlines())
-        file.close()
-        raw = "".join(all_domains)
-        pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, all_domains, date, raw.lower())
-        for result in result_list_b:
-            fcn3(result, pt2, all_domains, date, raw.lower())
-        pt2 = None
-        raw = None 
-        all_domains = None       
-        gc.collect()
-    else:
-        pass
+    # if net_path and net_path != 'none':
+    #     file = open(net_path, "r")
+    #     all_domains = set(file.readlines())
+    #     file.close()
+    #     raw = "".join(all_domains)
+    #     pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, all_domains, date, raw.lower())
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, all_domains, date, raw.lower())
+    #     pt2 = None
+    #     raw = None
+    #     all_domains = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if info_path and info_path != 'none':
-        file = open(info_path, "r")
-        all_domains = set(file.readlines())
-        file.close()
-        raw = "".join(all_domains)
-        pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, all_domains, date, raw.lower())
-        for result in result_list_b:
-            fcn3(result, pt2, all_domains, date, raw.lower())
-        pt2 = None
-        raw = None 
-        all_domains = None   
-        gc.collect()
-    else:
-        pass
+    # if info_path and info_path != 'none':
+    #     file = open(info_path, "r")
+    #     all_domains = set(file.readlines())
+    #     file.close()
+    #     raw = "".join(all_domains)
+    #     pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, all_domains, date, raw.lower())
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, all_domains, date, raw.lower())
+    #     pt2 = None
+    #     raw = None
+    #     all_domains = None
+    #     gc.collect()
+    # else:
+    #     pass
 
     if com_path and com_path != 'none':
         file = open(com_path, "r")
@@ -406,95 +406,95 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         for result in result_list_b:
             fcn3(result, pt2, all_domains, date, raw.lower())
         pt2 = None
-        raw = None 
-        all_domains = None   
+        raw = None
+        all_domains = None
         gc.collect()
     else:
         pass
 
-    if us_path and us_path != 'none':
-        file = open(us_path, "r")
-        all_domains = set(file.readlines())
-        file.close()
-        raw = "".join(all_domains)
-        pt2 = progress_timer(description='phase 6: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, all_domains, date, raw.lower())
-        for result in result_list_b:
-            fcn3(result, pt2, all_domains, date, raw.lower())
-        pt2 = None
-        raw = None 
-        all_domains = None   
-        gc.collect()
-    else:
-        pass
+    # if us_path and us_path != 'none':
+    #     file = open(us_path, "r")
+    #     all_domains = set(file.readlines())
+    #     file.close()
+    #     raw = "".join(all_domains)
+    #     pt2 = progress_timer(description='phase 6: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, all_domains, date, raw.lower())
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, all_domains, date, raw.lower())
+    #     pt2 = None
+    #     raw = None
+    #     all_domains = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if e1_path and e1_path != 'none':
-        file = open(e1_path, "r")
-        all_domains = set(file.readlines())
-        file.close()
-        raw = "".join(all_domains)
-        pt2 = progress_timer(description='phase 7: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, all_domains, date, raw.lower())
-        for result in result_list_b:
-            fcn3(result, pt2, all_domains, date, raw.lower())
-        pt2 = None
-        raw = None 
-        all_domains = None   
-        gc.collect()
-    else:
-        pass
+    # if e1_path and e1_path != 'none':
+    #     file = open(e1_path, "r")
+    #     all_domains = set(file.readlines())
+    #     file.close()
+    #     raw = "".join(all_domains)
+    #     pt2 = progress_timer(description='phase 7: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, all_domains, date, raw.lower())
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, all_domains, date, raw.lower())
+    #     pt2 = None
+    #     raw = None
+    #     all_domains = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if e2_path and e2_path != 'none':
-        file = open(e2_path, "r")
-        all_domains = set(file.readlines())
-        file.close()
-        raw = "".join(all_domains)
-        pt2 = progress_timer(description='phase 8: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, all_domains, date, raw.lower())
-        for result in result_list_b:
-            fcn3(result, pt2, all_domains, date, raw.lower())
-        pt2 = None
-        raw = None 
-        all_domains = None   
-        gc.collect()
-    else:
-        pass
+    # if e2_path and e2_path != 'none':
+    #     file = open(e2_path, "r")
+    #     all_domains = set(file.readlines())
+    #     file.close()
+    #     raw = "".join(all_domains)
+    #     pt2 = progress_timer(description='phase 8: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, all_domains, date, raw.lower())
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, all_domains, date, raw.lower())
+    #     pt2 = None
+    #     raw = None
+    #     all_domains = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if e3_path and e3_path != 'none':
-        file = open(e3_path, "r")
-        all_domains = set(file.readlines())
-        file.close()
-        pt2 = progress_timer(description='phase 9: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, all_domains, date, raw.lower())
-        for result in result_list_b:
-            fcn3(result, pt2, all_domains, date, raw.lower())
-        pt2 = None
-        raw = None 
-        all_domains = None   
-        gc.collect()
-    else:
-        pass
+    # if e3_path and e3_path != 'none':
+    #     file = open(e3_path, "r")
+    #     all_domains = set(file.readlines())
+    #     file.close()
+    #     pt2 = progress_timer(description='phase 9: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, all_domains, date, raw.lower())
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, all_domains, date, raw.lower())
+    #     pt2 = None
+    #     raw = None
+    #     all_domains = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if e4_path and e4_path != 'none':
-        file = open(e4_path, "r")
-        all_domains = set(file.readlines())
-        file.close()
-        raw = "".join(all_domains)
-        pt2 = progress_timer(description='phase 10: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, all_domains, date, raw.lower())
-        for result in result_list_b:
-            fcn3(result, pt2, all_domains, date, raw.lower())
-        pt2 = None
-        raw = None 
-        all_domains = None   
-        gc.collect()
-    else:
-        pass
+    # if e4_path and e4_path != 'none':
+    #     file = open(e4_path, "r")
+    #     all_domains = set(file.readlines())
+    #     file.close()
+    #     raw = "".join(all_domains)
+    #     pt2 = progress_timer(description='phase 10: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, all_domains, date, raw.lower())
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, all_domains, date, raw.lower())
+    #     pt2 = None
+    #     raw = None
+    #     all_domains = None
+    #     gc.collect()
+    # else:
+    #     pass
 
 
 
@@ -512,7 +512,7 @@ def threadmain():
 if __name__ == '__main__':
     value = 0.0
     text = ''
-    
+
     # argv = ['', 'biz_zone_27Mar.txt', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'RD_28_2_17.csv', '2017-04-19']
     # if not Log.objects.filter(date=argv[11]).exists():
     #     entry = Log(date=argv[11])
