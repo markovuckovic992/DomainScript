@@ -22,7 +22,7 @@ def removeStuff():
     for bad in bads:
         bad2 = "".join(bad.email.split())
         regex = r"\s*" + str(bad2) + "\s*"
-        datas = RawLeads.objects.filter(mail__regex=regex)
+        datas = RawLeads.objects.filter(mail__iregex=regex)
         for data in datas:
             record = DeletedInfo(
                 name_zone=data.name_zone,

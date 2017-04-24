@@ -25,7 +25,7 @@ class CronJobs:
 
     def deleteOldData(self):
         date = datetime.now().date() - timedelta(days=28)
-        
+
         # START LOG
         datas = RawLeads.objects.filter(date__lt=date)
         for data in datas:
@@ -175,7 +175,7 @@ class CronJobs:
                             i += 1
             if email and '@' in email:
                 email = "".join(email.split())
-                blacklisted = BlackList.objects.filter(email=email)
+                blacklisted = BlackList.objects.filter(email__iexact=email)
                 same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
                 same_shit_2 = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
                 domain = email.split('@', 1)[1]

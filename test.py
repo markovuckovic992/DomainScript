@@ -1,25 +1,8 @@
-import time
-current_time = time.time()
+from os import popen
 
-a = range(1, 20000000)
-tmp = []
-# for item in a:
-# 	if len(tmp) >= 1000:
-# 		break
-# 	if item % 2:
-# 		tmp.append(item)
-a = range(1, 1000)
-tmp = [item for item in a if item % 2]
-# cProfile.run('tmp = [item for item in a if item % 2]')
-
-def my_range(start, end, array):
-	while start <= end:
-		yield array[start]
-		start += 1
-# for x in my_range(0, 1000, a):
-#     tmp.append(x)
-
-print time.time() - current_time
+tube = popen('hello.sh "pera asdas \n\r asdasdads"')
+res = tube.read()
+print res
 # from django.core import mail
 # from django.conf import settings
 # import os, django

@@ -115,7 +115,7 @@ def runEditing(request):
         else:
             script = 'testing'
             language = 'pypy '
-            
+
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
         org = request.POST['org'].replace('C:\\fakepath\\', '')
@@ -687,7 +687,7 @@ def regular_blacklist(request):
 
     hash_base_ids = []
     # logging
-    datas = RawLeads.objects.filter(mail=email)
+    datas = RawLeads.objects.filter(mail__iexact=email)
     for data in datas:
         hash_base_ids.append(data.hash_base_id)
         record = DeletedInfo(
@@ -700,7 +700,7 @@ def regular_blacklist(request):
         record.save()
     # end logging
 
-    RawLeads.objects.filter(mail=email).delete()
+    RawLeads.objects.filter(mail__iexact=email).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
