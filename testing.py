@@ -2,14 +2,13 @@
 from Tkinter import *
 import ttk
 from ttk import *
-
+from os import popen
 from copy import deepcopy
 from nltk.corpus import brown, words as wd
 import progressbar as pb
 from math import log, ceil, floor
 import threading, re, time, thread
 import csv, sys, gc, os, django, hashlib
-os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 from domain.models import RawLeads, Log, AllHash, Setting
@@ -163,7 +162,7 @@ def fcn(domain_data, pt):
     return 1
 
 
-def fcn2(domain_dict, pt, all_domains, date, raw):
+def fcn2(domain_dict, pt, path, date):
     global some_variable, link, iterno
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
@@ -173,72 +172,74 @@ def fcn2(domain_dict, pt, all_domains, date, raw):
     condition = True
     matched_lines = []
     matched_lines_copy = []
-    if all(keyword in raw for keyword in keywords):
-        for keyword in keywords:
-            maxx = raw.count(keyword)
-            if len(matched_lines) == 0 and condition:
-                for line in all_domains:
-                    if len(matched_lines) >= maxx:
-                        break
-                    if keyword in line.lower():
-                        matched_lines.append(line.lower())
-                # matched_lines = [line.lower() for line in all_domains if keyword in line.lower()]
-                matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
-                condition = False
-            else:
-                # matched_lines
-                # for line in matched_lines_copy:
-                #     if keyword in line[0]:
-                #         matched_lines.append(line)
-                matched_lines_copy = [line for line in matched_lines_copy if keyword in line[0]]
-        matched_lines = [line[1] for line in matched_lines_copy]
-        if len(matched_lines) and ready_to_write:
-            for matched_domain in matched_lines:
-                if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
-                    iterno += 1
-                    page = floor(iterno / 5000) + 1
-                    try:
-                        base1 = matched_domain.split(".", 1)[0]
-                        base2 = domain.split(".", 1)[0]
-                        if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                            activated = 1
-                        else:
-                            activated = 0
-                    except:
+    # if all(keyword in raw for keyword in keywords):
+    for keyword in keywords:
+        # maxx = raw.count(keyword)
+        if len(matched_lines) == 0 and condition:
+            tube = popen('./getLines.sh ' + keyword + ' ' + path)
+            matched_lines = tube.read().split()
+            # for line in all_domains:
+            #     if len(matched_lines) >= maxx:
+            #         break
+            #     if keyword in line.lower():
+            #         matched_lines.append(line.lower())
+            # matched_lines = [line.lower() for line in all_domains if keyword in line.lower()]
+            matched_lines_copy = [[line.lower().replace(keyword, ''), line.lower()] for line in matched_lines]
+            condition = False
+        else:
+            # matched_lines
+            # for line in matched_lines_copy:
+            #     if keyword in line[0]:
+            #         matched_lines.append(line)
+            matched_lines_copy = [line for line in matched_lines_copy if keyword in line[0]]
+    matched_lines = [line[1] for line in matched_lines_copy]
+    if len(matched_lines) and ready_to_write:
+        for matched_domain in matched_lines:
+            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
+                iterno += 1
+                page = floor(iterno / 5000) + 1
+                try:
+                    base1 = matched_domain.split(".", 1)[0]
+                    base2 = domain.split(".", 1)[0]
+                    if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
+                        activated = 1
+                    else:
                         activated = 0
-                    entry = RawLeads(
-                        name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                        name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                        date=date,
-                        page=page,
-                        activated=activated
-                    )
-                    entry.save()
+                except:
+                    activated = 0
+                entry = RawLeads(
+                    name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                    name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                    date=date,
+                    page=page,
+                    activated=activated
+                )
+                entry.save()
 
-                    _id = RawLeads.objects.get(
-                           name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                           name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                           date=date,
-                           page=page,
-                           activated=activated
-                    ).id
+                _id = RawLeads.objects.get(
+                   name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                   name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                   date=date,
+                   page=page,
+                   activated=activated
+                ).id
 
-                    hash = hashlib.md5()
-                    hash.update(str(_id))
+                hash = hashlib.md5()
+                hash.update(str(_id))
+                hash_base_id = hash.hexdigest()
+                jj = 1
+                while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+                    hash.update(str(_id + jj))
                     hash_base_id = hash.hexdigest()
-                    jj = 1
-                    while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-                        hash.update(str(_id + jj))
-                        hash_base_id = hash.hexdigest()
-                        jj += 1
-                    new_entry = AllHash(hash_base_id=hash_base_id)
-                    new_entry.save()
-                    RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+                    jj += 1
+                new_entry = AllHash(hash_base_id=hash_base_id)
+                new_entry.save()
+                RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
 
     pt.update()
 
 
-def fcn3(domain_dict, pt, all_domains, date, raw):
+def fcn3(domain_dict, pt, path, date):
     global some_variable, link, iterno
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
@@ -248,64 +249,64 @@ def fcn3(domain_dict, pt, all_domains, date, raw):
     condition = True
     matched_lines = []
     matched_lines_copy = []
-    if all(keyword in raw for keyword in keywords):
-        for keyword in keywords:
-            if len(matched_lines) == 0 and condition:
-                maxx = raw.count(keyword)
-                if len(matched_lines) == 0 and condition:
-                    for line in all_domains:
-                        if len(matched_lines) >= maxx:
-                            break
-                        if line.lower().startswith(keyword) or line.lower().endswith(keyword):
-                            matched_lines.append(line.lower())
-                # matched_lines = [line.lower() for line in all_domains if line.lower().startswith(keyword) or line.lower().endswith(keyword)]
-                matched_lines_copy = [[line.replace(keyword, ''), line.lower()] for line in matched_lines]
-                condition = False
-            else:
-                matched_lines_copy = [line for line in matched_lines_copy if line[0].startswith(keyword) or line[0].endswith(keyword)]
-        matched_lines = [line[1] for line in matched_lines_copy]
-        if len(matched_lines) and ready_to_write:
-            for matched_domain in matched_lines:
-                if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
-                    iterno += 1
-                    page = floor(iterno / 5000) + 1
-                    try:
-                        base1 = matched_domain.split(".", 1)[0]
-                        base2 = domain.split(".", 1)[0]
-                        if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                            activated = 1
-                        else:
-                            activated = 0
-                    except:
+    # if all(keyword in raw for keyword in keywords):
+    for keyword in keywords:
+        if len(matched_lines) == 0 and condition:
+            # maxx = raw.count(keyword)         
+            if len(matched_lines) == 0 and condition:   
+                tube = popen('./getLines.sh ' + keyword + ' ' + path)
+                matched_lines_tmp = tube.read().split()
+                for line in matched_lines_tmp:
+                    if line.lower().startswith(keyword) or line.lower().endswith(keyword):
+                        matched_lines.append(line.lower())
+            # matched_lines = [line.lower() for line in all_domains if line.lower().startswith(keyword) or line.lower().endswith(keyword)]
+            matched_lines_copy = [[line.lower().replace(keyword, ''), line.lower()] for line in matched_lines]
+            condition = False
+        else:
+            matched_lines_copy = [line for line in matched_lines_copy if line[0].startswith(keyword) or line[0].endswith(keyword)]
+    matched_lines = [line[1] for line in matched_lines_copy]
+    if len(matched_lines) and ready_to_write:
+        for matched_domain in matched_lines:
+            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
+                iterno += 1
+                page = floor(iterno / 5000) + 1
+                try:
+                    base1 = matched_domain.split(".", 1)[0]
+                    base2 = domain.split(".", 1)[0]
+                    if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
+                        activated = 1
+                    else:
                         activated = 0
-                    entry = RawLeads(
-                        name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                        name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                        date=date,
-                        page=page,
-                        activated=activated
-                    )
-                    entry.save()
+                except:
+                    activated = 0
+                entry = RawLeads(
+                    name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                    name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                    date=date,
+                    page=page,
+                    activated=activated
+                )
+                entry.save()
 
-                    _id = RawLeads.objects.get(
-                           name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                           name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                           date=date,
-                           page=page,
-                           activated=activated
-                    ).id
+                _id = RawLeads.objects.get(
+                       name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                       name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                       date=date,
+                       page=page,
+                       activated=activated
+                ).id
 
-                    hash = hashlib.md5()
-                    hash.update(str(_id))
+                hash = hashlib.md5()
+                hash.update(str(_id))
+                hash_base_id = hash.hexdigest()
+                jj = 0
+                while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+                    hash.update(str(_id + jj))
                     hash_base_id = hash.hexdigest()
-                    jj = 0
-                    while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-                        hash.update(str(_id + jj))
-                        hash_base_id = hash.hexdigest()
-                        jj += 1
-                    new_entry = AllHash(hash_base_id=hash_base_id)
-                    new_entry.save()
-                    RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+                    jj += 1
+                new_entry = AllHash(hash_base_id=hash_base_id)
+                new_entry.save()
+                RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
 
     pt.update()
 
@@ -402,9 +403,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         raw = "".join(all_domains)
         pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, all_domains, date, raw.lower())
+            fcn2(result, pt2, com_path, date)
         for result in result_list_b:
-            fcn3(result, pt2, all_domains, date, raw.lower())
+            fcn3(result, pt2, com_path, date)
         pt2 = None
         raw = None
         all_domains = None

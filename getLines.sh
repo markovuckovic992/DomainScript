@@ -1,3 +1,3 @@
 #!/bin/sh
-tmp=`echo $1 | grep $2`
+tmp=`grep -i $1 $2`
 echo $tmp

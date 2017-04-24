@@ -114,7 +114,7 @@ def runEditing(request):
             language = 'pypy '
         else:
             script = 'testing'
-            language = 'pypy '
+            language = 'python '
 
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')

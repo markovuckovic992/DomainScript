@@ -1,7 +1,7 @@
 from os import popen
 
-tube = popen('hello.sh "pera asdas \n\r asdasdads"')
-res = tube.read()
+tube = popen('./getLines.sh 24 "biz_zone_27Mar.txt"')
+res = tube.read().split()
 print res
 # from django.core import mail
 # from django.conf import settings
