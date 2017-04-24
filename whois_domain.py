@@ -5,7 +5,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 from domain.models import *
 
-def main(date):  
+def main(date):
     # hashes
     non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True, no_email_found=0)
     for non_hashed_lead in non_hashed_leads:
@@ -60,7 +60,7 @@ def main(date):
 
         if email and '@' in email:
             email = "".join(email.split())
-            blacklisted = BlackList.objects.filter(email=email)
+            blacklisted = BlackList.objects.filter(email__iexact=email)
             same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
             same_shit_2 = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
             domain = email.split('@', 1)[1]
@@ -182,7 +182,7 @@ def main_period(dates):
                             i += 1
             if email and '@' in email:
                 email = "".join(email.split())
-                blacklisted = BlackList.objects.filter(email=email)
+                blacklisted = BlackList.objects.filter(email__iexact=email)
                 same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
                 same_shit_2 = RawLeads.objects.filter(name_redemption=data.name_redemption, mail=email)
                 domain = email.split('@', 1)[1]
