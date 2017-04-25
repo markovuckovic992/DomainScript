@@ -211,7 +211,7 @@ def rawLeads(request, template='raw_leads.html', extra_context=None):
         "raw_leads": raw_leads,
         'range': range(1, number_of_pages + 1),
         'page': page,
-        'offset': (int(request.GET['page']) - 1) * 100 if 'page' in request.GET.keys() else 0,
+        'offset': (int(request.GET['page']) - 1) * 1000 if 'page' in request.GET.keys() else 0,
         'date': datetime.strftime(date, '%d-%m-%Y'),
         'page_template': page_template,
         'total_raw': len(RawLeads.objects.filter(date=date, page=page, activated=0)),

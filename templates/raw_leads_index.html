@@ -1,5 +1,5 @@
 {% load el_pagination_tags %}
-{% lazy_paginate 100 raw_leads %}
+{% lazy_paginate 1000 raw_leads %}
   {% for entry in raw_leads %}
   <tr class="raw_leads_raw{{entry.page}}" id="{{entry.id}}">
     <td>{{forloop.counter|add:offset}}</td>
