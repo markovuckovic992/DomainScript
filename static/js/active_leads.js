@@ -393,7 +393,8 @@ function send_mails() {
             $('input:checkbox').removeAttr('checked');
         },
         error: function(ts) {
-            alert(ts.responseText)
+            alert(ts.responseText);            
+            $("#cover").fadeOut(100);
         },
         statusCode: {
             200: function() {
@@ -402,22 +403,28 @@ function send_mails() {
                 $('input:checkbox').removeAttr('checked');
             },
             400: function() {
-              alert('400 status code! user error, reload page');
+                alert('400 status code! user error, reload page');          
+                $("#cover").fadeOut(100);
             },
             404: function() {
-              alert('404 error, reload the page');
+              alert('404 error, reload the page');                        
+              $("#cover").fadeOut(100);
             },
             403: function() {
               alert('403 error, reload the page');
+              $("#cover").fadeOut(100);
             },
             500: function() {
               alert('500 status code! server error, reload page');
+              $("#cover").fadeOut(100);
             },
             502: function() {
                 alert('gateway timeout!');
+                $("#cover").fadeOut(100);
             },
             504: function() {
                 alert('gateway timeout!');
+                $("#cover").fadeOut(100);
             }
         }
     });
