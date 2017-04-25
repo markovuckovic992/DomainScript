@@ -178,6 +178,7 @@ def fcn2(domain_dict, pt, path, date):
         if len(matched_lines) == 0 and condition:
             tube = popen('./getLines.sh ' + keyword + ' ' + path)
             matched_lines = tube.read().split()
+            tube.close()
             # for line in all_domains:
             #     if len(matched_lines) >= maxx:
             #         break
@@ -217,11 +218,11 @@ def fcn2(domain_dict, pt, path, date):
                 entry.save()
 
                 _id = RawLeads.objects.get(
-                   name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                   name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                   date=date,
-                   page=page,
-                   activated=activated
+                    name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                    name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                    date=date,
+                    page=page,
+                    activated=activated
                 ).id
 
                 hash = hashlib.md5()
@@ -256,6 +257,7 @@ def fcn3(domain_dict, pt, path, date):
             if len(matched_lines) == 0 and condition:
                 tube = popen('./getLines.sh ' + keyword + ' ' + path)
                 matched_lines_tmp = tube.read().split()
+                tube.close()
                 for line in matched_lines_tmp:
                     if line.lower().startswith(keyword) or line.lower().endswith(keyword):
                         matched_lines.append(line.lower())
@@ -385,8 +387,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         for result in result_list_b:
             fcn3(result, pt2, com_path, date)
         pt2 = None
-        raw = None
-        all_domains = None
         gc.collect()
     else:
         pass
