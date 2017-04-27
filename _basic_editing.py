@@ -184,8 +184,6 @@ def fcn2(domain_dict, pt, all_domains, date):
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
             if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
-                iterno += 1
-                page = floor(iterno / 5000) + 1
                 try:
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
@@ -201,7 +199,7 @@ def fcn2(domain_dict, pt, all_domains, date):
                     page = floor(iterno / 5000) + 1 
                 else:
                     page = 1
-                    
+
                 entry = RawLeads(
                     name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
                     name_redemption=(domain).replace('\n', '').replace('\r', ''),
@@ -255,8 +253,6 @@ def fcn3(domain_dict, pt, all_domains, date):
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
             if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
-                iterno += 1
-                page = floor(iterno / 5000) + 1
                 try:
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]

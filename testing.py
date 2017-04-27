@@ -197,6 +197,7 @@ def fcn2(domain_dict, pt, path, date):
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
             if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):                try:
+                try:
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
                     if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
@@ -211,7 +212,7 @@ def fcn2(domain_dict, pt, path, date):
                     page = floor(iterno / 5000) + 1 
                 else:
                     page = 1
-                    
+
                 entry = RawLeads(
                     name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
                     name_redemption=(domain).replace('\n', '').replace('\r', ''),
