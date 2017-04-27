@@ -59,7 +59,7 @@ table.sortable thead {
 
 table.sortable > tbody > tr > td {
 	padding-left: 10px;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #C0C0C0;
 }
 
 th {
