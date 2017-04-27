@@ -48,11 +48,13 @@ def Login(request):
     return render(request, 'login.html')
 
 # MANUAL
+@csrf_exempt
 def manual(request):
     if request.user:
         logout(request)
     return render(request, 'manual.html', {})
 
+@csrf_exempt
 def add_manual(request):
     file = request.POST['file'].replace('C:\\fakepath\\', '')
     with open(file, 'r') as csvfile:
@@ -92,19 +94,22 @@ def add_manual(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-# EDITING
+# EDITING.
+@csrf_exempt
 def editing(request):
     if request.user:
         logout(request)
     sett = Setting.objects.get(id=1)
     return render(request, 'editing.html', {'sett': sett})
 
+@csrf_exempt
 def changeSetting(request):
     name = request.POST['id']
     value = request.POST['value']
     Setting.objects.filter(id=1).update(**{ name: value })
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+@csrf_exempt
 def runEditing(request):
     try:
         path = settings.BASE_DIR
@@ -220,6 +225,7 @@ def rawLeads(request, template='raw_leads.html', extra_context=None):
         context.update(extra_context)
     return render(request, template, context)
 
+@csrf_exempt
 def rawLeadsAll(request):
     if request.user:
         logout(request)
@@ -248,7 +254,7 @@ def rawLeadsAll(request):
             'total_raw': len(RawLeads.objects.filter(date=date, page=page, activated=0)),
         })
 
-
+@csrf_exempt
 def reverse_state(request):
     if 'ids' in request.POST:
         ids = request.POST.get('ids')
@@ -279,7 +285,7 @@ def reverse_state(request):
         el.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def select_all(request):
     page = request.POST['page']
     date = request.POST['date']
@@ -288,7 +294,7 @@ def select_all(request):
     raw_leads.update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def add_this_name(request):
     ids = request.POST.get('ids')
     jd = json.dumps(ids)
@@ -306,7 +312,7 @@ def add_this_name(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def rem_this_name(request):
     ids = request.POST.get('ids')
     jd = json.dumps(ids)
@@ -324,7 +330,7 @@ def rem_this_name(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def find_mails(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
@@ -344,7 +350,7 @@ def find_mails(request):
     main(date)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def truncate(request):
     date = request.POST['date']
     activated = request.POST['activated']
@@ -367,6 +373,7 @@ def truncate(request):
 
 
 # ACTIVE LEADS
+@csrf_exempt
 def activeLeads(request):
     if 'date' in request.GET.keys():
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
@@ -384,7 +391,7 @@ def activeLeads(request):
             'total_a': len(raw_leads),
         })
 
-
+@csrf_exempt
 def blacklist(request):
     leads_id = int(unquote(request.POST['id']))
     date = request.POST['date']
@@ -401,7 +408,7 @@ def blacklist(request):
     }
     return HttpResponse(json.dumps(response), content_type="application/json")
 
-
+@csrf_exempt
 def blacklist_selected(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
@@ -430,7 +437,7 @@ def blacklist_selected(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def delete(request):
     if 'ids' in request.POST:
         ids = request.POST.get('ids')
@@ -449,7 +456,7 @@ def delete(request):
         RawLeads.objects.filter(id=leads_id, activated=1).update(to_delete=to_delete)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def mark_to_send(request):
     if 'ids' in request.POST:
         ids = request.POST.get('ids')
@@ -473,14 +480,14 @@ def mark_to_send(request):
             RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def un_mark_to_send(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
     RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=0)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def add_mail_man(request):
     mail = request.POST['email']
     lead_id = request.POST['id']
@@ -499,7 +506,7 @@ def add_mail_man(request):
     }
     return HttpResponse(json.dumps(response), content_type="application/json")
 
-
+@csrf_exempt
 def rem_mail(request):
     lead_id = request.POST['id']
     name_zone = RawLeads.objects.get(id=lead_id).name_zone
@@ -513,7 +520,7 @@ def rem_mail(request):
     }
     return HttpResponse(json.dumps(response), content_type="application/json")
 
-
+@csrf_exempt
 def send_mails(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
@@ -636,7 +643,7 @@ def send_mails(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def blacklisting(request):
     if request.user:
         logout(request)
@@ -647,7 +654,7 @@ def blacklisting(request):
         'superblacklist': superblacklist,
     })
 
-
+@csrf_exempt
 def super_blacklist(request):
     domain = request.POST['domain']
     domain = "".join(domain.split())
@@ -676,7 +683,7 @@ def super_blacklist(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def regular_blacklist(request):
     email = request.POST['email']
     email = "".join(email.split())
@@ -705,7 +712,7 @@ def regular_blacklist(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-
+@csrf_exempt
 def remove_from_blacklist(request):
     id_ = request.POST['id']
     type_ = request.POST['type']
@@ -715,6 +722,7 @@ def remove_from_blacklist(request):
         SuperBlacklist.objects.filter(id=id_).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+@csrf_exempt
 def download(request):
     file = open('zone_with_no_emails.txt', 'w')
     file.seek(0)
@@ -733,6 +741,7 @@ def download(request):
     res['Content-Disposition'] = 'attachment; filename=zone_with_no_email.txt'
     return res
 
+@csrf_exempt
 def add_multiple(request):
     items = request.POST.get('dict')
     jd = json.dumps(items)
@@ -741,6 +750,7 @@ def add_multiple(request):
         RawLeads.objects.filter(id=item['id']).update(mail=item['value'])
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+@csrf_exempt
 def active_manual(request):
     _id = request.POST['id']
     potential_profit = RawLeads.objects.get(id=_id)
@@ -765,6 +775,7 @@ def del_hash(request):
     AllHash.objects.filter(hash_base_id=hash_base_id).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+@csrf_exempt
 def find_active(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
@@ -778,11 +789,13 @@ def find_active(request):
 
 
 # SEARCH
+@csrf_exempt
 def search(request):
     if request.user:
         logout(request)
     return render(request, 'search.html', {})
 
+@csrf_exempt
 def search_results(request):
     if request.user:
         logout(request)
@@ -812,6 +825,7 @@ def search_results(request):
         )[0:50]
     return render(request, 'search.html', {'search_leads': search_leads, 'search_dels': search_dels})
 
+@csrf_exempt
 def send_pending(request):
     potential_profits = RawLeads.objects.filter(activated=1, mail__isnull=False, reminder=0)
 
@@ -890,6 +904,7 @@ def send_pending(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+@csrf_exempt
 def whois_period(request):
     interval = int(request.POST['interval'])
     dates = []
@@ -939,6 +954,7 @@ def removeUnwanted(request):
     removeStuff()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+@csrf_exempt
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -947,16 +963,19 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+@csrf_exempt
 def deleteException(request):
     id_ = request.POST['id']
     DomainException.objects.filter(id=id_).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+@csrf_exempt
 def addException(request):
     domain = request.POST['name']
     DomainException(domain=domain).save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+@csrf_exempt
 def restoreDeleted(request):
     id_ = request.POST['id']
     deleted = DeletedInfo.objects.get(id=id_)

@@ -186,6 +186,26 @@ function send_pending(argument) {
             $("#cover").fadeOut(100);
             window.location.reload();
         },
+        statusCode: {
+            400: function() {
+              alert('400 status code! user error, reload page');
+            },
+            404: function() {
+              alert('404 error, reload the page');
+            },
+            403: function() {
+              alert('403 error, reload the page');
+            },
+            500: function() {
+              alert('500 status code! server error, reload page');
+            },
+            502: function() {
+                alert('gateway timeout!');
+            },
+            504: function() {
+                alert('gateway timeout!');
+            }
+        },
         error: function(ts) {
             alert(ts.responseText)
         },
@@ -393,7 +413,7 @@ function send_mails() {
             $('input:checkbox').removeAttr('checked');
         },
         error: function(ts) {
-            alert(ts.responseText);            
+            alert(ts.responseText);
             $("#cover").fadeOut(100);
         },
         statusCode: {
@@ -403,11 +423,11 @@ function send_mails() {
                 $('input:checkbox').removeAttr('checked');
             },
             400: function() {
-                alert('400 status code! user error, reload page');          
+                alert('400 status code! user error, reload page');
                 $("#cover").fadeOut(100);
             },
             404: function() {
-              alert('404 error, reload the page');                        
+              alert('404 error, reload the page');
               $("#cover").fadeOut(100);
             },
             403: function() {
