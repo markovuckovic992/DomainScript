@@ -196,10 +196,7 @@ def fcn2(domain_dict, pt, path, date):
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
-            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
-                iterno += 1
-                page = floor(iterno / 5000) + 1
-                try:
+            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):                try:
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
                     if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
@@ -208,6 +205,13 @@ def fcn2(domain_dict, pt, path, date):
                         activated = 0
                 except:
                     activated = 0
+
+                if activated == 0:
+                    iterno += 1
+                    page = floor(iterno / 5000) + 1 
+                else:
+                    page = 1
+                    
                 entry = RawLeads(
                     name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
                     name_redemption=(domain).replace('\n', '').replace('\r', ''),
@@ -270,8 +274,6 @@ def fcn3(domain_dict, pt, path, date):
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
             if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
-                iterno += 1
-                page = floor(iterno / 5000) + 1
                 try:
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
@@ -281,6 +283,13 @@ def fcn3(domain_dict, pt, path, date):
                         activated = 0
                 except:
                     activated = 0
+
+                if activated == 0:
+                    iterno += 1
+                    page = floor(iterno / 5000) + 1 
+                else:
+                    page = 1
+
                 entry = RawLeads(
                     name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
                     name_redemption=(domain).replace('\n', '').replace('\r', ''),
