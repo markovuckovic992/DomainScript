@@ -227,7 +227,10 @@ def fcn2(domain_dict, pt, all_domains, date):
                     jj += 1
                 new_entry = AllHash(hash_base_id=hash_base_id)
                 new_entry.save()
-                RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+
+                rl = RawLeads.objects.get(id=_id)
+                rl.hash_base_id = hash_base_id
+                rl.save()
 
     pt.update()
 
@@ -296,7 +299,10 @@ def fcn3(domain_dict, pt, all_domains, date):
                     jj += 1
                 new_entry = AllHash(hash_base_id=hash_base_id)
                 new_entry.save()
-                RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+
+                rl = RawLeads.objects.get(id=_id)
+                rl.hash_base_id = hash_base_id
+                rl.save()
 
     pt.update()
 
@@ -321,7 +327,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             teemp = (domain, )
             usefull_data.append(teemp)
         usefull_data.pop(0)
-    Log.objects.filter(date=sys.argv[11]).update(number_of_all=len(usefull_data))
+    # Log.objects.filter(date=sys.argv[11]).update(number_of_all=len(usefull_data))
+    l = Log.objects.get(date=date)
+    l.number_of_all = len(usefull_data)
+    l.save()
+
     increment = (100.0/len(usefull_data))
     text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
@@ -334,7 +344,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         # t.start()
     # for t in threads:
     #     t.join()
-    Log.objects.filter(date=sys.argv[11]).update(number_of_redemption=len(result_list + result_list_b))
+    # Log.objects.filter(date=sys.argv[11]).update(number_of_redemption=len(result_list + result_list_b))
+    l = Log.objects.get(date=date)
+    l.number_of_redemption = len(result_list + result_list_b)
+    l.save()
+
     usefull_data = None
     pt = None
     gc.collect()
@@ -504,4 +518,7 @@ if __name__ == '__main__':
         sys.argv[11],
     )
     duration = int(time.time() - start_time)
-    Log.objects.filter(date=sys.argv[11]).update(duration=duration)
+    # Log.objects.filter(date=sys.argv[11]).update(duration=duration)
+    l = Log.objects.get(date=sys.argv[11])
+    l.duration = duration
+    l.save()
