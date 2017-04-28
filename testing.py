@@ -196,7 +196,7 @@ def fcn2(domain_dict, pt, path, date):
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
-            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):                try:
+            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):              
                 try:
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]

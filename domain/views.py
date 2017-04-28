@@ -111,10 +111,10 @@ def runEditing(request):
         arg = request.POST['arg']
         if int(arg) == 1:
             script = '_basic_editing'
-            language = 'pypy '
+            language = 'python '
         else:
             script = 'testing'
-            language = 'pypy '
+            language = 'python '
 
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
