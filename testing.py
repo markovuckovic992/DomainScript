@@ -196,7 +196,7 @@ def fcn2(domain_dict, pt, path, date):
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
-            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):              
+            if (matched_domain).replace('\n', '').replace('\r', '') != (domain).replace('\n', '').replace('\r', ''):
                 try:
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
@@ -209,7 +209,7 @@ def fcn2(domain_dict, pt, path, date):
 
                 if activated == 0:
                     iterno += 1
-                    page = floor(iterno / 5000) + 1 
+                    page = floor(iterno / 5000) + 1
                 else:
                     page = 1
 
@@ -240,7 +240,10 @@ def fcn2(domain_dict, pt, path, date):
                     jj += 1
                 new_entry = AllHash(hash_base_id=hash_base_id)
                 new_entry.save()
-                RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+
+                rl = RawLeads.objects.get(id=_id)
+                rl.hash_base_id = hash_base_id
+                rl.save()
 
     pt.update()
 
@@ -287,7 +290,7 @@ def fcn3(domain_dict, pt, path, date):
 
                 if activated == 0:
                     iterno += 1
-                    page = floor(iterno / 5000) + 1 
+                    page = floor(iterno / 5000) + 1
                 else:
                     page = 1
 
@@ -301,11 +304,11 @@ def fcn3(domain_dict, pt, path, date):
                 entry.save()
 
                 _id = RawLeads.objects.get(
-                       name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                       name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                       date=date,
-                       page=page,
-                       activated=activated
+                    name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
+                    name_redemption=(domain).replace('\n', '').replace('\r', ''),
+                    date=date,
+                    page=page,
+                    activated=activated
                 ).id
 
                 hash = hashlib.md5()
@@ -318,7 +321,10 @@ def fcn3(domain_dict, pt, path, date):
                     jj += 1
                 new_entry = AllHash(hash_base_id=hash_base_id)
                 new_entry.save()
-                RawLeads.objects.filter(id=_id).update(hash_base_id=hash_base_id)
+
+                rl = RawLeads.objects.get(id=_id)
+                rl.hash_base_id = hash_base_id
+                rl.save()
 
     pt.update()
 
@@ -343,7 +349,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             teemp = (domain, )
             usefull_data.append(teemp)
         usefull_data.pop(0)
-    Log.objects.filter(date=date).update(number_of_all=len(usefull_data))
+    # Log.objects.filter(date=date).update(number_of_all=len(usefull_data))
+    l = Log.objects.get(date=date)
+    l.number_of_all = len(usefull_data)
+    l.save()
+
     increment = (100.0/len(usefull_data))
     text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
@@ -351,7 +361,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     for domain_data in usefull_data:
         value += increment
         fcn(domain_data, pt)
-    Log.objects.filter(date=date).update(number_of_redemption=len(result_list + result_list_b))
+    # Log.objects.filter(date=date).update(number_of_redemption=len(result_list + result_list_b))
+    l = Log.objects.get(date=date)
+    l.number_of_redemption = len(result_list + result_list_b)
+    l.save()
+
     usefull_data = None
     pt = None
     gc.collect()
@@ -497,4 +511,7 @@ if __name__ == '__main__':
         sys.argv[11],
     )
     duration = int(time.time() - start_time)
-    Log.objects.filter(date=sys.argv[11]).update(duration=duration)
+    # Log.objects.filter(date=sys.argv[11]).update(duration=duration)
+    l = Log.objects.get(date=sys.argv[11])
+    l.duration = duration
+    l.save()
