@@ -309,7 +309,6 @@ def add_this_name(request):
     ip = get_client_ip(request)
     el = EventLogger(ip=ip, action="Marked " + str(ids) + " as good(1) ")
     el.save()
-
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt

@@ -154,9 +154,7 @@ class CronJobs:
                             (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:|No match for'",
                                      'r')
                         response = tube.read()
-                        print response
                         if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
-                            print data.name_zone, 'entry 1'
                             record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
                             record.save()
                             RawLeads.objects.filter(id=data.id).delete()
@@ -236,7 +234,6 @@ class CronJobs:
             elif email and '@' not in email:
                 RawLeads.objects.filter(id=data.id).update(no_email_found=1)
 
-            print data.name_zone, 'entry 8'
 
         file = open('zone_with_no_emails.txt', 'w')
         file.seek(0)
@@ -273,7 +270,6 @@ class CronJobs:
         emails = []
 
         for reminder in reminders:
-            print reminder
             name = ''
             # case = randint(1, 10)
             case = 1
