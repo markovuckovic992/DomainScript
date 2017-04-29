@@ -9,6 +9,7 @@ import progressbar as pb
 from math import log, ceil, floor
 import threading, re, time, thread
 import csv, sys, gc, os, django, hashlib
+from django.db import connection
 os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
@@ -314,6 +315,7 @@ iterno = 0
 
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
     global result_list, result_list_b, all_domains, link, value, text
+    cursor = connection.cursor()
 
     file = open('filtered_domains.txt', 'a')
     file.truncate()
@@ -368,6 +370,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if net_path and net_path != 'none':
+        cursor.execute("COMMIT;")
         file = open(net_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -381,6 +384,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if info_path and info_path != 'none':
+        cursor.execute("COMMIT;")
         file = open(info_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -396,6 +400,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if com_path and com_path != 'none':
+        cursor.execute("COMMIT;")
         file = open(com_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -411,6 +416,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if us_path and us_path != 'none':
+        cursor.execute("COMMIT;")
         file = open(us_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -441,6 +447,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e2_path and e2_path != 'none':
+        cursor.execute("COMMIT;")
         file = open(e2_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -456,6 +463,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e3_path and e3_path != 'none':
+        cursor.execute("COMMIT;")
         file = open(e3_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -471,6 +479,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e4_path and e4_path != 'none':
+        cursor.execute("COMMIT;")
         file = open(e4_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -484,6 +493,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         gc.collect()
     else:
         pass
+
+
+    cursor.execute("COMMIT;")
 
 
 

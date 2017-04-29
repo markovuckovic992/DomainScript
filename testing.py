@@ -9,6 +9,7 @@ import progressbar as pb
 from math import log, ceil, floor
 import threading, re, time, thread
 import csv, sys, gc, os, django, hashlib
+from django.db import connection
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 from domain.models import RawLeads, Log, AllHash, Setting
@@ -336,6 +337,7 @@ iterno = 0
 
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
     global result_list, result_list_b, all_domains, link, value, text
+    cursor = connection.cursor()
 
     file = open('filtered_domains.txt', 'a')
     file.truncate()
@@ -383,6 +385,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if net_path and net_path != 'none':
+        cursor.execute("COMMIT;")
         pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, net_path, date)
@@ -394,6 +397,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if info_path and info_path != 'none':
+        cursor.execute("COMMIT;")
         pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, info_path, date)
@@ -405,6 +409,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if com_path and com_path != 'none':
+        cursor.execute("COMMIT;")
         pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, com_path, date)
@@ -416,6 +421,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if us_path and us_path != 'none':
+        cursor.execute("COMMIT;")
         pt2 = progress_timer(description='phase 6: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, us_path, date)
@@ -427,6 +433,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e1_path and e1_path != 'none':
+        cursor.execute("COMMIT;")
         pt2 = progress_timer(description='phase 7: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, e1_path, date)
@@ -438,6 +445,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e2_path and e2_path != 'none':
+        cursor.execute("COMMIT;")
         pt2 = progress_timer(description='phase 8: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, e2_path, date)
@@ -449,6 +457,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e3_path and e3_path != 'none':
+        cursor.execute("COMMIT;")
         pt2 = progress_timer(description='phase 9: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, e3_path, date)
@@ -460,6 +469,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e4_path and e4_path != 'none':
+        cursor.execute("COMMIT;")
         pt2 = progress_timer(description='phase 10: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
             fcn2(result, pt2, e4_path, date)
@@ -469,6 +479,8 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         gc.collect()
     else:
         pass
+        
+    cursor.execute("COMMIT;")
 
 if __name__ == '__main__':
     value = 0.0
