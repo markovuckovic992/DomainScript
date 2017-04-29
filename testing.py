@@ -333,7 +333,7 @@ def fcn3(domain_dict, pt, path, date):
 result_list = []
 result_list_b = []
 all_domains = set()
-iterno = 0
+iterno = -1
 
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
     global result_list, result_list_b, all_domains, link, value, text
@@ -479,7 +479,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         gc.collect()
     else:
         pass
-        
+
     cursor.execute("COMMIT;")
 
 if __name__ == '__main__':
