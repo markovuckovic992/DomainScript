@@ -161,7 +161,10 @@ class CronJobs:
                         else:
                             index = response.find('Registrant Email')
                             if index == -1:
-                                RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                                # RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                                rl = awLeads.objects.get(id=data.id)
+                                rl.no_email_found = 1
+                                rl.save()
                                 break
                             new = response[index:]
                             response = new.splitlines()[0]
@@ -223,16 +226,26 @@ class CronJobs:
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
-                    RawLeads.objects.filter(id=data.id).update(mail=email)
+                    # RawLeads.objects.filter(id=data.id).update(mail=email)
+                    rl = RawLeads.objects.get(id=data.id)
+                    rl.mail = email
+                    rl.save()
                     new = ProcessTracker(email=email, name_redemption=data.name_redemption, date=datetime.now().date())
                     new.save()
                     if Emails.objects.filter(name_zone=data.name_zone).exists():
-                        Emails.objects.filter(name_zone=data.name_zone).update(email=email)
+                        # Emails.objects.filter(name_zone=data.name_zone).update(email=email)
+                        ems = Emails.objects.filter(name_zone=data.name_zone)
+                        for em in ems:
+                            em.email = email
+                            em.save()
                     else:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
             elif email and '@' not in email:
-                RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                # RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                rl = RawLeads.objects.get(id=data.id)
+                rl.no_email_found = 1
+                rl.save()
 
 
         file = open('zone_with_no_emails.txt', 'w')

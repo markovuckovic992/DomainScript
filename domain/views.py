@@ -88,7 +88,11 @@ def add_manual(request):
                                 record.save()
                                 RawLeads.objects.filter(id=data.id).delete()
 
-                    RawLeads.objects.filter(name_zone=name_zone).update(mail=email)
+                        # RawLeads.objects.filter(name_zone=name_zone).update(mail=email)
+                    rls = RawLeads.objects.filter(name_zone=name_zone)
+                    for rl in rls:
+                        rl.mail = email
+                        rl.save()
 
     removeStuff()
 
@@ -264,7 +268,10 @@ def reverse_state(request):
             mark = 1
         else:
             mark = 0
-        RawLeads.objects.filter(id__in=ids).update(mark=mark)
+        rls = RawLeads.objects.filter(id__in=ids)
+        for rl in rls:
+            rl.mark=mark
+            rl.save()
         action = 'Marked ' if mark == 1 else 'Unmarked '
 
         ip = get_client_ip(request)
@@ -276,7 +283,13 @@ def reverse_state(request):
         mark = RawLeads.objects.get(id=raw_leads_id).mark
         mark += 1
         mark %= 2
-        RawLeads.objects.filter(id=raw_leads_id).update(mark=mark)
+        # RawLeads.objects.filter(id=raw_leads_id).update(mark=mark)
+
+        rls = RawLeads.objects.filter(id=raw_leads_id)
+        for rl in rls:
+            rl.mark = mark
+            rl.save()
+
         action = 'Marked ' if mark == 1 else 'Unmarked '
 
         ip = get_client_ip(request)
@@ -291,7 +304,10 @@ def select_all(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(page=page, date=date)
-    raw_leads.update(mark=1)
+    for rl in raw_leads:
+        rl.mark = 1
+        rl.save()
+    # raw_leads.update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt
@@ -304,7 +320,10 @@ def add_this_name(request):
     date = request.POST.get('date')
     date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date, id__in=ids)
-    raw_leads.update(mark=1)
+    # raw_leads.update(mark=1)
+    for rl in raw_leads:
+        rl.mark = 1
+        rl.save()
 
     ip = get_client_ip(request)
     el = EventLogger(ip=ip, action="Marked " + str(ids) + " as good(1) ")
@@ -321,7 +340,10 @@ def rem_this_name(request):
     date = request.POST.get('date')
     date = datetime.strptime(date, '%d-%m-%Y').date()
     raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date, id__in=ids)
-    raw_leads.update(mark=0)
+    # raw_leads.update(mark=0)
+    for rl in raw_leads:
+        rl.mark = 1
+        rl.save()
 
     ip = get_client_ip(request)
     el = EventLogger(ip=ip, action="Unmarked " + str(ids) + "")
@@ -340,12 +362,26 @@ def find_mails(request):
         number_of_new = len(RawLeads.objects.filter(date=date, mark=1, activated=0))
 
         number_of_old = Log.objects.get(date=datetime.now().date()).number_act
-        Log.objects.filter(date=datetime.now().date()).update(number_act=(int(number_of_old) + int(number_of_new)))
+        # Log.objects.filter(date=datetime.now().date()).update(number_act=(int(number_of_old) + int(number_of_new)))
+        ls = Log.objects.filter(date=datetime.now().date())
+        for l in ls:
+            l.number_act = (int(number_of_old) + int(number_of_new))
+            l.save()
 
         number_of_old_2 = Log.objects.get(date=date).number_act_2
-        Log.objects.filter(date=date).update(number_act_2=(int(number_of_old_2) + int(number_of_new)))
+        # Log.objects.filter(date=date).update(number_act_2=(int(number_of_old_2) + int(number_of_new)))
+        ls = Log.objects.filter(date=date)
+        for l in ls:
+            l.number_act_2=(int(number_of_old_2) + int(number_of_new))
+            l.save()
 
-        RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1, mark=0)
+        # RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1, mark=0)
+        rls = RawLeads.objects.filter(date=date, mark=1, activated=0)
+        for rl in rls:
+            rl.activated = 1
+            rl.mark = 0
+            rl.save()
+
     main(date)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -399,7 +435,12 @@ def blacklist(request):
     blacklist += 1
     blacklist %= 2
     mail = RawLeads.objects.get(id=leads_id).mail
-    RawLeads.objects.filter(mail=mail, activated=1).update(blacklist=blacklist)
+    # RawLeads.objects.filter(mail=mail, activated=1).update(blacklist=blacklist)
+    rls = RawLeads.objects.filter(mail=mail, activated=1)
+    for rl in rls:
+        rl.blacklist = blacklist
+        rl.save()
+
     ids = map(attrgetter('id'), RawLeads.objects.filter(mail=mail, activated=1, date=date))
     response = {
         'ids': ids,
@@ -446,13 +487,22 @@ def delete(request):
             to_delete = 1
         else:
             to_delete = 0
-        RawLeads.objects.filter(id__in=ids, activated=1).update(to_delete=to_delete)
+        # RawLeads.objects.filter(id__in=ids, activated=1).update(to_delete=to_delete)
+        rls = RawLeads.objects.filter(id__in=ids, activated=1)
+        for rl in rls:
+            rl.to_delete = to_delete
+            rl.save()
     else:
         leads_id = int(unquote(request.POST['id']))
         to_delete = RawLeads.objects.get(id=leads_id).to_delete
         to_delete += 1
         to_delete %= 2
-        RawLeads.objects.filter(id=leads_id, activated=1).update(to_delete=to_delete)
+        # RawLeads.objects.filter(id=leads_id, activated=1).update(to_delete=to_delete)
+        rls = RawLeads.objects.filter(id=leads_id, activated=1)
+        for rl in rls:
+            rl.to_delete = to_delete
+            rl.save()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt
@@ -465,25 +515,41 @@ def mark_to_send(request):
             mark_to_send = 1
         else:
             mark_to_send = 0
-        RawLeads.objects.filter(id__in=ids, activated=1).update(mark_to_send=mark_to_send)
+        # RawLeads.objects.filter(id__in=ids, activated=1).update(mark_to_send=mark_to_send)
+        rls = RawLeads.objects.filter(id__in=ids, activated=1)
+        for rl in rls:
+            rl.mark_to_send = mark_to_send
+            rl.save()
     else:
         if 'id' in request.POST.keys():
             leads_id = int(unquote(request.POST['id']))
             mark_to_send = RawLeads.objects.get(id=leads_id).mark_to_send
             mark_to_send += 1
             mark_to_send %= 2
-            RawLeads.objects.filter(id=leads_id, activated=1).update(mark_to_send=mark_to_send)
+            # RawLeads.objects.filter(id=leads_id, activated=1).update(mark_to_send=mark_to_send)
+            rls = RawLeads.objects.filter(id=leads_id, activated=1)
+            for rl in rls:
+                rl.mark_to_send = mark_to_send
+                rl.save()
         else:
             date = request.POST['date']
             date = datetime.strptime(date, '%d-%m-%Y').date()
-            RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=1)
+            # RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=1)
+            rls = RawLeads.objects.filter(date=date, activated=1)
+            for rl in rls:
+                rl.mark_to_send = 1
+                rl.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt
 def un_mark_to_send(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
-    RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=0)
+    # RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=0)
+    rls = RawLeads.objects.filter(date=date, activated=1)
+    for rl in rls:
+        rl.mark_to_send = 0
+        rl.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt
@@ -492,9 +558,18 @@ def add_mail_man(request):
     lead_id = request.POST['id']
     name_zone = RawLeads.objects.get(id=lead_id).name_zone
 
-    RawLeads.objects.filter(name_zone=name_zone).update(mail=mail)
+    # RawLeads.objects.filter(name_zone=name_zone).update(mail=mail)
+    rls = RawLeads.objects.filter(name_zone=name_zone)
+    for rl in rls:
+        rl.mail = mail
+        rl.save()
+
     if Emails.objects.filter(name_zone=name_zone).exists():
-        Emails.objects.filter(name_zone=name_zone).update(email=mail)
+        # Emails.objects.filter(name_zone=name_zone).update(email=mail)
+        ems = Emails.objects.filter(name_zone=name_zone)
+        for em in ems:
+            em.email = mail
+            em.save()
     else:
         new = Emails(name_zone=name_zone, email=mail)
         new.save()
@@ -510,7 +585,12 @@ def rem_mail(request):
     lead_id = request.POST['id']
     name_zone = RawLeads.objects.get(id=lead_id).name_zone
 
-    RawLeads.objects.filter(name_zone=name_zone).update(mail=None)
+    # RawLeads.objects.filter(name_zone=name_zone).update(mail=None)
+    rls = RawLeads.objects.filter(name_zone=name_zone)
+    for rl in rls:
+        rl.mail = None
+        rl.save()
+
     Emails.objects.filter(name_zone=name_zone).delete()
 
     ids = map(attrgetter('id'), RawLeads.objects.filter(name_zone=name_zone))
@@ -607,9 +687,20 @@ def send_mails(request):
                 )
 
             if req.status_code == 200:
-                AllHash.objects.filter(hash_base_id=potential_profit.hash_base_id).update(hash_base_id=hash_base_id)
-                RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id, last_email_date=timezone.now())
+                    # AllHash.objects.filter(hash_base_id=potential_profit.hash_base_id).update(hash_base_id=hash_base_id)
+                als = AllHash.objects.filter(hash_base_id=potential_profit.hash_base_id)
+                for al in als:
+                    al.hash_base_id = hash_base_id
+                    al.save()
 
+                    # RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id, last_email_date=timezone.now())
+                rls = RawLeads.objects.filter(id=potential_profit.id)
+                for rl in rls:
+                    rl.reminder = 1
+                    rl.hash_base_id = hash_base_id
+                    rl.last_email_date = timezone.now()
+                    rl.save()
+                
                 emails = []
                 email = mail.EmailMultiAlternatives(
                     msg[0],
@@ -637,8 +728,18 @@ def send_mails(request):
         Log().save()
     number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
     number_of_old_2 = Log.objects.get(date=date).number_sent_2
-    Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
-    Log.objects.filter(date=date).update(number_sent_2=(int(asdi) + int(number_of_old_2)))
+    
+       # Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
+    ls = Log.objects.filter(date=datetime.now().date())
+    for l in ls:
+        l.number_sent = (int(asdi) + int(number_of_old))
+        l.save()
+
+       # Log.objects.filter(date=date).update(number_sent_2=(int(asdi) + int(number_of_old_2)))
+    ls = Log.objects.filter(date=date)
+    for l in ls:
+        l.number_sent_2=(int(asdi) + int(number_of_old_2))
+        l.save()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -746,7 +847,11 @@ def add_multiple(request):
     jd = json.dumps(items)
     items = eval(json.loads(jd))
     for item in items:
-        RawLeads.objects.filter(id=item['id']).update(mail=item['value'])
+            # RawLeads.objects.filter(id=item['id']).update(mail=item['value'])
+        rls = RawLeads.objects.filter(id=item['id'])
+        for rl in rls:
+            rl.mail = item['value']
+            rl.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt
@@ -783,7 +888,12 @@ def find_active(request):
         drop = raw_lead.name_redemption.split('.')[0]
         zone = raw_lead.name_zone.split('.')[0]
         if drop == zone:
-            RawLeads.objects.filter(id=raw_lead.id).update(activated=1)
+                # RawLeads.objects.filter(id=raw_lead.id).update(activated=1)
+            rls = RawLeads.objects.filter(id=raw_lead.id)
+            for rl in rls:
+                rl.activated = 1
+                rl.save()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 
@@ -867,8 +977,18 @@ def send_pending(request):
                 )
 
             if req.status_code == 200:
-                AllHash.objects.filter(hash_base_id=potential_profit.hash_base_id).update(hash_base_id=hash_base_id)
-                RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id, last_email_date=timezone.now())
+                    # AllHash.objects.filter(hash_base_id=potential_profit.hash_base_id).update(hash_base_id=hash_base_id)
+                als = AllHash.objects.filter(hash_base_id=potential_profit.hash_base_id)
+                for al in als:
+                    al.hash_base_id = hash_base_id
+                    al.save()
+                    # RawLeads.objects.filter(id=potential_profit.id).update(reminder=1, hash_base_id=hash_base_id, last_email_date=timezone.now())
+                rls = RawLeads.objects.filter(id=potential_profit.id)
+                for rl in rls:
+                    rl.reminder = 1
+                    rl.hash_base_id = hash_base_id
+                    rl.last_email_date = timezone.now()
+                    rl.save()
 
                 emails = []
                 email = mail.EmailMultiAlternatives(
@@ -886,7 +1006,11 @@ def send_pending(request):
                     asdi += 1
 
                     number_of_old_2 = Log.objects.get(date=potential_profit.date).number_sent_2
-                    Log.objects.filter(date=potential_profit.date).update(number_sent_2=(1 + int(number_of_old_2)))
+                       # Log.objects.filter(date=potential_profit.date).update(number_sent_2=(1 + int(number_of_old_2)))
+                    ls = Log.objects.filter(date=potential_profit.date)
+                    for l in ls:
+                        l.number_sent_2 = (1 + int(number_of_old_2))
+                        l.save()
 
                 except SMTPServerDisconnected:
                     connection = mail.get_connection()
@@ -899,7 +1023,11 @@ def send_pending(request):
     if not Log.objects.filter(date=datetime.now().date()).exists():
         Log().save()
     number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
-    Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
+       # Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
+    ls = Log.objects.filter(date=datetime.now().date())
+    for l in ls:
+        l.number_sent = (int(asdi) + int(number_of_old))
+        l.save()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 

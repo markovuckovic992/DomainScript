@@ -19,7 +19,11 @@ def main(date):
             i += 1
         new_entry = AllHash(hash_base_id=hash_base_id)
         new_entry.save()
-        RawLeads.objects.filter(id=non_hashed_lead.id).update(hash_base_id=hash_base_id)
+            # RawLeads.objects.filter(id=non_hashed_lead.id).update(hash_base_id=hash_base_id)
+        rls = RawLeads.objects.filter(id=non_hashed_lead.id)
+        for rl in rls:
+            rl.hash_base_id = hash_base_id
+            rl.save()
     # endhashes
 
     datas = RawLeads.objects.filter(date=date, activated=1, mail__isnull=True)
@@ -46,7 +50,10 @@ def main(date):
                     else:
                         index = response.find('Registrant Email')
                         if index == -1:
-                            RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                            # RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                            rl = RawLeads.objects.get(id=data.id)
+                            rl.no_email_found = 1
+                            rl.save()
                             break
                         new = response[index:]
                         response = new.splitlines()[0]
@@ -117,11 +124,19 @@ def main(date):
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
             else:
-                RawLeads.objects.filter(id=data.id).update(mail=email)
+                # RawLeads.objects.filter(id=data.id).update(mail=email)
+                rl = RawLeads.objects.get(id=data.id)
+                rl.mail = email
+                rl.save()
+
                 new = ProcessTracker(email=email, name_redemption=data.name_redemption)
                 new.save()
                 if Emails.objects.filter(name_zone=data.name_zone).exists():
-                    Emails.objects.filter(name_zone=data.name_zone).update(email=email)
+                    # Emails.objects.filter(name_zone=data.name_zone).update(email=email)
+                    ems = Emails.objects.filter(name_zone=data.name_zone)
+                    for em in ems:
+                        em.email = email
+                        em.save()
                 else:
                     new = Emails(name_zone=data.name_zone, email=email)
                     new.save()
@@ -142,7 +157,11 @@ def main_period(dates):
 
             new_entry = AllHash(hash_base_id=hash_base_id)
             new_entry.save()
-            RawLeads.objects.filter(id=non_hashed_lead.id).update(hash_base_id=hash_base_id)
+            # RawLeads.objects.filter(id=non_hashed_lead.id).update(hash_base_id=hash_base_id)
+            rls = RawLeads.objects.filter(id=non_hashed_lead.id)
+            for rl in rls:
+                rl.hash_base_id = hash_base_id
+                rl.save()        
         # endhashes
 
         datas = RawLeads.objects.filter(date=date, activated=1, mail__isnull=True)
@@ -169,7 +188,10 @@ def main_period(dates):
                         else:
                             index = response.find('Registrant Email')
                             if index == -1:
-                                RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                                # RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                                rl = RawLeads.objects.get(id=data.id)
+                                rl.no_email_found = 1
+                                rl.save()
                                 break
                             new = response[index:]
                             response = new.splitlines()[0]
@@ -231,11 +253,19 @@ def main_period(dates):
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
-                    RawLeads.objects.filter(id=data.id).update(mail=email)
+                    # RawLeads.objects.filter(id=data.id).update(mail=email)
+                    rl = RawLeads.objects.get(id=data.id)
+                    rl.mail = email
+                    rl.save()
+
                     new = ProcessTracker(email=email, name_redemption=data.name_redemption, date=date)
                     new.save()
                     if Emails.objects.filter(name_zone=data.name_zone).exists():
-                        Emails.objects.filter(name_zone=data.name_zone).update(email=email)
+                        # Emails.objects.filter(name_zone=data.name_zone).update(email=email)
+                        ems = Emails.objects.filter(name_zone=data.name_zone)
+                        for em in ems:
+                            em.email = email
+                            em.save()
                     else:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
