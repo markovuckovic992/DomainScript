@@ -25,7 +25,7 @@ class CronJobs:
 
     def deleteOldData(self):
         date = datetime.now().date() - timedelta(days=28)
-        date2 = datetime.now().date() - timedelta(days=7)
+        date2 = datetime.now().date() - timedelta(days=5)
 
         # START LOG
         datas = RawLeads.objects.filter(date__lt=date)

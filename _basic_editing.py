@@ -15,6 +15,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 from domain.models import RawLeads, Log, AllHash, Setting
 
+master_data = []
 fname = 'No Path selected'
 fname2 = 'No Path selected'
 file_size = 0
@@ -165,7 +166,7 @@ def fcn(domain_data, pt):
 
 
 def fcn2(domain_dict, pt, all_domains, date):
-    global some_variable, link, iterno
+    global some_variable, link, iterno, master_data
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
     some_variable += 1
@@ -201,43 +202,19 @@ def fcn2(domain_dict, pt, all_domains, date):
                 else:
                     page = 1
 
-                entry = RawLeads(
-                    name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                    name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                    date=date,
-                    page=page,
-                    activated=activated
-                )
-                entry.save()
-
-                _id = RawLeads.objects.get(
-                       name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                       name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                       date=date,
-                       page=page,
-                       activated=activated
-                ).id
-
-                hash = hashlib.md5()
-                hash.update(str(_id))
-                hash_base_id = hash.hexdigest()
-                jj = 1
-                while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-                    hash.update(str(_id + jj))
-                    hash_base_id = hash.hexdigest()
-                    jj += 1
-                new_entry = AllHash(hash_base_id=hash_base_id)
-                new_entry.save()
-
-                rl = RawLeads.objects.get(id=_id)
-                rl.hash_base_id = hash_base_id
-                rl.save()
+                master_data.append({
+                    "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
+                    "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                    "date": date,
+                    "page": page,
+                    "activated": activated                    
+                })                
 
     pt.update()
 
 
 def fcn3(domain_dict, pt, all_domains, date):
-    global some_variable, link, iterno
+    global some_variable, link, iterno, master_data
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
     some_variable += 1
@@ -273,40 +250,42 @@ def fcn3(domain_dict, pt, all_domains, date):
                 else:
                     page = 1
 
-                entry = RawLeads(
-                    name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                    name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                    date=date,
-                    page=page,
-                    activated=activated
-                )
-                entry.save()
-
-                _id = RawLeads.objects.get(
-                       name_zone=(matched_domain).replace('\n', '').replace('\r', ''),
-                       name_redemption=(domain).replace('\n', '').replace('\r', ''),
-                       date=date,
-                       page=page,
-                       activated=activated
-                ).id
-
-                hash = hashlib.md5()
-                hash.update(str(_id))
-                hash_base_id = hash.hexdigest()
-                jj = 0
-                while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-                    hash.update(str(_id + jj))
-                    hash_base_id = hash.hexdigest()
-                    jj += 1
-                new_entry = AllHash(hash_base_id=hash_base_id)
-                new_entry.save()
-
-                rl = RawLeads.objects.get(id=_id)
-                rl.hash_base_id = hash_base_id
-                rl.save()
-
+                master_data.append({
+                    "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
+                    "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                    "date": date,
+                    "page": page,
+                    "activated": activated                    
+                })
     pt.update()
 
+def saveDate(master_data):
+    cursor = connection.cursor()
+    for data in master_data:
+        entry = RawLeads(
+            name_zone=data['name_zone'],
+            name_redemption=data['name_redemption'],
+            date=data['date'],
+            page=data['page'],
+            activated=data['activated']
+        )
+        entry.save()
+
+        hash = hashlib.md5()
+        hash.update(str(entry.id))
+        hash_base_id = hash.hexdigest()
+        jj = 1
+        while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
+            hash.update(str(entry.id + jj))
+            hash_base_id = hash.hexdigest()
+            jj += 1
+        new_entry = AllHash(hash_base_id=hash_base_id)
+        new_entry.save()
+
+        entry.hash_base_id = hash_base_id
+        entry.save()
+
+    cursor.execute("COMMIT;")
 
 result_list = []
 result_list_b = []
@@ -314,8 +293,7 @@ all_domains = set()
 iterno = -1
 
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
-    global result_list, result_list_b, all_domains, link, value, text
-    cursor = connection.cursor()
+    global result_list, result_list_b, all_domains, link
 
     file = open('filtered_domains.txt', 'a')
     file.truncate()
@@ -339,13 +317,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
     for domain_data in usefull_data:
-        value += increment
         fcn(domain_data, pt)
-        # t = threading.Thread(target=fcn, args=(domain_data, pt))
-        # threads.append(t)
-        # t.start()
-    # for t in threads:
-    #     t.join()
     # Log.objects.filter(date=sys.argv[11]).update(number_of_redemption=len(result_list + result_list_b))
     l = Log.objects.get(date=date)
     l.number_of_redemption = len(result_list + result_list_b)
@@ -370,7 +342,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if net_path and net_path != 'none':
-        cursor.execute("COMMIT;")
         file = open(net_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -384,7 +355,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if info_path and info_path != 'none':
-        cursor.execute("COMMIT;")
         file = open(info_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -400,7 +370,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if com_path and com_path != 'none':
-        cursor.execute("COMMIT;")
         file = open(com_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -416,7 +385,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if us_path and us_path != 'none':
-        cursor.execute("COMMIT;")
         file = open(us_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -447,7 +415,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e2_path and e2_path != 'none':
-        cursor.execute("COMMIT;")
         file = open(e2_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -463,7 +430,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e3_path and e3_path != 'none':
-        cursor.execute("COMMIT;")
         file = open(e3_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -479,7 +445,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
     if e4_path and e4_path != 'none':
-        cursor.execute("COMMIT;")
         file = open(e4_path, "r")
         all_domains = set(file.readlines())
         file.close()
@@ -494,25 +459,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     else:
         pass
 
-
-    cursor.execute("COMMIT;")
-
-
-
-def threadmain():
-    global value
-    tk = Tk()
-    progress = Progressbar(tk, orient=HORIZONTAL, length=100, mode='determinate')
-    v = StringVar()
-    Label(tk, textvariable=v).pack()
-    progress.pack()
-    tk.after(1, bar, tk, progress, v)
-    tk.mainloop()
-
+    saveDate(master_data)
 
 if __name__ == '__main__':
-    value = 0.0
-    text = ''
     if not Log.objects.filter(date=sys.argv[11]).exists():
         entry = Log(date=sys.argv[11])
         entry.save()
