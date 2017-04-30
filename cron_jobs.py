@@ -43,6 +43,7 @@ class CronJobs:
 
         AllHash.objects.filter(date__lt=date).delete()
         DeletedInfo.objects.filter(datetime__lt=date2).delete()
+        EventLogger.objects.filter(date__lt=date2).delete()
 
         condition = True
         while condition:
