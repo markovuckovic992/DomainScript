@@ -490,7 +490,9 @@ if __name__ == '__main__':
         sys.argv[11],
     )
     duration = int(time.time() - start_time)
+
     # Log.objects.filter(date=sys.argv[11]).update(duration=duration)
+    
     l = Log.objects.get(date=sys.argv[11])
     l.duration = duration
     l.save()

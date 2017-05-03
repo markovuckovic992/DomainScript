@@ -1009,6 +1009,8 @@ def send_pending(request):
                     connection.send_messages(emails)
                     asdi += 1
 
+                    if not Log.objects.filter(date=potential_profit.date).exists():
+                        Log(date=potential_profit.date).save()
                     number_of_old_2 = Log.objects.get(date=potential_profit.date).number_sent_2
                     # Log.objects.filter(date=potential_profit.date).update(number_sent_2=(1 + int(number_of_old_2)))
                     ls = Log.objects.filter(date=potential_profit.date)
