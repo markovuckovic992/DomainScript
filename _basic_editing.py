@@ -198,7 +198,7 @@ def fcn2(domain_dict, pt, all_domains, date):
 
                 if activated == 0:
                     iterno += 1
-                    page = floor(iterno / 5000) + 1 
+                    page = floor(iterno / 5000) + 1
                 else:
                     page = 1
 
@@ -207,8 +207,8 @@ def fcn2(domain_dict, pt, all_domains, date):
                     "name_redemption": (domain).replace('\n', '').replace('\r', ''),
                     "date": date,
                     "page": page,
-                    "activated": activated                    
-                })                
+                    "activated": activated
+                })
 
     pt.update()
 
@@ -246,7 +246,7 @@ def fcn3(domain_dict, pt, all_domains, date):
 
                 if activated == 0:
                     iterno += 1
-                    page = floor(iterno / 5000) + 1 
+                    page = floor(iterno / 5000) + 1
                 else:
                     page = 1
 
@@ -255,7 +255,7 @@ def fcn3(domain_dict, pt, all_domains, date):
                     "name_redemption": (domain).replace('\n', '').replace('\r', ''),
                     "date": date,
                     "page": page,
-                    "activated": activated                    
+                    "activated": activated
                 })
     pt.update()
 

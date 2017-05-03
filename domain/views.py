@@ -368,11 +368,13 @@ def find_mails(request):
             l.number_act = (int(number_of_old) + int(number_of_new))
             l.save()
 
+        if not Log.objects.filter(date=date).exists():
+            Log(date=date).save()
         number_of_old_2 = Log.objects.get(date=date).number_act_2
         # Log.objects.filter(date=date).update(number_act_2=(int(number_of_old_2) + int(number_of_new)))
         ls = Log.objects.filter(date=date)
         for l in ls:
-            l.number_act_2=(int(number_of_old_2) + int(number_of_new))
+            l.number_act_2 = (int(number_of_old_2) + int(number_of_new))
             l.save()
 
         # RawLeads.objects.filter(date=date, mark=1, activated=0).update(activated=1, mark=0)
@@ -700,7 +702,7 @@ def send_mails(request):
                     rl.hash_base_id = hash_base_id
                     rl.last_email_date = timezone.now()
                     rl.save()
-                
+
                 emails = []
                 email = mail.EmailMultiAlternatives(
                     msg[0],
@@ -727,18 +729,20 @@ def send_mails(request):
     if not Log.objects.filter(date=datetime.now().date()).exists():
         Log().save()
     number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
+    if not Log.objects.filter(date=date).exists():
+        Log(date=date).save()
     number_of_old_2 = Log.objects.get(date=date).number_sent_2
-    
-       # Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
+
+    # Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
     ls = Log.objects.filter(date=datetime.now().date())
     for l in ls:
         l.number_sent = (int(asdi) + int(number_of_old))
         l.save()
 
-       # Log.objects.filter(date=date).update(number_sent_2=(int(asdi) + int(number_of_old_2)))
+    # Log.objects.filter(date=date).update(number_sent_2=(int(asdi) + int(number_of_old_2)))
     ls = Log.objects.filter(date=date)
     for l in ls:
-        l.number_sent_2=(int(asdi) + int(number_of_old_2))
+        l.number_sent_2 = (int(asdi) + int(number_of_old_2))
         l.save()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -1006,7 +1010,7 @@ def send_pending(request):
                     asdi += 1
 
                     number_of_old_2 = Log.objects.get(date=potential_profit.date).number_sent_2
-                       # Log.objects.filter(date=potential_profit.date).update(number_sent_2=(1 + int(number_of_old_2)))
+                    # Log.objects.filter(date=potential_profit.date).update(number_sent_2=(1 + int(number_of_old_2)))
                     ls = Log.objects.filter(date=potential_profit.date)
                     for l in ls:
                         l.number_sent_2 = (1 + int(number_of_old_2))
@@ -1023,7 +1027,7 @@ def send_pending(request):
     if not Log.objects.filter(date=datetime.now().date()).exists():
         Log().save()
     number_of_old = Log.objects.get(date=datetime.now().date()).number_sent
-       # Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
+    # Log.objects.filter(date=datetime.now().date()).update(number_sent=(int(asdi) + int(number_of_old)))
     ls = Log.objects.filter(date=datetime.now().date())
     for l in ls:
         l.number_sent = (int(asdi) + int(number_of_old))
