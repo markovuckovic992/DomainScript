@@ -3,6 +3,7 @@ from datetime import datetime
 import os, django, hashlib
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
+import binascii
 from domain.models import *
 
 def main(date):
@@ -12,11 +13,10 @@ def main(date):
         hash = hashlib.md5()
         hash.update(str(non_hashed_lead.id))
         hash_base_id = hash.hexdigest()
-        i = 0
+
         while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-            hash.update(str(non_hashed_lead.id + i))
-            hash_base_id = hash.hexdigest()
-            i += 1
+            hash_base_id = binascii.hexlify(os.urandom(16))
+
         new_entry = AllHash(hash_base_id=hash_base_id)
         new_entry.save()
             # RawLeads.objects.filter(id=non_hashed_lead.id).update(hash_base_id=hash_base_id)
@@ -161,7 +161,7 @@ def main_period(dates):
             rls = RawLeads.objects.filter(id=non_hashed_lead.id)
             for rl in rls:
                 rl.hash_base_id = hash_base_id
-                rl.save()        
+                rl.save()
         # endhashes
 
         datas = RawLeads.objects.filter(date=date, activated=1, mail__isnull=True)

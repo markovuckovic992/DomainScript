@@ -10,9 +10,9 @@ from math import log, ceil, floor
 import threading, re, time, thread
 import csv, sys, gc, os, django, hashlib
 from django.db import connection
-os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
+import binascii
 from domain.models import RawLeads, Log, AllHash, Setting
 
 master_data = []
@@ -274,11 +274,10 @@ def saveDate(master_data):
         hash = hashlib.md5()
         hash.update(str(entry.id))
         hash_base_id = hash.hexdigest()
-        jj = 1
+
         while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-            hash.update(str(entry.id + jj))
-            hash_base_id = hash.hexdigest()
-            jj += 1
+            hash_base_id = binascii.hexlify(os.urandom(16))
+
         new_entry = AllHash(hash_base_id=hash_base_id)
         new_entry.save()
 

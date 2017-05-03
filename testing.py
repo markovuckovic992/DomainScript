@@ -12,9 +12,10 @@ import csv, sys, gc, os, django, hashlib
 from django.db import connection
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
+import binascii
 from domain.models import RawLeads, Log, AllHash, Setting
 
-master_data =[]
+master_data = []
 fname = 'No Path selected'
 fname2 = 'No Path selected'
 file_size = 0
@@ -25,7 +26,7 @@ bad_keywords_list = 'aaaaaaaaaaaabbbbbbbbbasdaaasdffdsa-abbabc'
 
 # SETTINGS!
 sett = Setting.objects.get(id=1)
-com_net = sett.com_net # 0 com, 1 net, 2 both
+com_net = sett.com_net  # 0 com, 1 net, 2 both
 length = sett.length
 number_of_digits = sett.number_of_digits
 number_of_keywords = sett.number_of_keywords
@@ -220,7 +221,7 @@ def fcn2(domain_dict, pt, path, date):
                     "name_redemption": (domain).replace('\n', '').replace('\r', ''),
                     "date": date,
                     "page": page,
-                    "activated": activated                    
+                    "activated": activated
                 })
 
     pt.update()
@@ -277,7 +278,7 @@ def fcn3(domain_dict, pt, path, date):
                     "name_redemption": (domain).replace('\n', '').replace('\r', ''),
                     "date": date,
                     "page": page,
-                    "activated": activated                    
+                    "activated": activated
                 })
 
     pt.update()
@@ -297,11 +298,10 @@ def saveDate(master_data):
         hash = hashlib.md5()
         hash.update(str(entry.id))
         hash_base_id = hash.hexdigest()
-        jj = 1
+
         while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
-            hash.update(str(entry.id + jj))
-            hash_base_id = hash.hexdigest()
-            jj += 1
+            hash_base_id = binascii.hexlify(os.urandom(16))
+
         new_entry = AllHash(hash_base_id=hash_base_id)
         new_entry.save()
 
@@ -309,7 +309,7 @@ def saveDate(master_data):
         entry.save()
 
     cursor.execute("COMMIT;")
-    
+
 result_list = []
 result_list_b = []
 all_domains = set()
@@ -335,7 +335,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     l.number_of_all = len(usefull_data)
     l.save()
 
-    increment = (100.0/len(usefull_data))
+    increment = (100.0 / len(usefull_data))
     text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
