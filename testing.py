@@ -15,7 +15,6 @@ django.setup()
 import binascii
 from domain.models import RawLeads, Log, AllHash, Setting
 
-master_data = []
 fname = 'No Path selected'
 fname2 = 'No Path selected'
 file_size = 0
@@ -165,8 +164,8 @@ def fcn(domain_data, pt):
     return 1
 
 
-def fcn2(domain_dict, pt, path, date):
-    global some_variable, link, iterno, master_data
+def fcn2(domain_dict, pt, path, date, master_data):
+    global some_variable, link, iterno
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
     some_variable += 1
@@ -227,8 +226,8 @@ def fcn2(domain_dict, pt, path, date):
     pt.update()
 
 
-def fcn3(domain_dict, pt, path, date):
-    global some_variable, link, iterno, master_data
+def fcn3(domain_dict, pt, path, date, master_data):
+    global some_variable, link, iterno
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
     some_variable += 1
@@ -350,13 +349,15 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     pt = None
     gc.collect()
 
-    threads = []
+    master_data = []
     if org_path and org_path != 'none':
         pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, org_path, date)
+            fcn2(result, pt2, org_path, date, master_data)
         for result in result_list_b:
-            fcn3(result, pt2, org_path, date)
+            fcn3(result, pt2, org_path, date, master_data)
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -365,9 +366,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     if net_path and net_path != 'none':
         pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, net_path, date)
+            fcn2(result, pt2, net_path, date, master_data)
         for result in result_list_b:
-            fcn3(result, pt2, net_path, date)
+            fcn3(result, pt2, net_path, date, master_data)
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -376,9 +379,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     if info_path and info_path != 'none':
         pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, info_path, date)
+            fcn2(result, pt2, info_path, date, master_data)
         for result in result_list_b:
-            fcn3(result, pt2, info_path, date)
+            fcn3(result, pt2, info_path, date, master_data)
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -387,9 +392,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     if com_path and com_path != 'none':
         pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, com_path, date)
+            fcn2(result, pt2, com_path, date, master_data)
         for result in result_list_b:
-            fcn3(result, pt2, com_path, date)
+            fcn3(result, pt2, com_path, date, master_data)
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -398,9 +405,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     if us_path and us_path != 'none':
         pt2 = progress_timer(description='phase 6: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, us_path, date)
+            fcn2(result, pt2, us_path, date, master_data)
         for result in result_list_b:
-            fcn3(result, pt2, us_path, date)
+            fcn3(result, pt2, us_path, date, master_data)
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -409,9 +418,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     if e1_path and e1_path != 'none':
         pt2 = progress_timer(description='phase 7: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, e1_path, date)
+            fcn2(result, pt2, e1_path, date, master_data)
         for result in result_list_b:
-            fcn3(result, pt2, e1_path, date)
+            fcn3(result, pt2, e1_path, date, master_data)
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -420,9 +431,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     if e2_path and e2_path != 'none':
         pt2 = progress_timer(description='phase 8: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, e2_path, date)
+            fcn2(result, pt2, e2_path, date, master_data)
         for result in result_list_b:
-            fcn3(result, pt2, e2_path, date)
+            fcn3(result, pt2, e2_path, date, master_data)
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -431,9 +444,11 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     if e3_path and e3_path != 'none':
         pt2 = progress_timer(description='phase 9: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, e3_path, date)
+            fcn2(result, pt2, e3_path, date, master_data)
         for result in result_list_b:
-            fcn3(result, pt2, e3_path, date)
+            fcn3(result, pt2, e3_path, date, master_data)
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -442,15 +457,17 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     if e4_path and e4_path != 'none':
         pt2 = progress_timer(description='phase 10: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
-            fcn2(result, pt2, e4_path, date)
+            fcn2(result, pt2, e4_path, date, master_data)
         for result in result_list_b:
-            fcn3(result, pt2, e4_path, date)
+            fcn3(result, pt2, e4_path, date, master_data)
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
         pass
 
-    saveDate(master_data)
+    
 
 if __name__ == '__main__':
     # argv = ['', 'biz_zone_27Mar.txt', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'RD_28_2_17.csv', '2017-04-19']
