@@ -20,6 +20,7 @@ import domain.views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^home_login/', domain.views.Login),
+    url(r'^logout/', domain.views.Logout),
     #  editing
     url(r'^$', domain.views.editing),
     url(r'^run_script/', domain.views.runEditing),
