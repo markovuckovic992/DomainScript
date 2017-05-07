@@ -1,6 +1,27 @@
 from __future__ import unicode_literals
 from django.db import models
+from django.contrib.auth.models import User
 from django.utils import timezone
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, related_name="user_id")
+
+    profile_types = {
+        "user": 1,
+        "admin": 2,
+    }
+
+    def __unicode__(self):
+        return self.user.username
+
+    class Meta:
+        permissions = (
+            ("user", u"korisnicki nalog"),
+            ("admin", u"admin nalog"),
+        )
+
+        db_table = 'profile'
 
 class RawLeads(models.Model):
     name_zone = models.CharField(max_length=100)
