@@ -199,6 +199,7 @@ def runEditing(request):
         return HttpResponse('{"status": "failed"}', content_type="application/json")
 
 #RAW LEADS
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
 @page_template('raw_leads_index.html')
 def rawLeads(request, template='raw_leads.html', extra_context=None):
     if 'date' in request.GET.keys() and len(request.GET['date']) > 6:
