@@ -113,7 +113,7 @@ def fcn(domain_data, pt):
     elif com_net == 0:
         allowed_extensions = allowed_extensions[:3]
     # END FILTER 1
-    if len(inter) > 0:
+    if len(inter) > 0 and "." not in domain:
         pass
     elif domain.split(".")[1] not in allowed_extensions:
         pass
@@ -492,7 +492,7 @@ if __name__ == '__main__':
     duration = int(time.time() - start_time)
 
     # Log.objects.filter(date=sys.argv[11]).update(duration=duration)
-    
+
     l = Log.objects.get(date=sys.argv[11])
     l.duration = duration
     l.save()
