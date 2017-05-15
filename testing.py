@@ -113,7 +113,7 @@ def fcn(domain_data, pt):
     elif com_net == 0:
         allowed_extensions = allowed_extensions[:3]
     # END FILTER 1
-    if len(inter) > 0 or not (domain.contains(".")):
+    if len(inter) > 0 or "." not in domain:
         pass
     elif domain.split(".")[1] not in allowed_extensions:
         pass
