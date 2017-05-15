@@ -1,7 +1,7 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.db import models
 from urllib import unquote
@@ -42,16 +42,21 @@ def Login(request):
         user = authenticate(username=username, password=password)
         if user is not None and user.is_active:
             login(request, user)
-            return HttpResponseRedirect("/classified/")
+            if user.has_perm('domain.user'):
+                return HttpResponseRedirect("/raw_leads/")
+            else:
+                return HttpResponseRedirect("/")
         else:
             return render(request, 'login.html')
     return render(request, 'login.html')
 
+def Logout(request):
+    logout(request)
+    return HttpResponseRedirect("/home_login/")
+
 # MANUAL
-@csrf_exempt
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
 def manual(request):
-    if request.user:
-        logout(request)
     return render(request, 'manual.html', {})
 
 @csrf_exempt
@@ -99,10 +104,8 @@ def add_manual(request):
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 # EDITING.
-@csrf_exempt
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
 def editing(request):
-    if request.user:
-        logout(request)
     sett = Setting.objects.get(id=1)
     return render(request, 'editing.html', {'sett': sett})
 
@@ -196,10 +199,9 @@ def runEditing(request):
         return HttpResponse('{"status": "failed"}', content_type="application/json")
 
 #RAW LEADS
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
 @page_template('raw_leads_index.html')
 def rawLeads(request, template='raw_leads.html', extra_context=None):
-    if request.user:
-        logout(request)
     if 'date' in request.GET.keys() and len(request.GET['date']) > 6:
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
@@ -229,10 +231,8 @@ def rawLeads(request, template='raw_leads.html', extra_context=None):
         context.update(extra_context)
     return render(request, template, context)
 
-@csrf_exempt
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
 def rawLeadsAll(request):
-    if request.user:
-        logout(request)
     if 'date' in request.GET.keys() and len(request.GET['date']) > 6:
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
@@ -410,7 +410,7 @@ def truncate(request):
 
 
 # ACTIVE LEADS
-@csrf_exempt
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
 def activeLeads(request):
     if 'date' in request.GET.keys():
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
@@ -747,10 +747,8 @@ def send_mails(request):
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-@csrf_exempt
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.admin"]))
 def blacklisting(request):
-    if request.user:
-        logout(request)
     blacklist = BlackList.objects.all()
     superblacklist = SuperBlacklist.objects.all()
     return render(request, 'super_blacklist.html', {
@@ -902,16 +900,12 @@ def find_active(request):
 
 
 # SEARCH
-@csrf_exempt
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
 def search(request):
-    if request.user:
-        logout(request)
     return render(request, 'search.html', {})
 
-@csrf_exempt
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
 def search_results(request):
-    if request.user:
-        logout(request)
     name_redemption = request.POST['drop_domain']
     name_zone = request.POST['zone_domain']
     datepicker = request.POST['datepicker']
@@ -1047,7 +1041,7 @@ def whois_period(request):
     main_period(dates)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-@login_required
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.admin"]))
 def admin(request):
     if 'date' in request.GET.keys():
         date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()

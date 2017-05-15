@@ -27,7 +27,6 @@ bad_keywords_list = 'aaaaaaaaaaaabbbbbbbbbasdaaasdffdsa-abbabc'
 
 # SETTINGS!
 sett = Setting.objects.get(id=1)
-
 com_net = sett.com_net # 0 com, 1 net, 2 both
 length = sett.length
 number_of_digits = sett.number_of_digits
@@ -35,7 +34,6 @@ number_of_keywords = sett.number_of_keywords
 allow_bad_keywords = sett.allow_bad_keywords
 min_length = sett.min_length
 max_length = sett.max_length
-
 # END!
 
 def generator(file):
