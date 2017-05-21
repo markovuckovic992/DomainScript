@@ -53,6 +53,7 @@ urlpatterns = [
     url(r'^remove_from_blacklist/', domain.views.remove_from_blacklist),
     #  download
     url(r'^download/', domain.views.download),
+    url(r'^download_all/', domain.views.download_all),
     #  manual add
     url(r'^manual/', domain.views.manual),
     url(r'^add_manual_whois/', domain.views.add_manual),

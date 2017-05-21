@@ -4,7 +4,7 @@ import ttk
 from ttk import *
 from os import popen
 from copy import deepcopy
-from nltk.corpus import brown, words as wd
+from nltk.corpus import brown, words as wd, cess_esp as cess, udhr
 import progressbar as pb
 from math import log, ceil, floor
 import threading, re, time, thread
@@ -67,7 +67,7 @@ def bar(tk, progress, v):
     tk.update()
     tk.after(1, bar, tk, progress, v)
 
-freq_words = open("words-by-frequency.txt").read().split()
+freq_words = open("merged.txt").read().split()
 wordcost = dict((k, log((i + 1) * log(len(freq_words)))) for i, k in enumerate(freq_words))
 maxword = max(len(x) for x in freq_words)
 freq_words = None
@@ -97,7 +97,7 @@ def infer_spaces(s):
 
 
 link = set()
-words = set(list(wd.words()) + list(brown.words()) + word_man)
+words = set(list(wd.words()) + list(brown.words()) + word_man + list(udhr.words()) + list(cess.words()))
 some_variable = 0
 
 def fcn(domain_data, pt):
@@ -175,26 +175,14 @@ def fcn2(domain_dict, pt, path, date):
     condition = True
     matched_lines = []
     matched_lines_copy = []
-    # if all(keyword in raw for keyword in keywords):
     for keyword in keywords:
-        # maxx = raw.count(keyword)
         if len(matched_lines) == 0 and condition:
             tube = popen('./getLines.sh ' + keyword + ' ' + path)
             matched_lines = tube.read().split()
             tube.close()
-            # for line in all_domains:
-            #     if len(matched_lines) >= maxx:
-            #         break
-            #     if keyword in line.lower():
-            #         matched_lines.append(line.lower())
-            # matched_lines = [line.lower() for line in all_domains if keyword in line.lower()]
             matched_lines_copy = [[line.lower().replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
-            # matched_lines
-            # for line in matched_lines_copy:
-            #     if keyword in line[0]:
-            #         matched_lines.append(line)
             matched_lines_copy = [line for line in matched_lines_copy if keyword in line[0]]
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
@@ -237,10 +225,8 @@ def fcn3(domain_dict, pt, path, date):
     condition = True
     matched_lines = []
     matched_lines_copy = []
-    # if all(keyword in raw for keyword in keywords):
     for keyword in keywords:
         if len(matched_lines) == 0 and condition:
-            # maxx = raw.count(keyword)
             if len(matched_lines) == 0 and condition:
                 tube = popen('./getLines.sh ' + keyword + ' ' + path)
                 matched_lines_tmp = tube.read().split()
@@ -248,7 +234,6 @@ def fcn3(domain_dict, pt, path, date):
                 for line in matched_lines_tmp:
                     if line.lower().startswith(keyword) or line.lower().endswith(keyword):
                         matched_lines.append(line.lower())
-            # matched_lines = [line.lower() for line in all_domains if line.lower().startswith(keyword) or line.lower().endswith(keyword)]
             matched_lines_copy = [[line.lower().replace(keyword, ''), line.lower()] for line in matched_lines]
             condition = False
         else:
@@ -341,7 +326,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     threads = []
     for domain_data in usefull_data:
         fcn(domain_data, pt)
-    # Log.objects.filter(date=date).update(number_of_redemption=len(result_list + result_list_b))
     l = Log.objects.get(date=date)
     l.number_of_redemption = len(result_list + result_list_b)
     l.save()
@@ -453,43 +437,42 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     saveDate(master_data)
 
 if __name__ == '__main__':
-    # argv = ['', 'biz_zone_27Mar.txt', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'RD_28_2_17.csv', '2017-04-19']
-    # if not Log.objects.filter(date=argv[11]).exists():
-    #     entry = Log(date=argv[11])
-    #     entry.save()
-    # main_filter(
-    #     argv[1],
-    #     argv[2],
-    #     argv[3],
-    #     argv[4],
-    #     argv[5],
-    #     argv[6],
-    #     argv[7],
-    #     argv[8],
-    #     argv[9],
-    #     argv[10],
-    #     argv[11],
-    # )
-    # duration = int(time.time() - start_time)
-    # Log.objects.filter(date=argv[11]).update(duration=duration)
-
-    if not Log.objects.filter(date=sys.argv[11]).exists():
-        entry = Log(date=sys.argv[11])
+    argv = ['', 'biz_zone_27Mar.txt', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'RD_28_2_17.csv', '2017-05-20']
+    if not Log.objects.filter(date=argv[11]).exists():
+        entry = Log(date=argv[11])
         entry.save()
     main_filter(
-        sys.argv[1],
-        sys.argv[2],
-        sys.argv[3],
-        sys.argv[4],
-        sys.argv[5],
-        sys.argv[6],
-        sys.argv[7],
-        sys.argv[8],
-        sys.argv[9],
-        sys.argv[10],
-        sys.argv[11],
+        argv[1],
+        argv[2],
+        argv[3],
+        argv[4],
+        argv[5],
+        argv[6],
+        argv[7],
+        argv[8],
+        argv[9],
+        argv[10],
+        argv[11],
     )
     duration = int(time.time() - start_time)
+
+    # if not Log.objects.filter(date=sys.argv[11]).exists():
+    #     entry = Log(date=sys.argv[11])
+    #     entry.save()
+    # main_filter(
+    #     sys.argv[1],
+    #     sys.argv[2],
+    #     sys.argv[3],
+    #     sys.argv[4],
+    #     sys.argv[5],
+    #     sys.argv[6],
+    #     sys.argv[7],
+    #     sys.argv[8],
+    #     sys.argv[9],
+    #     sys.argv[10],
+    #     sys.argv[11],
+    # )
+    # duration = int(time.time() - start_time)
 
     # Log.objects.filter(date=sys.argv[11]).update(duration=duration)
 

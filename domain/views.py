@@ -123,10 +123,10 @@ def runEditing(request):
         arg = request.POST['arg']
         if int(arg) == 1:
             script = '_basic_editing'
-            language = 'pypy '
+            language = 'python '
         else:
             script = 'testing'
-            language = 'pypy '
+            language = 'python '
 
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
@@ -191,7 +191,8 @@ def runEditing(request):
             argument += "none "
 
         argument += (redempt + " " + str(date))
-        popen(argument)
+        print argument
+        # popen(argument)
         # main_filter(com, net, org, info, redempt, date)
         return HttpResponse('{"status": "success"}', content_type="application/json")
     except:
@@ -825,13 +826,35 @@ def remove_from_blacklist(request):
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt
-def download(request):
+def download_all(request):
     file = open('zone_with_no_emails.txt', 'w')
     file.seek(0)
     file.truncate()
 
     all_ = []
     datas = RawLeads.objects.filter(activated=1, mail__isnull=True)
+    for data in datas:
+        if data.name_zone not in all_:
+            file.write(data.name_zone + '\n')
+            all_.append(data.name_zone)
+    file.close()
+
+    f = open('zone_with_no_emails.txt', "rb")
+    res = HttpResponse(f)
+    res['Content-Disposition'] = 'attachment; filename=zone_with_no_email.txt'
+    return res
+
+@csrf_exempt
+def download(request):
+    date = request.GET['date']
+    date = datetime.strptime(date, '%Y-%m-%d').date()
+
+    file = open('zone_with_no_emails.txt', 'w')
+    file.seek(0)
+    file.truncate()
+
+    all_ = []
+    datas = RawLeads.objects.filter(activated=1, mail__isnull=True, date=date)
     for data in datas:
         if data.name_zone not in all_:
             file.write(data.name_zone + '\n')

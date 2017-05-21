@@ -21,7 +21,7 @@
       <option value=".com">.COM</option>
       <option value=".net">.NET</option>
     </select>
-    <a href="/download/" target="_blank">
+    <a href="/download/" target="_blank" id="download_filter_link">
       <button>Download!</button>
     </a>
     <button onclick="add_multiple()">Add multiple</button>
@@ -148,9 +148,14 @@
         // $('.dataTables_empty').css( 'display', 'none' );
 
         var selected_date = (window.location.search).replace('?date=', '').split("-");
+        var new_link = "/download/";
         var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);
+        if (new_date instanceof Date && isFinite(new_date)) {
+          new_link += '?date=' + selected_date[2] + '-' + selected_date[1] + '-' + selected_date[0];
+        }
         $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
         $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
+        $( "#download_filter_link" ).attr('href', new_link);
       } );
       $("#Send").addClass('active');
       $("#Base").removeClass();
