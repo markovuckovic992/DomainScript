@@ -300,7 +300,7 @@ result_list_b = []
 all_domains = set()
 iterno = -1
 
-def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
+def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, r2, r3, date):
     global result_list, result_list_b, all_domains, link
 
     file = open('filtered_domains.txt', 'a')
@@ -315,7 +315,24 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             teemp = (domain, )
             usefull_data.append(teemp)
         usefull_data.pop(0)
-    # Log.objects.filter(date=date).update(number_of_all=len(usefull_data))
+
+    if r2 != 'none':
+        with open(r2, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in spamreader:
+                domain = row[0].strip('"').lower()
+                teemp = (domain, )
+                usefull_data.append(teemp)
+            usefull_data.pop(0)
+    if r3 != 'none':
+        with open(r3, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in spamreader:
+                domain = row[0].strip('"').lower()
+                teemp = (domain, )
+                usefull_data.append(teemp)
+            usefull_data.pop(0)
+
     l = Log.objects.get(date=date)
     l.number_of_all = len(usefull_data)
     l.save()
@@ -437,45 +454,26 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     saveDate(master_data)
 
 if __name__ == '__main__':
-    argv = ['', 'biz_zone_27Mar.txt', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'RD_28_2_17.csv', '2017-05-20']
-    if not Log.objects.filter(date=argv[11]).exists():
-        entry = Log(date=argv[11])
+    if not Log.objects.filter(date=sys.argv[13]).exists():
+        entry = Log(date=sys.argv[13])
         entry.save()
     main_filter(
-        argv[1],
-        argv[2],
-        argv[3],
-        argv[4],
-        argv[5],
-        argv[6],
-        argv[7],
-        argv[8],
-        argv[9],
-        argv[10],
-        argv[11],
+        sys.argv[1],
+        sys.argv[2],
+        sys.argv[3],
+        sys.argv[4],
+        sys.argv[5],
+        sys.argv[6],
+        sys.argv[7],
+        sys.argv[8],
+        sys.argv[9],
+        sys.argv[10],
+        sys.argv[11],
+        sys.argv[12],
+        sys.argv[13],
     )
     duration = int(time.time() - start_time)
 
-    # if not Log.objects.filter(date=sys.argv[11]).exists():
-    #     entry = Log(date=sys.argv[11])
-    #     entry.save()
-    # main_filter(
-    #     sys.argv[1],
-    #     sys.argv[2],
-    #     sys.argv[3],
-    #     sys.argv[4],
-    #     sys.argv[5],
-    #     sys.argv[6],
-    #     sys.argv[7],
-    #     sys.argv[8],
-    #     sys.argv[9],
-    #     sys.argv[10],
-    #     sys.argv[11],
-    # )
-    # duration = int(time.time() - start_time)
-
-    # Log.objects.filter(date=sys.argv[11]).update(duration=duration)
-
-    l = Log.objects.get(date=sys.argv[11])
+    l = Log.objects.get(date=sys.argv[13])
     l.duration = duration
     l.save()

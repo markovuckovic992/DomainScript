@@ -4,7 +4,7 @@ import ttk
 from ttk import *
 
 from copy import deepcopy
-from nltk.corpus import brown, words as wd
+from nltk.corpus import brown, words as wd, cess_esp as cess, udhr
 import progressbar as pb
 from math import log, ceil, floor
 import threading, re, time, thread
@@ -67,7 +67,7 @@ def bar(tk, progress, v):
     tk.update()
     tk.after(1, bar, tk, progress, v)
 
-freq_words = open("words-by-frequency.txt").read().split()
+freq_words = open("merged.txt").read().split()
 wordcost = dict((k, log((i + 1) * log(len(freq_words)))) for i, k in enumerate(freq_words))
 maxword = max(len(x) for x in freq_words)
 freq_words = None
@@ -97,7 +97,7 @@ def infer_spaces(s):
 
 
 link = set()
-words = set(list(wd.words()) + list(brown.words()) + word_man)
+words = set(list(wd.words()) + list(brown.words()) + word_man + list(udhr.words()) + list(cess.words()))
 some_variable = 0
 
 def fcn(domain_data, pt):
@@ -306,7 +306,25 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             teemp = (domain, )
             usefull_data.append(teemp)
         usefull_data.pop(0)
-    # Log.objects.filter(date=sys.argv[11]).update(number_of_all=len(usefull_data))
+
+    if r2 != 'none':
+        with open(r2, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in spamreader:
+                domain = row[0].strip('"').lower()
+                teemp = (domain, )
+                usefull_data.append(teemp)
+            usefull_data.pop(0)
+            
+    if r3 != 'none':
+        with open(r3, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in spamreader:
+                domain = row[0].strip('"').lower()
+                teemp = (domain, )
+                usefull_data.append(teemp)
+            usefull_data.pop(0)
+
     l = Log.objects.get(date=date)
     l.number_of_all = len(usefull_data)
     l.save()
@@ -317,7 +335,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     threads = []
     for domain_data in usefull_data:
         fcn(domain_data, pt)
-    # Log.objects.filter(date=sys.argv[11]).update(number_of_redemption=len(result_list + result_list_b))
     l = Log.objects.get(date=date)
     l.number_of_redemption = len(result_list + result_list_b)
     l.save()

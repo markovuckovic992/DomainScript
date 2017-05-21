@@ -140,6 +140,9 @@ def runEditing(request):
         e4 = request.POST['extra4'].replace('C:\\fakepath\\', '')
 
         redempt = request.POST['redempt'].replace('C:\\fakepath\\', '')
+        redempt2 = request.POST['redempt2'].replace('C:\\fakepath\\', '')
+        redempt3 = request.POST['redempt3'].replace('C:\\fakepath\\', '')
+
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
 
@@ -190,9 +193,21 @@ def runEditing(request):
         else:
             argument += "none "
 
-        argument += (redempt + " " + str(date))
-        print argument
-        # popen(argument)
+        argument += (redempt + " ")
+
+        if redempt2:
+            argument += (redempt2 + " ")
+        else:
+            argument += "none "
+
+        if redempt3:
+            argument += (redempt3 + " ")
+        else:
+            argument += "none "
+
+        argument += str(date)
+        # print argument
+        popen(argument)
         # main_filter(com, net, org, info, redempt, date)
         return HttpResponse('{"status": "success"}', content_type="application/json")
     except:
@@ -846,8 +861,11 @@ def download_all(request):
 
 @csrf_exempt
 def download(request):
-    date = request.GET['date']
-    date = datetime.strptime(date, '%Y-%m-%d').date()
+    if 'date' in request.GET.keys():
+        date = request.GET['date']
+        date = datetime.strptime(date, '%Y-%m-%d').date()
+    else:
+        date = datetime.now().date()
 
     file = open('zone_with_no_emails.txt', 'w')
     file.seek(0)

@@ -13,6 +13,8 @@ function run_script(arg) {
     var extra4 = $("#extra4_file_name").val()
 
     var redempt = $("#red_file_name").val()
+    var redempt2 = $("#red_file_name2").val()
+    var redempt3 = $("#red_file_name3").val()
     var date = $("#datepicker").val()
     var len  = date.split("-").length;
     console.log(len);
@@ -32,6 +34,8 @@ function run_script(arg) {
                     "&extra2=" + extra2 + "&extra3=" + extra3 +
                     "&extra4=" + extra4 +
                     "&redempt=" + redempt +
+                    "&redempt2=" + redempt2 +
+                    "&redempt3=" + redempt3 +
                     "&date=" + date + "&arg=" + arg,
                     headers: {
                         'X-CSRFToken': csrftoken,
