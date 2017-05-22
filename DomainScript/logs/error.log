@@ -1,0 +1,5 @@
+2017-05-13 18:53:58,441 [ERROR] django.security.DisallowedHost: Invalid HTTP_HOST header: '178.148.161.152:180'. You may need to add u'178.148.161.152' to ALLOWED_HOSTS.
+2017-05-13 18:54:02,145 [ERROR] django.security.DisallowedHost: Invalid HTTP_HOST header: '178.148.161.152:180'. You may need to add u'178.148.161.152' to ALLOWED_HOSTS.
+2017-05-13 18:54:10,286 [ERROR] django.security.DisallowedHost: Invalid HTTP_HOST header: '178.148.161.152:180'. You may need to add u'178.148.161.152' to ALLOWED_HOSTS.
+2017-05-13 18:54:48,548 [ERROR] django.security.DisallowedHost: Invalid HTTP_HOST header: '178.148.161.152:180'. You may need to add u'178.148.161.152' to ALLOWED_HOSTS.
+2017-05-13 18:54:49,641 [ERROR] django.security.DisallowedHost: Invalid HTTP_HOST header: '178.148.161.152:180'. You may need to add u'178.148.161.152' to ALLOWED_HOSTS.
