@@ -1,7 +1,6 @@
 #!/usr/bin/pypy
-from Tkinter import *
-import ttk
-from ttk import *
+import requests
+requests.adapters.DEFAULT_RETRIES = 3
 from os import popen
 from copy import deepcopy
 from nltk.corpus import brown, words as wd, cess_esp as cess, udhr
@@ -34,7 +33,9 @@ allow_bad_keywords = sett.allow_bad_keywords
 min_length = sett.min_length
 max_length = sett.max_length
 # END!
-
+# TLDs
+tlds = ['fr', 'de', 'co.uk', 'rs', 'es']
+# end
 class progress_timer:
     def __init__(self, n_iter, description="Something"):
         self.n_iter = n_iter
@@ -198,19 +199,31 @@ def fcn2(domain_dict, pt, path, date):
                 except:
                     activated = 0
 
+                domains = [domain, ]
+
                 if activated == 0:
                     iterno += 1
                     page = floor(iterno / 5000) + 1
                 else:
                     page = 1
+                    # TLDs
+                    for tld in tlds:
+                        try:
+                            base2 = domain.split(".", 1)[0]
+                            request = requests.get('http://www.'+ base2 + '.' + tld)
+                            if request.status_code == 200:
+                                domains.append(base2 + '.' + tld)
+                        except:
+                            pass
 
-                master_data.append({
-                    "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
-                    "name_redemption": (domain).replace('\n', '').replace('\r', ''),
-                    "date": date,
-                    "page": page,
-                    "activated": activated
-                })
+                for domain in domains:
+                    master_data.append({
+                        "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
+                        "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                        "date": date,
+                        "page": page,
+                        "activated": activated
+                    })
 
     pt.update()
 
@@ -252,19 +265,31 @@ def fcn3(domain_dict, pt, path, date):
                 except:
                     activated = 0
 
+                domains = [domain, ]
+
                 if activated == 0:
                     iterno += 1
                     page = floor(iterno / 5000) + 1
                 else:
                     page = 1
+                    # TLDs
+                    for tld in tlds:
+                        try:
+                            base2 = domain.split(".", 1)[0]
+                            request = requests.get('http://www.'+ base2 + '.' + tld)
+                            if request.status_code == 200:
+                                domains.append(base2 + '.' + tld)
+                        except:
+                            pass
 
-                master_data.append({
-                    "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
-                    "name_redemption": (domain).replace('\n', '').replace('\r', ''),
-                    "date": date,
-                    "page": page,
-                    "activated": activated
-                })
+                for domain in domains:
+                    master_data.append({
+                        "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
+                        "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                        "date": date,
+                        "page": page,
+                        "activated": activated
+                    })
 
     pt.update()
 
@@ -314,7 +339,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             domain = row[0].strip('"').lower()
             teemp = (domain, )
             usefull_data.append(teemp)
-        usefull_data.pop(0)
 
     if r2 != 'none':
         with open(r2, 'r') as csvfile:
@@ -323,7 +347,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
                 domain = row[0].strip('"').lower()
                 teemp = (domain, )
                 usefull_data.append(teemp)
-            usefull_data.pop(0)
+
     if r3 != 'none':
         with open(r3, 'r') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -331,7 +355,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
                 domain = row[0].strip('"').lower()
                 teemp = (domain, )
                 usefull_data.append(teemp)
-            usefull_data.pop(0)
 
     l = Log.objects.get(date=date)
     l.number_of_all = len(usefull_data)
