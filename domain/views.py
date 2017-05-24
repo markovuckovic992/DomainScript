@@ -1113,7 +1113,7 @@ def admin(request):
             "log": data_to_show,
             'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
             'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
-            'exceptions': DomainException.objects.all()
+            'exceptions': DomainException.objects.all(),
             'tlds': Tlds.objects.all()
         })
 
@@ -1149,9 +1149,9 @@ def deleteTld(request):
     Tlds.objects.filter(id=id_).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
-@csrt_exempt
+@csrf_exempt
 def addTld(request):
-    domain = request.POST['name']
+    extension = request.POST['name']
     Tlds(extension=extension).save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 

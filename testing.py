@@ -12,7 +12,7 @@ from django.db import connection
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 import binascii
-from domain.models import RawLeads, Log, AllHash, Setting
+from domain.models import RawLeads, Log, AllHash, Setting, Tlds
 
 master_data = []
 fname = 'No Path selected'
@@ -34,7 +34,10 @@ min_length = sett.min_length
 max_length = sett.max_length
 # END!
 # TLDs
-tlds = ['fr', 'de', 'co.uk', 'rs', 'es']
+tlds = []
+TLDS = Tlds.objects.all()
+for TLD in TLDS:
+    tlds.append(TLD.extension)
 # end
 class progress_timer:
     def __init__(self, n_iter, description="Something"):

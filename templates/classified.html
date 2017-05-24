@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
     {% csrf_token %}
-    <div bgcolor="#D3D3D3" style="width: 33%; float: left;">
+    <div bgcolor="#D3D3D3" style="width: 30%; float: left;">
         Date: <input type="text" id="datepicker" onchange="load_logs()">
         <div>
             {% if log %}
@@ -22,20 +22,23 @@
             {% endif %}
         </div>
     </div>
-    <div bgcolor="gray" style="width: 33%; float: left;">
-        <input type="number" placeholder="number of days" id="whois_period" />
-        <button onclick="whois_period()">Run whois!</button>
+    <div bgcolor="gray" style="width: 25%; float: left;">
+        <div>
+            <input type="number" placeholder="number of days" id="whois_period" />
+            <button onclick="whois_period()">Run whois!</button>
+        </div>
+        <hr />
+        <button onclick="remove_unwanted()">Cleanse</button>
+        <a href="/download_all/" target="_blank">
+          <button>Download all!</button>
+        </a>
     </div>
-    <div style="width: 33%; float: left;">
-    <button onclick="remove_unwanted()">Cleanse</button>
-    <a href="/download_all/" target="_blank">
-      <button>Download all!</button>
-    </a>
+    <div style="width: 45%; float: left;">
         <div style="float: left">
             <table border="1px solid">
                 <thead>
                     <tr>
-                        <th>domains</th>
+                        <th>domains exceptions</th>
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
@@ -59,7 +62,7 @@
             <table border="1px solid">
                 <thead>
                     <tr>
-                        <th>domains</th>
+                        <th>Tlds</th>
                         <th>&nbsp;</th>
                     </tr>
                 </thead>

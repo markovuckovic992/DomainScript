@@ -1,8 +1,7 @@
 #!/usr/bin/pypy
-from Tkinter import *
-import ttk
-from ttk import *
-
+import requests
+requests.adapters.DEFAULT_RETRIES = 3
+from os import popen
 from copy import deepcopy
 from nltk.corpus import brown, words as wd, cess_esp as cess, udhr
 import progressbar as pb
@@ -13,7 +12,7 @@ from django.db import connection
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 import binascii
-from domain.models import RawLeads, Log, AllHash, Setting
+from domain.models import RawLeads, Log, AllHash, Setting, Tlds
 
 master_data = []
 fname = 'No Path selected'
@@ -34,6 +33,12 @@ allow_bad_keywords = sett.allow_bad_keywords
 min_length = sett.min_length
 max_length = sett.max_length
 # END!
+# TLDs
+tlds = []
+TLDS = Tlds.objects.all()
+for TLD in TLDS:
+    tlds.append(TLD.extension)
+# end
 
 class progress_timer:
     def __init__(self, n_iter, description="Something"):
@@ -113,7 +118,7 @@ def fcn(domain_data, pt):
     elif com_net == 0:
         allowed_extensions = allowed_extensions[:3]
     # END FILTER 1
-    if len(inter) > 0:
+    if len(inter) > 0 or "." not in domain:
         pass
     elif domain.split(".")[1] not in allowed_extensions:
         pass
@@ -196,19 +201,31 @@ def fcn2(domain_dict, pt, all_domains, date):
                 except:
                     activated = 0
 
+                domains = [domain, ]
+
                 if activated == 0:
                     iterno += 1
                     page = floor(iterno / 5000) + 1
                 else:
                     page = 1
+                    # TLDs
+                    for tld in tlds:
+                        try:
+                            base2 = domain.split(".", 1)[0]
+                            request = requests.get('http://www.'+ base2 + '.' + tld)
+                            if request.status_code == 200:
+                                domains.append(base2 + '.' + tld)
+                        except:
+                            pass
 
-                master_data.append({
-                    "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
-                    "name_redemption": (domain).replace('\n', '').replace('\r', ''),
-                    "date": date,
-                    "page": page,
-                    "activated": activated
-                })
+                for domain in domains:
+                    master_data.append({
+                        "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
+                        "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                        "date": date,
+                        "page": page,
+                        "activated": activated
+                    })
 
     pt.update()
 
@@ -244,19 +261,31 @@ def fcn3(domain_dict, pt, all_domains, date):
                 except:
                     activated = 0
 
+                domains = [domain, ]
+
                 if activated == 0:
                     iterno += 1
                     page = floor(iterno / 5000) + 1
                 else:
                     page = 1
+                    # TLDs
+                    for tld in tlds:
+                        try:
+                            base2 = domain.split(".", 1)[0]
+                            request = requests.get('http://www.'+ base2 + '.' + tld)
+                            if request.status_code == 200:
+                                domains.append(base2 + '.' + tld)
+                        except:
+                            pass
 
-                master_data.append({
-                    "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
-                    "name_redemption": (domain).replace('\n', '').replace('\r', ''),
-                    "date": date,
-                    "page": page,
-                    "activated": activated
-                })
+                for domain in domains:
+                    master_data.append({
+                        "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
+                        "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                        "date": date,
+                        "page": page,
+                        "activated": activated
+                    })
     pt.update()
 
 def saveDate(master_data):
@@ -291,7 +320,7 @@ result_list_b = []
 all_domains = set()
 iterno = -1
 
-def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
+def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, r2, r3, date):
     global result_list, result_list_b, all_domains, link
 
     file = open('filtered_domains.txt', 'a')
@@ -305,7 +334,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             domain = row[0].strip('"').lower()
             teemp = (domain, )
             usefull_data.append(teemp)
-        usefull_data.pop(0)
 
     if r2 != 'none':
         with open(r2, 'r') as csvfile:
@@ -314,7 +342,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
                 domain = row[0].strip('"').lower()
                 teemp = (domain, )
                 usefull_data.append(teemp)
-            usefull_data.pop(0)
             
     if r3 != 'none':
         with open(r3, 'r') as csvfile:
@@ -323,7 +350,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
                 domain = row[0].strip('"').lower()
                 teemp = (domain, )
                 usefull_data.append(teemp)
-            usefull_data.pop(0)
 
     l = Log.objects.get(date=date)
     l.number_of_all = len(usefull_data)
@@ -478,8 +504,8 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     saveDate(master_data)
 
 if __name__ == '__main__':
-    if not Log.objects.filter(date=sys.argv[11]).exists():
-        entry = Log(date=sys.argv[11])
+    if not Log.objects.filter(date=sys.argv[13]).exists():
+        entry = Log(date=sys.argv[13])
         entry.save()
     main_filter(
         sys.argv[1],
@@ -493,9 +519,10 @@ if __name__ == '__main__':
         sys.argv[9],
         sys.argv[10],
         sys.argv[11],
+        sys.argv[12],
+        sys.argv[13],
     )
     duration = int(time.time() - start_time)
-    # Log.objects.filter(date=sys.argv[11]).update(duration=duration)
-    l = Log.objects.get(date=sys.argv[11])
+    l = Log.objects.get(date=sys.argv[13])
     l.duration = duration
     l.save()
