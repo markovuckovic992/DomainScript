@@ -1114,6 +1114,7 @@ def admin(request):
             'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
             'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
             'exceptions': DomainException.objects.all()
+            'tlds': Tlds.objects.all()
         })
 
 @login_required
@@ -1140,6 +1141,18 @@ def deleteException(request):
 def addException(request):
     domain = request.POST['name']
     DomainException(domain=domain).save()
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+@csrf_exempt
+def deleteTld(request):
+    id_ = request.POST['id']
+    Tlds.objects.filter(id=id_).delete()
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+@csrt_exempt
+def addTld(request):
+    domain = request.POST['name']
+    Tlds(extension=extension).save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt

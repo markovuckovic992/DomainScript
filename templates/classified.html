@@ -31,28 +31,54 @@
     <a href="/download_all/" target="_blank">
       <button>Download all!</button>
     </a>
-        <table border="1px solid">
-            <thead>
-                <tr>
-                    <th>domains</th>
-                    <th>&nbsp;</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for exception in exceptions %}
+        <div style="float: left">
+            <table border="1px solid">
+                <thead>
                     <tr>
-                        <td>{{exception.domain}}</td>
-                        <td><button onclick="delete_exception({{exception.id}})">Delete</button></td>
+                        <th>domains</th>
+                        <th>&nbsp;</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td><input type="text" id="name_exception" name="name_exception" /></td>
-                    <td><button onclick="add_exception()">Add</button></td>
-                </tr>
-            </tfoot>
-        </table>
+                </thead>
+                <tbody>
+                    {% for exception in exceptions %}
+                        <tr>
+                            <td>{{exception.domain}}</td>
+                            <td><button onclick="delete_exception({{exception.id}})">Delete</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><input type="text" id="name_exception" name="name_exception" /></td>
+                        <td><button onclick="add_exception()">Add</button></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div style="float: left">
+            <table border="1px solid">
+                <thead>
+                    <tr>
+                        <th>domains</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tld in tlds %}
+                        <tr>
+                            <td>{{tld.extension}}</td>
+                            <td><button onclick="delete_tld({{tld.id}})">Delete</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><input type="text" id="name_tld" name="name_tld" /></td>
+                        <td><button onclick="add_tld()">Add</button></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
     <script type="text/javascript">
       $( function() {

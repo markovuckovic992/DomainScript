@@ -49,8 +49,8 @@ function run_script(arg) {
                             alert('Something went wrong!')
                         }
                     },
-                    error: function(ts) { 
-                        alert(ts.responseText) 
+                    error: function(ts) {
+                        alert(ts.responseText)
                     },
                     statusCode: {
                         400: function() {
@@ -88,8 +88,8 @@ function changeSetting(id, value) {
             'X-CSRFToken': csrftoken
         },
         data: "id=" + id + '&value=' + value,
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -107,8 +107,8 @@ function restore_lead(id) {
             success: function(msg) {
                 $('#forma_za_pretragu').submit();
             },
-            error: function(ts) { 
-                alert(ts.responseText) 
+            error: function(ts) {
+                alert(ts.responseText)
             },
         });
     }
@@ -127,8 +127,8 @@ function super_blacklist() {
             $("#super_blacklist").val('');
             location.reload();
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 }
@@ -146,8 +146,8 @@ function regular_blacklist() {
             $("#super_blacklist").val('');
             location.reload();
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 }
@@ -163,8 +163,8 @@ function remove_from_blacklist(id, type) {
         success: function(msg){
             location.reload()
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 }
@@ -183,8 +183,8 @@ function add_manual_whois() {
             alert("it's uploaded");
             $("#cover").fadeOut(100);
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
         statusCode: {
             400: function() {
@@ -228,8 +228,8 @@ function whois_period() {
             $("#cover").fadeOut(100);
             alert("Done!");
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
         statusCode: {
             400: function() {
@@ -266,8 +266,8 @@ function remove_unwanted() {
             alert('It\'s cleared!');
             $("#cover").fadeOut(100);
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -283,8 +283,25 @@ function delete_exception(id) {
         success: function(msg){
             location.reload()
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
+        },
+    });
+};
+
+function delete_tld(id) {
+    $.ajax({
+        type: "POST",
+        url: "/delete_tld/",
+        data: "id=" + id,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg){
+            location.reload()
+        },
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
@@ -301,8 +318,26 @@ function add_exception() {
         success: function(msg){
             location.reload();
         },
-        error: function(ts) { 
-            alert(ts.responseText) 
+        error: function(ts) {
+            alert(ts.responseText)
         },
     });
 };
+
+function add_tld() {
+    var name = $('#name_tld').val();
+    $.ajax({
+        type: "POST",
+        url: "/add_tld/",
+        data: "name=" + name,
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        success: function(msg) {
+            location.reload();
+        },
+        error: function(ts) {
+            alert(ts.responseText)
+        },
+    });
+}

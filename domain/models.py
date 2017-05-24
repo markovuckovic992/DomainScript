@@ -121,3 +121,6 @@ class EventLogger(models.Model):
 
 class DomainException(models.Model):
     domain = models.CharField(max_length=60)
+
+class Tlds(models.Model):
+    extension = models.CharField(max_length=10)
