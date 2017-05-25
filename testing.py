@@ -202,7 +202,7 @@ def fcn2(domain_dict, pt, path, date):
                 except:
                     activated = 0
 
-                domains = [domain, ]
+                matched_domains = [matched_domain, ]
 
                 if activated == 0:
                     iterno += 1
@@ -215,11 +215,11 @@ def fcn2(domain_dict, pt, path, date):
                             base2 = domain.split(".", 1)[0]
                             request = requests.get('http://www.'+ base2 + '.' + tld)
                             if request.status_code == 200:
-                                domains.append(base2 + '.' + tld)
+                                matched_domains.append(base2 + '.' + tld)
                         except:
                             pass
 
-                for domain in domains:
+                for matched_domain in matched_domains:
                     master_data.append({
                         "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
                         "name_redemption": (domain).replace('\n', '').replace('\r', ''),
@@ -268,7 +268,7 @@ def fcn3(domain_dict, pt, path, date):
                 except:
                     activated = 0
 
-                domains = [domain, ]
+                matched_domains = [matched_domain, ]
 
                 if activated == 0:
                     iterno += 1
@@ -281,11 +281,11 @@ def fcn3(domain_dict, pt, path, date):
                             base2 = domain.split(".", 1)[0]
                             request = requests.get('http://www.'+ base2 + '.' + tld)
                             if request.status_code == 200:
-                                domains.append(base2 + '.' + tld)
+                                matched_domains.append(base2 + '.' + tld)
                         except:
                             pass
 
-                for domain in domains:
+                for matched_domain in matched_domains:
                     master_data.append({
                         "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
                         "name_redemption": (domain).replace('\n', '').replace('\r', ''),
