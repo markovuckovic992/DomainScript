@@ -123,10 +123,10 @@ def runEditing(request):
         arg = request.POST['arg']
         if int(arg) == 1:
             script = '_basic_editing'
-            language = 'pypy '
+            language = 'python '
         else:
             script = 'testing'
-            language = 'pypy '
+            language = 'python '
 
         com = request.POST['com'].replace('C:\\fakepath\\', '')
         net = request.POST['net'].replace('C:\\fakepath\\', '')
@@ -143,14 +143,16 @@ def runEditing(request):
         redempt2 = request.POST['redempt2'].replace('C:\\fakepath\\', '')
         redempt3 = request.POST['redempt3'].replace('C:\\fakepath\\', '')
 
+        answer = request.POST['answer'].replace('C:\\fakepath\\', '')
+
         date = request.POST['date']
         date = datetime.strptime(date, '%d-%m-%Y').date()
 
-        to_del = RawLeads.objects.filter(date=date)
-        hash_base_ids = map(attrgetter('hash_base_id'), to_del)
-        RawLeads.objects.filter(date=date).delete()
-        AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
-
+        if answer == 'yes':
+            to_del = RawLeads.objects.filter(date=date)
+            hash_base_ids = map(attrgetter('hash_base_id'), to_del)
+            RawLeads.objects.filter(date=date).delete()
+            AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
         argument = language + path + "/" + script + ".py "
 

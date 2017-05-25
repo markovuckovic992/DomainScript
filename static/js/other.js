@@ -1,5 +1,29 @@
 var csrftoken = getCookie('csrftoken');
 //BASE
+function confirm () {
+    var defer = $.Deferred(); 
+    $('<div>Delete for selected date?</div>').dialog({
+            close: function () { 
+                $(this).dialog('destroy');
+            },
+            buttons: {
+                "Yes": function() {
+                    defer.resolve("yes"); 
+                    $( this ).dialog( "close" );
+                },
+                "No": function() {
+                    defer.resolve("no"); 
+                    $( this ).dialog( "close" );
+                },
+                "Cancel": function() {
+                    defer.resolve("cancel"); 
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+    return defer.promise(); 
+}
+
 function run_script(arg) {
     var org = $("#org_file_name").val()
     var com = $("#com_file_name").val()
@@ -21,59 +45,61 @@ function run_script(arg) {
     if (redempt && (len === 3)) {
         if (chkDuplicates([org, net, com, info, redempt])) {
             alert("You have selected some domain list twice");
-        } else {
-            var r = confirm("Everything for selected date will be deleted");
-            if (r == true) {
-                $("#cover").fadeIn(100);
-                $.ajax({
-                    type: "POST",
-                    url: "/run_script/",
-                    data: "org=" + org + "&net=" + net +
-                    "&com=" + com + "&info=" + info +
-                    "&us=" + us + "&extra1=" + extra1 +
-                    "&extra2=" + extra2 + "&extra3=" + extra3 +
-                    "&extra4=" + extra4 +
-                    "&redempt=" + redempt +
-                    "&redempt2=" + redempt2 +
-                    "&redempt3=" + redempt3 +
-                    "&date=" + date + "&arg=" + arg,
-                    headers: {
-                        'X-CSRFToken': csrftoken,
-                    },
-                    success: function(msg) {
-                        if (msg.status === "success") {
-                            $("#cover").fadeOut(100);
-                            window.location='/raw_leads/'
-                        } else {
-                            $("#cover").fadeOut(100);
-                            alert('Something went wrong!')
+        } else {            
+            confirm().then(function (answer) {
+                if (answer !== "cancel") {
+                    $("#cover").fadeIn(100);
+                    $.ajax({
+                        type: "POST",
+                        url: "/run_script/",
+                        data: "org=" + org + "&net=" + net +
+                        "&com=" + com + "&info=" + info +
+                        "&us=" + us + "&extra1=" + extra1 +
+                        "&extra2=" + extra2 + "&extra3=" + extra3 +
+                        "&extra4=" + extra4 +
+                        "&redempt=" + redempt +
+                        "&redempt2=" + redempt2 +
+                        "&redempt3=" + redempt3 +
+                        "&answer=" + answer +
+                        "&date=" + date + "&arg=" + arg,
+                        headers: {
+                            'X-CSRFToken': csrftoken,
+                        },
+                        success: function(msg) {
+                            if (msg.status === "success") {
+                                $("#cover").fadeOut(100);
+                                window.location='/raw_leads/'
+                            } else {
+                                $("#cover").fadeOut(100);
+                                alert('Something went wrong!')
+                            }
+                        },
+                        error: function(ts) {
+                            alert(ts.responseText)
+                        },
+                        statusCode: {
+                            400: function() {
+                              alert('400 status code! user error, reload page');
+                            },
+                            404: function() {
+                              alert('404 error, reload the page');
+                            },
+                            403: function() {
+                              alert('403 error, reload the page');
+                            },
+                            500: function() {
+                              alert('500 status code! server error, reload page');
+                            },
+                            502: function() {
+                                alert('gateway timeout!');
+                            },
+                            504: function() {
+                                alert('gateway timeout!');
+                            }
                         }
-                    },
-                    error: function(ts) {
-                        alert(ts.responseText)
-                    },
-                    statusCode: {
-                        400: function() {
-                          alert('400 status code! user error, reload page');
-                        },
-                        404: function() {
-                          alert('404 error, reload the page');
-                        },
-                        403: function() {
-                          alert('403 error, reload the page');
-                        },
-                        500: function() {
-                          alert('500 status code! server error, reload page');
-                        },
-                        502: function() {
-                            alert('gateway timeout!');
-                        },
-                        504: function() {
-                            alert('gateway timeout!');
-                        }
-                    }
-                });
-            }
+                    });
+                }                
+            })
         }
     } else {
         alert("Something is wrong, check entries!");
