@@ -35,13 +35,12 @@ if __name__ == "__main__":
         tlds.append(TLD.extension)
 
     for tld in tlds:
-        raw_leads = RawLeads.objects.filter(name_redemption__contains=tld)
+        raw_leads = RawLeads.objects.filter(name_zone__contains=tld)
         for lead in raw_leads:
-            domain_z = lead.name_zone
-            domain_r = lead.name_redemption
-            lead.name_redemption = domain_z
-            lead.name_zone = domain_r
-            lead.save()
+            _leads = RawLeads.objects.get(name_redemption=lead.name_zone)
+            for llead in _leads:
+                lead.name_zone = llead.name_zone
+                lead.save()
 
 # connection = mail.get_connection()
 # connection.open()
