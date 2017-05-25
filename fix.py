@@ -29,13 +29,15 @@ if __name__ == "__main__":
     # DeletedInfo.objects.filter(id=id_).delete()
     # return HttpResponse('{"status": "success"}', content_type="application/json")
     #EMD ASD
+    RawLeads.objects.all().exclude(name_zone__endswith='.com').exclude(name_zone__endswith='.net').delete()
     tlds = []
     TLDS = Tlds.objects.all()
     for TLD in TLDS:
         tlds.append(TLD.extension)
 
     for tld in tlds:
-        raw_leads = RawLeads.objects.filter(name_zone__contains=tld)
+        ext = '.' + tld
+        raw_leads = RawLeads.objects.filter(name_zone__contains=ext)
         for lead in raw_leads:
             _leads = RawLeads.objects.get(name_redemption=lead.name_zone)
             for llead in _leads:
