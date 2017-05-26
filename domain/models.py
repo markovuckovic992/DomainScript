@@ -124,3 +124,11 @@ class DomainException(models.Model):
 
 class Tlds(models.Model):
     extension = models.CharField(max_length=10)
+
+class WhoisAnalytics(models.Model):
+    datetime = models.DateTimeField(default=timezone.now)
+    total = models.IntegerField(default=0)
+    succeeded = models.IntegerField(default=0)
+
+    class Meta:
+        db_table = "whois_analytics"

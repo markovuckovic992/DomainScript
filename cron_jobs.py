@@ -8,7 +8,7 @@ import os, pytz
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 
-from domain.models import BlackList, AllHash, RawLeads, Setting, SuperBlacklist, Emails, ProcessTracker, DeletedInfo
+from domain.models import BlackList, AllHash, RawLeads, Setting, SuperBlacklist, Emails, ProcessTracker, DeletedInfo, WhoisAnalytics
 from django.core import mail
 from django.conf import settings
 from os import popen
@@ -138,9 +138,15 @@ class CronJobs:
 
 
     def whois(self):
+        new_analytics = WhoisAnalytics()
         number_of_days = Setting.objects.get(id=1).number_of_days
         margin = (datetime.now() - timedelta(days=number_of_days))
         datas = RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True, no_email_found=0)[0:2100]
+        # ANALYTICS
+        new_analytics.total = len(datas)
+        new_analytics.save()
+        master_of_index = 0
+        # END
         for data in datas:
             uslov = True
             i = 0
@@ -227,7 +233,7 @@ class CronJobs:
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
-                    # RawLeads.objects.filter(id=data.id).update(mail=email)
+                    master_of_index += 1
                     rl = RawLeads.objects.get(id=data.id)
                     rl.mail = email
                     rl.save()
@@ -256,6 +262,9 @@ class CronJobs:
         datas = RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True)
         for data in datas:
             file.write(data.name_zone + '\n')
+
+        new_analytics.succeeded = master_of_index
+        new_analytics.save()
 
     def check(self):
         req = requests.post("http://www.webdomainexpert.pw/check_for_offers/")
