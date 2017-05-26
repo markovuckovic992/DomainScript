@@ -1204,13 +1204,13 @@ def Chart(request):
     who_analytics = WhoisAnalytics.objects.all()
     for entry in who_analytics:
         total.append({
-            "x": entry.id,
-            "y": entry.total
+            "x": int(entry.id),
+            "y": int(entry.total)
         })
 
         succeeded.append({
-            "x": entry.id,
-            "y": entry.succeeded
+            "x": int(entry.id),
+            "y": int(entry.succeeded)
         })
 
     return render(request, 'charts.html',  {"total": total,  "succeeded": succeeded})
