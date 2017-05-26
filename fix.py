@@ -1,12 +1,14 @@
 # from django.core import mail
-from django.conf import settings
-import os, django
-os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
-django.setup()
-from domain.models import RawLeads, DomainException, Tlds
+# from django.conf import settings
+# import os, django
+# os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
+# django.setup()
+# from domain.models import RawLeads, DomainException, Tlds
+
+import requests
 
 if __name__ == "__main__":
-    #ASD
+    # ASD
     # DeletedInfo.objects.filter(reason='')
 
     # deleted = DeletedInfo.objects.get(id=id_)
@@ -28,22 +30,9 @@ if __name__ == "__main__":
     #         pass
     # DeletedInfo.objects.filter(id=id_).delete()
     # return HttpResponse('{"status": "success"}', content_type="application/json")
-    #EMD ASD
-    RawLeads.objects.all().exclude(name_zone__endswith='.com').exclude(name_zone__endswith='.net').delete()
-    tlds = []
-    TLDS = Tlds.objects.all()
-    for TLD in TLDS:
-        tlds.append(TLD.extension)
-
-    for tld in tlds:
-        ext = '.' + tld
-        raw_leads = RawLeads.objects.filter(name_zone__contains=ext)
-        for lead in raw_leads:
-            _leads = RawLeads.objects.get(name_redemption=lead.name_zone)
-            for llead in _leads:
-                lead.name_zone = llead.name_zone
-                lead.save()
-
+    r = requests.get('http://api.whoxy.com/?key=3d28dc0e398efe01dp7caa9f21e7b4fdf&whois=google.com&format=json')
+    r.json()
+    print r
 # connection = mail.get_connection()
 # connection.open()
 # emails = []
