@@ -1,6 +1,5 @@
-<!DOCTYPE HTML>
-<html>
-<head>
+{% extends "layout.html" %}
+{% block head %}
   <script type="text/javascript" src="/static/js/canvasjs.min.js"></script>
   <script type="text/javascript">
   var total = {{ total|safe }};
@@ -13,7 +12,7 @@
         },
         data: [
             {
-            totalype: "column",
+                totalype: "column",
                 dataPoints: total
             },
             {
@@ -25,10 +24,11 @@
 
     chart.render();
   }
+  $("#Chart").addClass('active');
+  $("#Base").removeClass();
   </script>
-</head>
-<body>
+{% endblock %}
+{% block content %}
   <div id="chartContainer" style="height: 300px; width: 100%;">
   </div>
-</body>
-</html>
+{% endblock %}
