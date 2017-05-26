@@ -326,6 +326,17 @@ class CronJobs:
         connection.send_messages(emails)
         connection.close()
 
+    def vpn_reconnect(self):
+        vpn_count = Setting.objects.get(id=1).vpn_count
+        tube = popen("nmcli con up id 'VPN connection " + unicode(vpn_count) + "'")
+        tube.close()
+        vpn_count += 1
+        if vpn_count > 3:
+            vpn_count = 1
+        s = Setting.objects.get(id=1)
+        s.vpn_count = vpn_count
+        s.save()
+
 c_j = CronJobs()
 if len(sys.argv) > 1:
     if sys.argv[1] == 'delete':
@@ -336,3 +347,5 @@ if len(sys.argv) > 1:
         c_j.whois()
     elif sys.argv[1] == 'dont_touch':
         c_j.check()
+    elif sys.argv[1] == 'vpn':
+        c_j.vpn_reconnect()

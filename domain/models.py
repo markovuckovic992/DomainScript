@@ -90,6 +90,7 @@ class Setting(models.Model):
     min_length = models.SmallIntegerField(default=4)
     max_length = models.SmallIntegerField(default=11)
     redempion_row = models.SmallIntegerField(default=1)
+    vpn_count = models.SmallIntegerField(default=1)
 
     class Meta:
         db_table = 'settings'
