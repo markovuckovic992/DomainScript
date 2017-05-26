@@ -32,7 +32,10 @@ if __name__ == "__main__":
     # return HttpResponse('{"status": "success"}', content_type="application/json")
     r = requests.get('http://api.whoxy.com/?key=3d28dc0e398efe01dp7caa9f21e7b4fdf&whois=google.com&format=json')
     resp_data = r.json()
-    print resp_data
+    status = resp_data['domain_status']
+    email = resp_data['domain_registrar']['email_address']
+
+    print status, email
 # connection = mail.get_connection()
 # connection.open()
 # emails = []
