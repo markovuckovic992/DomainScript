@@ -4,11 +4,14 @@
   <script type="text/javascript">
   var total = {{ total|safe }};
   var succeeded = {{ succeeded|safe }};
+  var total2 = {{ total2|safe }};
+  var succeeded2 = {{ succeeded2|safe }};
+
   window.onload = function () {
     var chart = new CanvasJS.Chart("chartContainer",
     {
         title:{
-            text: "Whois Analytics"
+            text: "Internal Whois Analytics"
         },
         data: [
             {
@@ -21,8 +24,25 @@
             },
         ]
     });
-
     chart.render();
+
+    var chart2 = new CanvasJS.Chart("chartContainer2",
+    {
+        title:{
+            text: "External Whois Analytics"
+        },
+        data: [
+            {
+                totalype: "column",
+                dataPoints: total2
+            },
+            {
+                type: "column",
+                dataPoints: succeeded2
+            },
+        ]
+    });
+    chart2.render();
 
     $("#Chart").addClass('active');
     $("#Base").removeClass();
@@ -30,6 +50,6 @@
   </script>
 {% endblock %}
 {% block content %}
-  <div id="chartContainer" style="height: 300px; width: 100%;">
-  </div>
+  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+  <div id="chartContainer2" style="height: 300px; width: 100%;"></div>
 {% endblock %}

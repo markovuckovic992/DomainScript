@@ -1200,8 +1200,11 @@ def restoreDeleted(request):
 def Chart(request):
     total = []
     succeeded = []
+    total2 = []
+    succeeded2 = []
 
-    who_analytics = WhoisAnalytics.objects.all()
+
+    who_analytics = WhoisAnalytics.objects.filter(source="internal")
     for entry in who_analytics:
         total.append({
             "x": int(entry.id),
@@ -1213,4 +1216,22 @@ def Chart(request):
             "y": int(entry.succeeded)
         })
 
-    return render(request, 'charts.html',  {"total": total,  "succeeded": succeeded})
+    who_analytics = WhoisAnalytics.objects.filter(source="external")
+    for entry in who_analytics:
+        total2.append({
+            "x": int(entry.id),
+            "y": int(entry.total)
+        })
+
+        succeeded2.append({
+            "x": int(entry.id),
+            "y": int(entry.succeeded)
+        })
+
+    return render(
+        request,
+        'charts.html',
+        {
+            "total": total,  "succeeded": succeeded,
+            "total2": total2,  "succeeded2": succeeded2,
+        })
