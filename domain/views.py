@@ -1203,30 +1203,33 @@ def Chart(request):
     total2 = []
     succeeded2 = []
 
-
+    master_of_indexes = 1
     who_analytics = WhoisAnalytics.objects.filter(source="internal")
     for entry in who_analytics:
         total.append({
-            "x": int(entry.id),
+            "x": int(master_of_indexes),
             "y": int(entry.total)
         })
 
         succeeded.append({
-            "x": int(entry.id),
+            "x": int(master_of_indexes),
             "y": int(entry.succeeded)
         })
+        master_of_indexes += 1
 
+    master_of_indexes = 1
     who_analytics = WhoisAnalytics.objects.filter(source="external")
     for entry in who_analytics:
         total2.append({
-            "x": int(entry.id),
+            "x": int(master_of_indexes),
             "y": int(entry.total)
         })
 
         succeeded2.append({
-            "x": int(entry.id),
+            "x": int(master_of_indexes),
             "y": int(entry.succeeded)
         })
+        master_of_indexes += 1
 
     return render(
         request,
