@@ -434,14 +434,24 @@ def activeLeads(request):
     else:
         date = datetime.now()
 
+    raw_leads = RawLeads.objects.filter(activated=1, date=date, reminder=0)
+    return render(
+        request,
+        'active_leads.html',
+        {
+            "raw_leads": raw_leads,
+            'range': range(1, int(ceil(len(raw_leads) / 5000)) + 2),
+            'total_a': len(raw_leads),
+        })
 
-    if 'act' in request.GET.keys():
-        act = 2
+@user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
+def activeLeadsTld(request):
+    if 'date' in request.GET.keys():
+        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
     else:
-        act = 1
+        date = datetime.now()
 
-
-    raw_leads = RawLeads.objects.filter(activated=act, date=date, reminder=0)
+    raw_leads = RawLeads.objects.filter(activated=2, date=date, reminder=0)
     return render(
         request,
         'active_leads.html',

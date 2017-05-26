@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+{% block head %}
+   <title>Sending</title>
+    <script type="text/javascript" src="/static/js/active_leads.js"></script>
+{% endblock %}
+{% block content %}
+    <div style="position: fixed; bottom: 0px; right: 20px">
+      Total leads on page: {{total_a}}.
+      Marked for sending: <span id="counter1"></span>,
+      Marked for blacklisting: <span id="counter2"></span>,
+      Marked for deleting: <span id="counter3"></span>.
+    </div>
+    {% csrf_token %}
+    Date: <input type="text" id="datepicker" onchange="load_send()">
+    <button onclick="find_mails_again()">Run whois scipt again</button>
+    <button onclick="select_all()">Select all</button>
+    <button onclick="un_select_all()">Unselect all</button>
+    <button onclick="blacklist_selected()">Blacklist</button>
+    <select id="filter_by_dom" onclick="filter_by_dom()">
+      <option value="">-All-</option>
+      <option value=".com">.COM</option>
+      <option value=".net">.NET</option>
+    </select>
+    <a href="/download/" target="_blank" id="download_filter_link">
+      <button>Download!</button>
+    </a>
+    <button onclick="add_multiple()">Add multiple</button>
+    <button onclick="truncate_active()">Truncate</button>
+    <button onclick="send_pending()">Send All Pending</button>
+   <table id="mytable" class="sortable">
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Dropping domain</th>
+          <th class='no-sort'>Mark to send</th>
+          <th>Zone file domain</th>
+          <th>Registrant mail</th>
+          <th class='no-sort'>&nbsp;</th>
+          <th class='no-sort'>Blacklist</th>
+          <th class='no-sort'>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in raw_leads %}
+        <tr {% if entry.no_email_found == 1 and not entry.mail %} style="background-color: #ffff00;" {% endif %}>
+          <td>{{forloop.counter}}</td>
+          <td class="redemption">{{entry.name_redemption}}</td>
+          {% if entry.mark_to_send %}
+            <td><input type="checkbox" id={{entry.id}} class="prim" checked onclick="mark_to_send('{{entry.id}}', event)" />
+           {% else %}
+            <td><input type="checkbox" id={{entry.id}} class="prim" onclick="mark_to_send('{{entry.id}}', event)" /></td>
+          {% endif %}
+          <td>
+            <a href="http://{{entry.name_zone}}" target="_blank">{{entry.name_zone}}</a>
+          </td>
+          <td id="mail_field_{{entry.id}}">
+            {%if entry.mail %}
+                {{entry.mail}}<button onclick="rem_mail({{entry.id}}, '{entry.name_zone}}')">Rewrite</button>
+            {%else%}
+                email not found <input type="text" class="email_entries" id="mail_entry_{{entry.id}}"/><button onclick="add_mail_man({{entry.id}}, '{{entry.name_zone}}')">Add</button>
+                <a href="http://bgp.he.net/dns/{{entry.name_zone}}#_whois" target="_blank">bgd.he.net</a>
+            {%endif%}
+          </td>
+          <td>
+            <button onclick="active_manual_hash({{entry.id}}, {{forloop.counter}}, '{{entry.hash_base_id}}')">HASH</button>
+          </td>
+          {% if entry.blacklist %}
+            <td style="background: black; color: white;">
+              <input id="blacklist_{{entry.id}}" type="checkbox" checked onclick="blacklist('{{entry.id}}')" class="blacklist" {% if not entry.mail %} disabled {% endif %} />
+            </td>
+           {% else %}
+            <td style="background: black; color: white;">
+              <input id="blacklist_{{entry.id}}" type="checkbox" onclick="blacklist('{{entry.id}}')" class="blacklist" {% if not entry.mail %} disabled {% endif %}/>
+            </td>
+          {% endif %}
+
+          {% if entry.to_delete %}
+            <td style="background: red; color: white;" ><input id="{{entry.id}}_del" class="delete__" type="checkbox" checked onclick="to_delete('{{entry.id}}', event)" />
+           {% else %}
+            <td style="background: red; color: white;" ><input id="{{entry.id}}_del" class="delete__" type="checkbox" onclick="to_delete('{{entry.id}}', event)" /></td>
+          {% endif %}
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <table style="margin-left: 20%; width: 40%;">
+      <tbody>
+        <tr>
+          <td colspan="6" align="center"><input style="background: red; color: white;" type="button" onclick="send_mails()" value="Send"/></td>
+        </tr>
+      </tbody>
+    </table>
+    <script type="text/javascript">
+      $( document ).ready(function() {
+          var count1 = $(":checkbox:checked.prim").length;
+          var count2 = $(":checkbox:checked.blacklist").length;
+          var count3 = $(":checkbox:checked.delete__").length;
+          $("#counter1").html(count1);
+          $("#counter2").html(count2);
+          $("#counter3").html(count3);
+          document.body.addEventListener('click', function() {
+            var count1 = $(":checkbox:checked.prim").length;
+            var count2 = $(":checkbox:checked.blacklist").length;
+            var count3 = $(":checkbox:checked.delete__").length;
+            $("#counter1").html(count1);
+            $("#counter2").html(count2);
+            $("#counter3").html(count3);
+          }, true);
+      });
+    </script>
+    <script type="text/javascript">
+      $( function() {
+        $('#mytable').DataTable({
+            searching: true,
+            stateSave: true,
+
+            paging: true,
+            lengthMenu: [ [10, 50, 100, 500, 1000], [10, 50, 100, 500, 1000] ],
+            pageLength: 500,
+
+            "aoColumnDefs" : [
+                {
+                   'bSortable' : false,
+                   'aTargets' : [ 'no-sort' ]
+                }
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                // $('#filter_by_dom').val('')
+                var rows = $('#mytable tbody tr');
+                var temp = $('#filter_by_dom').val().toLowerCase();
+                var n, text;
+                rows.show().filter(function() {
+                    text = $(this).find('td.redemption').text().toLowerCase();
+                    n = text.indexOf(temp);
+                    return n === -1;
+                }).hide();
+
+                $('body,html').animate({
+                    scrollTop : 0
+                }, 500);
+            },
+        });
+
+        // $('#mytable_length').css( 'display', 'none' );
+        // $('#mytable_paginate').css( 'display', 'none' );
+        // $('#mytable_info').css( 'display', 'none' );
+        // $('.dataTables_empty').css( 'display', 'none' );
+
+        var selected_date = (window.location.search).replace('?date=', '').split("-");
+        var new_link = "/download/";
+        var new_date = new Date(selected_date[2], selected_date[1] - 1, selected_date[0]);
+        if (new_date instanceof Date && isFinite(new_date)) {
+          new_link += '?date=' + selected_date[2] + '-' + selected_date[1] + '-' + selected_date[0];
+        }
+        $( "#datepicker" ).datepicker().datepicker("setDate", new_date);
+        $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
+        $( "#download_filter_link" ).attr('href', new_link);
+      } );
+      $("#Send2").addClass('active');
+      $("#Base").removeClass();
+    </script>
+{% endblock %}
