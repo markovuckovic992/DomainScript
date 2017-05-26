@@ -8,7 +8,6 @@ from urllib import unquote
 from domain.models import *
 from domain.apps import *
 from domain.lib import removeStuff
-from basic_editing import main_filter
 from whois_domain import main, main_period
 from django.core.mail import send_mail
 from django.conf import settings
