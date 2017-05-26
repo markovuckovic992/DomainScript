@@ -6,6 +6,11 @@ function load_send() {
     window.location.href=('/active_leads/?date=' + date);
 };
 
+function load_send2() {
+    var date = $("#datepicker").val();
+    window.location.href=('/active_leads_tld/?date=' + date);
+};
+
 function find_mails_again() {
     $("#cover").fadeIn(100);
     var date = $("#datepicker").val();

@@ -454,7 +454,7 @@ def activeLeadsTld(request):
     raw_leads = RawLeads.objects.filter(activated=2, date=date, reminder=0)
     return render(
         request,
-        'active_leads.html',
+        'active_leads_tld.html',
         {
             "raw_leads": raw_leads,
             'range': range(1, int(ceil(len(raw_leads) / 5000)) + 2),
