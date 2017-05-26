@@ -4,6 +4,7 @@ import os, django, hashlib
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 import binascii
+import requests
 from domain.models import *
 
 def main(date):
@@ -35,33 +36,37 @@ def main(date):
         try:
             email = Emails.objects.get(name_zone=data.name_zone).email
         except:
-            while uslov:
-                try:
-                    tube = popen("whois '" + str(
-                        (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:|No match for'",
-                                 'r')
-                    response = tube.read()
-                    if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
-                        record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
-                        record.save()
-                        RawLeads.objects.filter(id=data.id).delete()
-                    else:
-                        index = response.find('Registrant Email')
-                        if index == -1:
-                            # RawLeads.objects.filter(id=data.id).update(no_email_found=1)
-                            rl = RawLeads.objects.get(id=data.id)
-                            rl.no_email_found = 1
-                            rl.save()
-                            break
-                        new = response[index:]
-                        response = new.splitlines()[0]
-                        email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
-                    break
-                except:
-                    if i > 5:
-                        uslov = False
-                    else:
-                        i += 1
+            # while uslov:
+                # try:
+                    # tube = popen("whois '" + str(
+                    #     (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:|No match for'",
+                    #              'r')
+                    # response = tube.read()
+            r = requests.get('http://api.whoxy.com/?key=3d28dc0e398efe01dp7caa9f21e7b4fdf&whois=' + data.name_zone + '&format=json')
+            resp_data = r.json()
+            status = resp_data['domain_status']
+            email = resp_data['registrant_contact']['email_address']
+            if ('pendingDelete' in status) or ('redemptionPeriod' in status) or ('No match for' in status):
+                record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
+                record.save()
+                RawLeads.objects.filter(id=data.id).delete()
+                    # else:
+                    #     index = response.find('Registrant Email')
+                    #     if index == -1:
+                    #         # RawLeads.objects.filter(id=data.id).update(no_email_found=1)
+                    #         rl = RawLeads.objects.get(id=data.id)
+                    #         rl.no_email_found = 1
+                    #         rl.save()
+                    #         break
+                    #     new = response[index:]
+                    #     response = new.splitlines()[0]
+                    #     email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
+                #     break
+                # except:
+                #     if i > 5:
+                #         uslov = False
+                #     else:
+                #         i += 1
 
         if email and '@' in email:
             email = "".join(email.split())
