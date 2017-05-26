@@ -4,7 +4,6 @@ import os, django, hashlib
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 import binascii
-import requests
 from domain.models import *
 
 def main(date):
