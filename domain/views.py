@@ -1204,7 +1204,7 @@ def Chart(request):
     succeeded2 = []
 
     master_of_indexes = 1
-    who_analytics = WhoisAnalytics.objects.filter(source="internal")[0:1000]
+    who_analytics = WhoisAnalytics.objects.filter(source="internal")[0:100]
     for entry in who_analytics:
         total.append({
             "x": int(master_of_indexes),
@@ -1218,7 +1218,7 @@ def Chart(request):
         master_of_indexes += 1
 
     master_of_indexes = 1
-    who_analytics = WhoisAnalytics.objects.filter(source="external")[0:1000]
+    who_analytics = WhoisAnalytics.objects.filter(source="external")[0:100]
     for entry in who_analytics:
         total2.append({
             "x": int(master_of_indexes),

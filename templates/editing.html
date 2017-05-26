@@ -18,7 +18,7 @@
           <tr>
             <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='org_file_name' name=".org file"/></td>
             <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          </tr>        
+          </tr>
             <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='net_file_name'  name=".net file"/></td>
             <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
           <tr>
@@ -51,16 +51,17 @@
             <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
           </tr>
           <tr>
-            <td style="text-align: center; background: rgba(0,0,255,0.4);"><input type="file" id='red_file_name'  name="red file"/></td>
+            <td style="text-align: center; background: rgba(0,0,255,0.4);">
+                <input type="file" id='red_file_name'  name="red file"/>
+                <input type="file" id='red_file_name'  name="red file"/>
+                <input type="file" id='red_file_name'  name="red file"/>
+            </td>
             <td style="text-align: center; background: rgba(0,0,255,0.4);">redemption</td>
-          </tr>
-          <tr>
-            <td style="text-align: center; background: rgba(0,0,255,0.4);"><input type="file" id='red_file_name2'  name="red file"/></td>
-            <td style="text-align: center; background: rgba(0,0,255,0.4);">redemption2</td>
-          </tr>
-          <tr>
-            <td style="text-align: center; background: rgba(0,0,255,0.4);"><input type="file" id='red_file_name3'  name="red file"/></td>
-            <td style="text-align: center; background: rgba(0,0,255,0.4);">redemption3</td>
+            <select id="redempion_row">
+                <option value="1">Type 1</option>
+                <option value="2">Type 2</option>
+                <option value="3">Type 3</option>
+            </select>
           </tr>
           <tr>
             <td colspan="2" style="text-align: center; background: rgba(255,0,0,0.4);">
@@ -76,7 +77,7 @@
           <tr>
             <th colspan="2" style="text-align: center;">Script settings</th>
           </tr>
-          
+
           <tr>
             <td colspan="2">
               <input type="radio" class="setting" name="domain_filter" id="com_net" value=0 {% if sett.com_net == 0 %} checked {% endif %}> .com<br>
@@ -104,7 +105,7 @@
               {% else %}
                 <div id="cover_2" style="display: none;"> </div>
               {% endif %}
-              Allow redemption domain, with no meaning, with length between 
+              Allow redemption domain, with no meaning, with length between
               <input min="1" max="99" class="setting" id="min_length" type="number" value="{{ sett.min_length }}" /> to
               <input min="1" max="99" class="setting" id="max_length" type="number" value="{{ sett.max_length }}" />
             </td>
@@ -116,9 +117,14 @@
         $( "#datepicker" ).datepicker();
         $( "#datepicker" ).datepicker("option", "dateFormat", 'dd-mm-yy');
 
+        $('#redempion_row').bind('change', function(){
+          changeSetting($(this).attr('id'), $(this).val());
+        });
+
         $('.setting[type="radio"], .setting[type="number"]').bind('change', function(){
           changeSetting($(this).attr('id'), $(this).val());
-        });  
+        });
+
         $('.setting[type="checkbox"]').change(function(){
           this.value = (Number(this.checked));
           if ($(this).attr('value') == 1) {

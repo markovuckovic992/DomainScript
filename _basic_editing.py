@@ -25,13 +25,14 @@ bad_keywords_list = 'aaaaaaaaaaaabbbbbbbbbasdaaasdffdsa-abbabc'
 
 # SETTINGS!
 sett = Setting.objects.get(id=1)
-com_net = sett.com_net # 0 com, 1 net, 2 both
+com_net = sett.com_net  # 0 com, 1 net, 2 both
 length = sett.length
 number_of_digits = sett.number_of_digits
 number_of_keywords = sett.number_of_keywords
 allow_bad_keywords = sett.allow_bad_keywords
 min_length = sett.min_length
 max_length = sett.max_length
+redempion_row = sett.redempion_row
 # END!
 # TLDs
 tlds = []
@@ -320,7 +321,7 @@ result_list_b = []
 all_domains = set()
 iterno = -1
 
-def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, r2, r3, date):
+def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
     global result_list, result_list_b, all_domains, link
 
     file = open('filtered_domains.txt', 'a')
@@ -331,31 +332,15 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     with open(redemption_path, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-            domain = row[0].strip('"').lower()
+            domain = row[redempion_row].strip('"').lower()
             teemp = (domain, )
             usefull_data.append(teemp)
-
-    if r2 != 'none':
-        with open(r2, 'r') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-            for row in spamreader:
-                domain = row[0].strip('"').lower()
-                teemp = (domain, )
-                usefull_data.append(teemp)
-            
-    if r3 != 'none':
-        with open(r3, 'r') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-            for row in spamreader:
-                domain = row[0].strip('"').lower()
-                teemp = (domain, )
-                usefull_data.append(teemp)
 
     l = Log.objects.get(date=date)
     l.number_of_all = len(usefull_data)
     l.save()
 
-    increment = (100.0/len(usefull_data))
+    increment = (100.0 / len(usefull_data))
     text = 'phase 1 '
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
@@ -504,8 +489,8 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     saveDate(master_data)
 
 if __name__ == '__main__':
-    if not Log.objects.filter(date=sys.argv[13]).exists():
-        entry = Log(date=sys.argv[13])
+    if not Log.objects.filter(date=sys.argv[11]).exists():
+        entry = Log(date=sys.argv[11])
         entry.save()
     main_filter(
         sys.argv[1],
@@ -519,10 +504,8 @@ if __name__ == '__main__':
         sys.argv[9],
         sys.argv[10],
         sys.argv[11],
-        sys.argv[12],
-        sys.argv[13],
     )
     duration = int(time.time() - start_time)
-    l = Log.objects.get(date=sys.argv[13])
+    l = Log.objects.get(date=sys.argv[11])
     l.duration = duration
     l.save()
