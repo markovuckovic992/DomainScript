@@ -52,11 +52,11 @@
           </tr>
           <tr>
             <td style="text-align: center; background: rgba(0,0,255,0.4);">
-                <input type="file" id='red_file_name'  name="red file"/>
-                <select id="redempion_row" value="{{ sett.allow_bad_keywords }}">
-                    <option value="1">Type 1</option>
-                    <option value="2">Type 2</option>
-                    <option value="3">Type 3</option>
+                <input type="file" id='red_file_name'  name="red file" style="float: left;"/>
+                <select id="redempion_row" style="float: left;">
+                    <option value="1" {% if sett.redempion_row === 1 %} selected="selected" {%endif%}>Type 1</option>
+                    <option value="2" {% if sett.redempion_row === 2 %} selected="selected" {%endif%}>Type 2</option>
+                    <option value="3" {% if sett.redempion_row === 3 %} selected="selected" {%endif%}>Type 3</option>
                 </select>
             </td>
             <td style="text-align: center; background: rgba(0,0,255,0.4);">redemption</td>
