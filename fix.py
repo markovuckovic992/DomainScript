@@ -31,8 +31,8 @@ if __name__ == "__main__":
     # DeletedInfo.objects.filter(id=id_).delete()
     # return HttpResponse('{"status": "success"}', content_type="application/json")
     r = requests.get('http://api.whoxy.com/?key=3d28dc0e398efe01dp7caa9f21e7b4fdf&whois=google.com&format=json')
-    r.json()
-    print r
+    resp_data = r.json()
+    print resp_data
 # connection = mail.get_connection()
 # connection.open()
 # emails = []
