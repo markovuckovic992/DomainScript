@@ -129,6 +129,7 @@ class WhoisAnalytics(models.Model):
     datetime = models.DateTimeField(default=timezone.now)
     total = models.IntegerField(default=0)
     succeeded = models.IntegerField(default=0)
+    source = models.CharField(max_length=8)
 
     class Meta:
         db_table = "whois_analytics"

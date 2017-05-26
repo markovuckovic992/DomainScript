@@ -73,4 +73,6 @@ urlpatterns = [
     url(r'^delete_tld/', domain.views.deleteTld),
     url(r'^add_exception/', domain.views.addException),
     url(r'^add_tld/', domain.views.addTld),
+    # Chart
+    url(r'^chart/', domain.views.Chart),
 ]

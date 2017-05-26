@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <script type="text/javascript">
+  var total = {{ total|safe }};
+  var succeeded = {{ succeeded|safe }};
+  window.onload = function () {
+    var chart = new CanvasJS.Chart("chartContainer",
+    {
+      title:{
+      text: "Multi-Series Line Chart"
+      },
+      data: [
+      {
+        type: "line",
+        dataPoints: total
+      },
+        {
+        type: "line",
+        dataPoints: [
+            { x: 10, y: 31 },
+            { x: 20, y: 35 },
+            { x: 30, y: 30 },
+            { x: 40, y: 35 },
+            { x: 50, y: 35 },
+            { x: 60, y: 38 },
+            { x: 70, y: 38 },
+            { x: 80, y: 34 },
+            { x: 90, y: 44}
+        ]
+      },
+        ]
+      }
+      ]
+    });
+
+    chart.render();
+  }
+  </script>
+ <script type="text/javascript" src="/assets/script/canvasjs.min.js"></script></head>
+<body>
+  <div id="chartContainer" style="height: 300px; width: 100%;">
+  </div>
+</body>
+</html>

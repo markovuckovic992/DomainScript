@@ -8,6 +8,7 @@ import requests
 from domain.models import *
 
 def main(date):
+    new_analytics = WhoisAnalytics(source='external')
     # hashes
     non_hashed_leads = RawLeads.objects.filter(activated__gte=1, hash_base_id__isnull=True, no_email_found=0)
     for non_hashed_lead in non_hashed_leads:
@@ -26,8 +27,12 @@ def main(date):
             rl.hash_base_id = hash_base_id
             rl.save()
     # endhashes
-
     datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True)
+    # ANALYTICS
+    new_analytics.total = len(datas)
+    new_analytics.save()
+    master_of_index = 0
+    # END
     for data in datas:
         uslov = True
         i = 0
@@ -130,7 +135,7 @@ def main(date):
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
             else:
-                # RawLeads.objects.filter(id=data.id).update(mail=email)
+                master_of_index += 1
                 rl = RawLeads.objects.get(id=data.id)
                 rl.mail = email
                 rl.save()
@@ -147,9 +152,12 @@ def main(date):
                     new = Emails(name_zone=data.name_zone, email=email)
                     new.save()
 
-
+    new_analytics.succeeded = master_of_index
+    new_analytics.save()
 
 def main_period(dates):
+    new_analytics = WhoisAnalytics(source='internal')
+    master_of_index = 0
     for date in dates:
         # hashes
         non_hashed_leads = RawLeads.objects.filter(activated__gte=1, hash_base_id__isnull=True)
@@ -171,6 +179,11 @@ def main_period(dates):
         # endhashes
 
         datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True)
+        # ANALYTICS
+        ttls = new_analytics.total
+        new_analytics.total = len(datas) + ttls
+        new_analytics.save()
+        # END
         for data in datas:
             uslov = True
             i = 0
@@ -257,7 +270,7 @@ def main_period(dates):
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
-                    # RawLeads.objects.filter(id=data.id).update(mail=email)
+                    master_of_index += 1
                     rl = RawLeads.objects.get(id=data.id)
                     rl.mail = email
                     rl.save()
@@ -274,6 +287,8 @@ def main_period(dates):
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
 
+    new_analytics.succeeded = master_of_index
+    new_analytics.save()
 
 # if __name__ == "__main__":
 #     main(datetime.now().date())

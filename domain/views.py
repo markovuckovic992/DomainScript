@@ -1196,5 +1196,21 @@ def restoreDeleted(request):
     DeletedInfo.objects.filter(id=id_).delete()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
+@csrf_exempt
+def Chart(request):
+    total = []
+    succeeded = []
 
+    who_analytics = WhoisAnalytics.objects.all()
+    for entry in who_analytics:
+        total.append({
+            x: entry.id,
+            y: entry.total
+        })
 
+        succeeded.append({
+            x: entry.id,
+            y: entry.succeeded
+        })
+
+    return render(request, 'charts.html',  {"total": total,  "succeeded": succeeded})
