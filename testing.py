@@ -203,6 +203,7 @@ def fcn2(domain_dict, pt, path, date):
                     activated = 0
 
                 matched_domains = [matched_domain, ]
+                activateds = [activated, ]
 
                 if activated == 0:
                     iterno += 1
@@ -213,20 +214,23 @@ def fcn2(domain_dict, pt, path, date):
                     for tld in tlds:
                         try:
                             base2 = domain.split(".", 1)[0]
-                            request = requests.get('http://www.'+ base2 + '.' + tld)
+                            request = requests.get('http://www.' + base2 + '.' + tld)
                             if request.status_code == 200:
                                 matched_domains.append(base2 + '.' + tld)
+                                activateds.append(2)
                         except:
                             pass
 
+                indx = 0
                 for matched_domain in matched_domains:
                     master_data.append({
                         "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
                         "name_redemption": (domain).replace('\n', '').replace('\r', ''),
                         "date": date,
                         "page": page,
-                        "activated": activated
+                        "activated": activateds[indx]
                     })
+                    indx += 1
 
     pt.update()
 
@@ -269,6 +273,7 @@ def fcn3(domain_dict, pt, path, date):
                     activated = 0
 
                 matched_domains = [matched_domain, ]
+                activateds = [activated, ]
 
                 if activated == 0:
                     iterno += 1
@@ -279,20 +284,23 @@ def fcn3(domain_dict, pt, path, date):
                     for tld in tlds:
                         try:
                             base2 = domain.split(".", 1)[0]
-                            request = requests.get('http://www.'+ base2 + '.' + tld)
+                            request = requests.get('http://www.' + base2 + '.' + tld)
                             if request.status_code == 200:
                                 matched_domains.append(base2 + '.' + tld)
+                                activateds.append(2)
                         except:
                             pass
 
+                indx = 0
                 for matched_domain in matched_domains:
                     master_data.append({
                         "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
                         "name_redemption": (domain).replace('\n', '').replace('\r', ''),
                         "date": date,
                         "page": page,
-                        "activated": activated
+                        "activated": activateds[indx]
                     })
+                    indx += 1
 
     pt.update()
 

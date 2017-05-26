@@ -435,7 +435,13 @@ def activeLeads(request):
         date = datetime.now()
 
 
-    raw_leads = RawLeads.objects.filter(activated=1, date=date, reminder=0)
+    if 'act' in request.GET.keys():
+        act = 2
+    else:
+        act = 1
+
+
+    raw_leads = RawLeads.objects.filter(activated=act, date=date, reminder=0)
     return render(
         request,
         'active_leads.html',
