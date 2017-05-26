@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # DeletedInfo.objects.filter(id=id_).delete()
     # return HttpResponse('{"status": "success"}', content_type="application/json")
     for i in range(1, 10000):
-        new_ = WhoisAnalytics(source='internal').save()
+        new_ = WhoisAnalytics(source='internal')
         new_.total = randint(100, 200)
         new_.succeeded = randint(0, 100)
         new_.save()
