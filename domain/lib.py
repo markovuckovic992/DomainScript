@@ -53,7 +53,7 @@ def removeStuff():
 
     # # delete duplicates
     unique_fields = ['name_redemption', 'mail']
-    duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(min_id=models.Min('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated=1, mail__isnull=False))
+    duplicates = (RawLeads.objects.values(*unique_fields).order_by().annotate(min_id=models.Min('id'), count_id=models.Count('id')).filter(count_id__gt=1, activated__gte=1, mail__isnull=False))
 
     for duplicate in duplicates:
         datas = (RawLeads.objects.filter(**{x: duplicate[x] for x in unique_fields}).exclude(id=duplicate['min_id']))

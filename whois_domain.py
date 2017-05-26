@@ -9,7 +9,7 @@ from domain.models import *
 
 def main(date):
     # hashes
-    non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True, no_email_found=0)
+    non_hashed_leads = RawLeads.objects.filter(activated__gte=1, hash_base_id__isnull=True, no_email_found=0)
     for non_hashed_lead in non_hashed_leads:
         hash = hashlib.md5()
         hash.update(str(non_hashed_lead.id))
@@ -27,7 +27,7 @@ def main(date):
             rl.save()
     # endhashes
 
-    datas = RawLeads.objects.filter(date=date, activated=1, mail__isnull=True)
+    datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True)
     for data in datas:
         uslov = True
         i = 0
@@ -152,7 +152,7 @@ def main(date):
 def main_period(dates):
     for date in dates:
         # hashes
-        non_hashed_leads = RawLeads.objects.filter(activated=1, hash_base_id__isnull=True)
+        non_hashed_leads = RawLeads.objects.filter(activated__gte=1, hash_base_id__isnull=True)
         for non_hashed_lead in non_hashed_leads:
             hash = hashlib.md5()
             hash.update(str(non_hashed_lead.id))
@@ -170,7 +170,7 @@ def main_period(dates):
                 rl.save()
         # endhashes
 
-        datas = RawLeads.objects.filter(date=date, activated=1, mail__isnull=True)
+        datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True)
         for data in datas:
             uslov = True
             i = 0

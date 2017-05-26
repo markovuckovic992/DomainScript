@@ -471,12 +471,12 @@ def blacklist(request):
     blacklist %= 2
     mail = RawLeads.objects.get(id=leads_id).mail
     # RawLeads.objects.filter(mail=mail, activated=1).update(blacklist=blacklist)
-    rls = RawLeads.objects.filter(mail=mail, activated=1)
+    rls = RawLeads.objects.filter(mail=mail, activated__gte=1)
     for rl in rls:
         rl.blacklist = blacklist
         rl.save()
 
-    ids = map(attrgetter('id'), RawLeads.objects.filter(mail=mail, activated=1, date=date))
+    ids = map(attrgetter('id'), RawLeads.objects.filter(mail=mail, activated__gte=1, date=date))
     response = {
         'ids': ids,
         'command': True if blacklist else False
@@ -487,7 +487,7 @@ def blacklist(request):
 def blacklist_selected(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
-    blacklists = RawLeads.objects.filter(blacklist=1, activated=1, date=date)
+    blacklists = RawLeads.objects.filter(blacklist=1, activated__gte=1, date=date)
     for blacklist in blacklists:
         entry = BlackList.objects.filter(email=blacklist.mail)
         if not entry.exists():
@@ -495,7 +495,7 @@ def blacklist_selected(request):
             new.save()
 
     hash_base_ids = []
-    datas = RawLeads.objects.filter(blacklist=1, activated=1, date=date)
+    datas = RawLeads.objects.filter(blacklist=1, activated__gte=1, date=date)
     for data in datas:
         hash_base_ids.append(data.hash_base_id)
         record = DeletedInfo(
@@ -507,7 +507,7 @@ def blacklist_selected(request):
         )
         record.save()
 
-    RawLeads.objects.filter(blacklist=1, activated=1, date=date).delete()
+    RawLeads.objects.filter(blacklist=1, activated__gte=1, date=date).delete()
     AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -523,7 +523,7 @@ def delete(request):
         else:
             to_delete = 0
         # RawLeads.objects.filter(id__in=ids, activated=1).update(to_delete=to_delete)
-        rls = RawLeads.objects.filter(id__in=ids, activated=1)
+        rls = RawLeads.objects.filter(id__in=ids, activated__gte=1)
         for rl in rls:
             rl.to_delete = to_delete
             rl.save()
@@ -533,7 +533,7 @@ def delete(request):
         to_delete += 1
         to_delete %= 2
         # RawLeads.objects.filter(id=leads_id, activated=1).update(to_delete=to_delete)
-        rls = RawLeads.objects.filter(id=leads_id, activated=1)
+        rls = RawLeads.objects.filter(id=leads_id, activated__gte=1)
         for rl in rls:
             rl.to_delete = to_delete
             rl.save()
@@ -551,7 +551,7 @@ def mark_to_send(request):
         else:
             mark_to_send = 0
         # RawLeads.objects.filter(id__in=ids, activated=1).update(mark_to_send=mark_to_send)
-        rls = RawLeads.objects.filter(id__in=ids, activated=1)
+        rls = RawLeads.objects.filter(id__in=ids, activated__gte=1)
         for rl in rls:
             rl.mark_to_send = mark_to_send
             rl.save()
@@ -562,7 +562,7 @@ def mark_to_send(request):
             mark_to_send += 1
             mark_to_send %= 2
             # RawLeads.objects.filter(id=leads_id, activated=1).update(mark_to_send=mark_to_send)
-            rls = RawLeads.objects.filter(id=leads_id, activated=1)
+            rls = RawLeads.objects.filter(id=leads_id, activated__gte=1)
             for rl in rls:
                 rl.mark_to_send = mark_to_send
                 rl.save()
@@ -570,7 +570,7 @@ def mark_to_send(request):
             date = request.POST['date']
             date = datetime.strptime(date, '%d-%m-%Y').date()
             # RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=1)
-            rls = RawLeads.objects.filter(date=date, activated=1)
+            rls = RawLeads.objects.filter(date=date, activated__gte=1)
             for rl in rls:
                 rl.mark_to_send = 1
                 rl.save()
@@ -581,7 +581,7 @@ def un_mark_to_send(request):
     date = request.POST['date']
     date = datetime.strptime(date, '%d-%m-%Y').date()
     # RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=0)
-    rls = RawLeads.objects.filter(date=date, activated=1)
+    rls = RawLeads.objects.filter(date=date, activated__gte=1)
     for rl in rls:
         rl.mark_to_send = 0
         rl.save()
@@ -641,7 +641,7 @@ def send_mails(request):
 
     delete_ids = []
     # logging
-    datas = RawLeads.objects.filter(to_delete=1, activated=1)
+    datas = RawLeads.objects.filter(to_delete=1, activated__gte=1)
     for data in datas:
         delete_ids.append(data.hash_base_id)
         record = DeletedInfo(
@@ -653,9 +653,9 @@ def send_mails(request):
         )
         record.save()
     # end logging
-    RawLeads.objects.filter(to_delete=1, activated=1).delete()
+    RawLeads.objects.filter(to_delete=1, activated__gte=1).delete()
 
-    blacklists = RawLeads.objects.filter(blacklist=1, activated=1)
+    blacklists = RawLeads.objects.filter(blacklist=1, activated__gte=1)
     eml = []
     for blacklist in blacklists:
         entry = BlackList.objects.filter(email=blacklist.mail)
@@ -864,7 +864,7 @@ def download_all(request):
     file.truncate()
 
     all_ = []
-    datas = RawLeads.objects.filter(activated=1, mail__isnull=True)
+    datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True)
     for data in datas:
         if data.name_zone not in all_:
             file.write(data.name_zone + '\n')
@@ -889,7 +889,7 @@ def download(request):
     file.truncate()
 
     all_ = []
-    datas = RawLeads.objects.filter(activated=1, mail__isnull=True, date=date)
+    datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date)
     for data in datas:
         if data.name_zone not in all_:
             file.write(data.name_zone + '\n')
@@ -992,7 +992,7 @@ def search_results(request):
 
 @csrf_exempt
 def send_pending(request):
-    potential_profits = RawLeads.objects.filter(activated=1, mail__isnull=False, reminder=0)
+    potential_profits = RawLeads.objects.filter(activated__gte=1, mail__isnull=False, reminder=0)
 
     connection = mail.get_connection()
     connection.open()
@@ -1130,7 +1130,7 @@ def admin(request):
         {
             "log": data_to_show,
             'total_r': len(RawLeads.objects.filter(date=date, activated=0)),
-            'total_a': len(RawLeads.objects.filter(date=date, activated=1)),
+            'total_a': len(RawLeads.objects.filter(date=date, activated__gte=1)),
             'exceptions': DomainException.objects.all(),
             'tlds': Tlds.objects.all()
         })
