@@ -1,11 +1,11 @@
 # from django.core import mail
-# from django.conf import settings
-# import os, django
-# os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
-# django.setup()
-# from domain.models import RawLeads, DomainException, Tlds
+from django.conf import settings
+import os, django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
+django.setup()
+from domain.models import RawLeads, DomainException, Tlds, WhoisAnalytics
 
-import requests
+from random import randint
 
 if __name__ == "__main__":
     # ASD
@@ -30,13 +30,18 @@ if __name__ == "__main__":
     #         pass
     # DeletedInfo.objects.filter(id=id_).delete()
     # return HttpResponse('{"status": "success"}', content_type="application/json")
+    for i in range(1, 10000):
+        new_ = WhoisAnalytics(source='internal').save()
+        new_.total = randint(100, 200)
+        new_.succeeded = randint(0, 100)
+        new_.save()
 
-    r = requests.get('http://api.whoxy.com/?key=3d28dc0e398efe01dp7caa9f21e7b4fdf&whois=google.com&format=json')
-    resp_data = r.json()
-    status = resp_data['domain_status']
-    email = resp_data['registrant_contact']['email_address']
+    for i in range(1, 10000):
+        new_ = WhoisAnalytics(source='external')
+        new_.total = randint(100, 200)
+        new_.succeeded = randint(0, 100)
+        new_.save()
 
-    print status, email
 # connection = mail.get_connection()
 # connection.open()
 # emails = []
