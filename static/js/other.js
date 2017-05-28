@@ -268,6 +268,10 @@ function whois_period() {
     confirm_whois().then(function (mode) {
         if (mode !== "cancel") {
             var interval = $("#whois_period").val();
+            if !(interval) {
+                interval = 5;
+            }
+            
             $("#cover").fadeIn(100);
             $.ajax({
                 type: "POST",
