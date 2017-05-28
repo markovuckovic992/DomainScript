@@ -11,48 +11,77 @@ function load_send2() {
     window.location.href=('/active_leads_tld/?date=' + date);
 };
 
-function find_mails_again() {
-    $("#cover").fadeIn(100);
-    var date = $("#datepicker").val();
-    $.ajax({
-        type: "POST",
-        url: "/find_mails/",
-        data: "date=" + date,
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        success: function(msg){
-            $("#cover").fadeOut(100);
-            location.reload();
-        },
-        error: function(ts) {
-            alert(ts.responseText)
-        },
-        statusCode: {
-            200: function() {
-                $("#cover").fadeOut(100);
-                location.reload();
+function confirm () {
+    var defer = $.Deferred();
+    $('<div>Internal or External?</div>').dialog({
+            close: function () {
+                $(this).dialog('destroy');
             },
-            400: function() {
-              alert('400 status code! user error, reload page');
-            },
-            404: function() {
-              alert('404 error, reload the page');
-            },
-            403: function() {
-              alert('403 error, reload the page');
-            },
-            500: function() {
-              alert('500 status code! server error, reload page');
-            },
-            502: function() {
-                alert('gateway timeout!');
-            },
-            504: function() {
-                alert('gateway timeout!');
+            buttons: {
+                "Internal": function() {
+                    defer.resolve("internal");
+                    $( this ).dialog( "close" );
+                },
+                "External": function() {
+                    defer.resolve("external");
+                    $( this ).dialog( "close" );
+                },
+                "Cancel": function() {
+                    defer.resolve("cancel");
+                    $( this ).dialog( "close" );
+                }
             }
+        });
+    return defer.promise();
+};
+
+function find_mails_again() {
+    confirm().then(function (mode) {
+        if (mode !== "cancel") {
+            $("#cover").fadeIn(100);
+            var date = $("#datepicker").val();
+            $.ajax({
+                type: "POST",
+                url: "/find_mails/",
+                data: "date=" + date + "&mode=" + mode,
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function(msg){
+                    $("#cover").fadeOut(100);
+                    location.reload();
+                },
+                error: function(ts) {
+                    alert(ts.responseText)
+                },
+                statusCode: {
+                    200: function() {
+                        $("#cover").fadeOut(100);
+                        location.reload();
+                    },
+                    400: function() {
+                      alert('400 status code! user error, reload page');
+                    },
+                    404: function() {
+                      alert('404 error, reload the page');
+                    },
+                    403: function() {
+                      alert('403 error, reload the page');
+                    },
+                    500: function() {
+                      alert('500 status code! server error, reload page');
+                    },
+                    502: function() {
+                        alert('gateway timeout!');
+                    },
+                    504: function() {
+                        alert('gateway timeout!');
+                    }
+                }
+            });
         }
-    });
+    })
+
 };
 
 function select_all() {

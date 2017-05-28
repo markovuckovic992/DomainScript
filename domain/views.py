@@ -8,7 +8,7 @@ from urllib import unquote
 from domain.models import *
 from domain.apps import *
 from domain.lib import removeStuff
-from whois_domain import main, main_period
+from whois_domain import main, main_period, main_submit
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import connection
@@ -390,7 +390,10 @@ def find_mails(request):
             rl.mark = 0
             rl.save()
 
-    main(date)
+        main_submit(date)
+    else:
+        mode = request.POST['mode']
+        main(date, mode)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt
@@ -1081,11 +1084,12 @@ def send_pending(request):
 @csrf_exempt
 def whois_period(request):
     interval = int(request.POST['interval'])
+    mode = request.POST['mode']
     dates = []
     for i in range(0, interval):
         date = (datetime.now() - timedelta(days=i)).date()
         dates.append(date)
-    main_period(dates)
+    main_period(dates, mode)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.admin"]))

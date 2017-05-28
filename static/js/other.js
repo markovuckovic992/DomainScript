@@ -1,27 +1,27 @@
 var csrftoken = getCookie('csrftoken');
 //BASE
 function confirm () {
-    var defer = $.Deferred(); 
+    var defer = $.Deferred();
     $('<div>Delete for selected date?</div>').dialog({
-            close: function () { 
+            close: function () {
                 $(this).dialog('destroy');
             },
             buttons: {
                 "Yes": function() {
-                    defer.resolve("yes"); 
+                    defer.resolve("yes");
                     $( this ).dialog( "close" );
                 },
                 "No": function() {
-                    defer.resolve("no"); 
+                    defer.resolve("no");
                     $( this ).dialog( "close" );
                 },
                 "Cancel": function() {
-                    defer.resolve("cancel"); 
+                    defer.resolve("cancel");
                     $( this ).dialog( "close" );
                 }
             }
         });
-    return defer.promise(); 
+    return defer.promise();
 }
 
 function run_script(arg) {
@@ -41,11 +41,10 @@ function run_script(arg) {
     var redempt3 = $("#red_file_name3").val()
     var date = $("#datepicker").val()
     var len  = date.split("-").length;
-    console.log(len);
     if (redempt && (len === 3)) {
         if (chkDuplicates([org, net, com, info, redempt])) {
             alert("You have selected some domain list twice");
-        } else {            
+        } else {
             confirm().then(function (answer) {
                 if (answer !== "cancel") {
                     $("#cover").fadeIn(100);
@@ -98,7 +97,7 @@ function run_script(arg) {
                             }
                         }
                     });
-                }                
+                }
             })
         }
     } else {
@@ -240,44 +239,74 @@ function load_logs() {
     window.location.href=('/classified/?date=' + date);
 };
 
-function whois_period() {
-    var interval = $("#whois_period").val();
-    $("#cover").fadeIn(100);
-    $.ajax({
-        type: "POST",
-        url: "/whois_period/",
-        data: "interval=" + interval,
-        headers: {
-            'X-CSRFToken': csrftoken,
-        },
-        success: function(msg){
-            $("#cover").fadeOut(100);
-            alert("Done!");
-        },
-        error: function(ts) {
-            alert(ts.responseText)
-        },
-        statusCode: {
-            400: function() {
-              alert('400 status code! user error, reload page');
+function confirm_whois () {
+    var defer = $.Deferred();
+    $('<div>Internal or External?</div>').dialog({
+            close: function () {
+                $(this).dialog('destroy');
             },
-            404: function() {
-              alert('404 error, reload the page');
-            },
-            403: function() {
-              alert('403 error, reload the page');
-            },
-            500: function() {
-              alert('500 status code! server error, reload page');
-            },
-            502: function() {
-                alert('gateway timeout!');
-            },
-            504: function() {
-                alert('gateway timeout!');
+            buttons: {
+                "Internal": function() {
+                    defer.resolve("internal");
+                    $( this ).dialog( "close" );
+                },
+                "External": function() {
+                    defer.resolve("external");
+                    $( this ).dialog( "close" );
+                },
+                "Cancel": function() {
+                    defer.resolve("cancel");
+                    $( this ).dialog( "close" );
+                }
             }
+        });
+    return defer.promise();
+};
+
+
+function whois_period() {
+    confirm_whois().then(function (mode) {
+        if (mode !== "cancel") {
+            var interval = $("#whois_period").val();
+            $("#cover").fadeIn(100);
+            $.ajax({
+                type: "POST",
+                url: "/whois_period/",
+                data: "interval=" + interval + "&mode=" + mode,
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+                success: function(msg){
+                    $("#cover").fadeOut(100);
+                    alert("Done!");
+                },
+                error: function(ts) {
+                    alert(ts.responseText)
+                },
+                statusCode: {
+                    400: function() {
+                      alert('400 status code! user error, reload page');
+                    },
+                    404: function() {
+                      alert('404 error, reload the page');
+                    },
+                    403: function() {
+                      alert('403 error, reload the page');
+                    },
+                    500: function() {
+                      alert('500 status code! server error, reload page');
+                    },
+                    502: function() {
+                        alert('gateway timeout!');
+                    },
+                    504: function() {
+                        alert('gateway timeout!');
+                    }
+                }
+            });
+
         }
-    });
+    })
 };
 
 function remove_unwanted() {
