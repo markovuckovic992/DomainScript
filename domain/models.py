@@ -3,6 +3,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+class ZoneDomains(models.Model):
+    domain = models.CharField(db_index=True, max_length=100)
+
+    class Meta:
+        db_table = 'zone_domains'
 
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name="user_id")

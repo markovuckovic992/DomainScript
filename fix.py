@@ -3,8 +3,8 @@ from django.conf import settings
 import os, django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, DomainException, Tlds, WhoisAnalytics
-
+from domain.models import RawLeads, DomainException, Tlds, WhoisAnalytics, ZoneDomains
+import time
 from random import randint
 
 if __name__ == "__main__":
@@ -30,18 +30,18 @@ if __name__ == "__main__":
     #         pass
     # DeletedInfo.objects.filter(id=id_).delete()
     # return HttpResponse('{"status": "success"}', content_type="application/json")
-    for i in range(1, 10000):
-        new_ = WhoisAnalytics(source='internal')
-        new_.total = randint(100, 200)
-        new_.succeeded = randint(0, 100)
-        new_.save()
+    start_time = time.time()
 
-    for i in range(1, 10000):
-        new_ = WhoisAnalytics(source='external')
-        new_.total = randint(100, 200)
-        new_.succeeded = randint(0, 100)
-        new_.save()
+    file = open('info_zone_14Feb.txt', "r")
+    all_domains = set(file.readlines())
 
+    for line in all_domains:
+        tmp_d = line.lower()[:100]  
+        if not ZoneDomains.objects.filter(domain=tmp_d).exists():
+            ZoneDomains(domain=tmp_d).save()
+
+    duration = int(time.time() - start_time)
+    print duration
 # connection = mail.get_connection()
 # connection.open()
 # emails = []

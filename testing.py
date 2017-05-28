@@ -32,7 +32,7 @@ number_of_keywords = sett.number_of_keywords
 allow_bad_keywords = sett.allow_bad_keywords
 min_length = sett.min_length
 max_length = sett.max_length
-redempion_row = sett.redempion_row
+redempion_row = sett.redempion_row - 1
 # END!
 # TLDs
 tlds = []
@@ -166,8 +166,7 @@ def fcn(domain_data, pt):
                 if (min_length < len(tmp) < max_length):
                     result_list_b.append({'domain': domain, 'keywords': [tmp]})
                     file.write(str({'domain': domain, 'keywords': [tmp]}) + '\n')
-    file.close()
-    return 1
+    pt.update()
 
 
 def fcn2(domain_dict, pt, path, date):
@@ -180,15 +179,19 @@ def fcn2(domain_dict, pt, path, date):
     condition = True
     matched_lines = []
     matched_lines_copy = []
-    for keyword in keywords:
-        if len(matched_lines) == 0 and condition:
-            tube = popen('./getLines.sh ' + keyword + ' ' + path)
-            matched_lines = tube.read().split()
-            tube.close()
-            matched_lines_copy = [[line.lower().replace(keyword, ''), line.lower()] for line in matched_lines]
-            condition = False
-        else:
-            matched_lines_copy = [line for line in matched_lines_copy if keyword in line[0]]
+
+    # searching = ''
+    # for keyword in keywords: 
+    #     searching += ' ' + keyword
+
+    tube = popen('./getLines.sh ' + path + ' ' + keywords[0])
+    matched_lines = tube.read().split()
+    tube.close()
+    matched_lines_copy = [[line.lower().replace(keywords[0], ''), line.lower()] for line in matched_lines]
+
+    for keyword in keywords[1:]:
+        matched_lines_copy = [line for line in matched_lines_copy if keyword in line[0]]
+    
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
@@ -239,26 +242,25 @@ def fcn2(domain_dict, pt, path, date):
 def fcn3(domain_dict, pt, path, date):
     global some_variable, link, iterno, master_data
     domain = domain_dict['domain']
-    keywords = domain_dict['keywords']
+    keyword = domain_dict['keywords'][0]
     some_variable += 1
-    keywords = sorted(keywords, key=len, reverse=True)
     ready_to_write = True
     condition = True
     matched_lines = []
     matched_lines_copy = []
-    for keyword in keywords:
-        if len(matched_lines) == 0 and condition:
-            if len(matched_lines) == 0 and condition:
-                tube = popen('./getLines.sh ' + keyword + ' ' + path)
-                matched_lines_tmp = tube.read().split()
-                tube.close()
-                for line in matched_lines_tmp:
-                    if line.lower().startswith(keyword) or line.lower().endswith(keyword):
-                        matched_lines.append(line.lower())
-            matched_lines_copy = [[line.lower().replace(keyword, ''), line.lower()] for line in matched_lines]
-            condition = False
-        else:
-            matched_lines_copy = [line for line in matched_lines_copy if line[0].startswith(keyword) or line[0].endswith(keyword)]
+
+    if len(matched_lines) == 0 and condition:
+        tube = popen('./getLines.sh ' + path + ' ' + keyword)
+        matched_lines_tmp = tube.read().split()
+        tube.close()
+        for line in matched_lines_tmp:
+            if line.lower().startswith(keyword) or line.lower().endswith(keyword):
+                matched_lines.append(line.lower())
+        matched_lines_copy = [[line.lower().replace(keyword, ''), line.lower()] for line in matched_lines]
+        condition = False
+    else:
+        matched_lines_copy = [line for line in matched_lines_copy if line[0].startswith(keyword) or line[0].endswith(keyword)]
+    
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:

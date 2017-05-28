@@ -121,7 +121,7 @@ def runEditing(request):
         path = settings.BASE_DIR
         arg = request.POST['arg']
         if int(arg) == 1:
-            script = '_basic_editing'
+            script = 'testing'
             language = 'python '
         else:
             script = 'testing'
@@ -196,19 +196,9 @@ def runEditing(request):
 
         argument += (redempt + " ")
 
-        if redempt2:
-            argument += (redempt2 + " ")
-        else:
-            argument += "none "
-
-        if redempt3:
-            argument += (redempt3 + " ")
-        else:
-            argument += "none "
-
         argument += str(date)
+        # print argument
         popen(argument)
-        # main_filter(com, net, org, info, redempt, date)
         return HttpResponse('{"status": "success"}', content_type="application/json")
     except:
         print traceback.format_exc(), argument
