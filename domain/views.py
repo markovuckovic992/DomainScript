@@ -856,7 +856,7 @@ def download_all(request):
     file.truncate()
 
     all_ = []
-    datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True)
+    datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True).order_by('-id')
     for data in datas:
         if data.name_zone not in all_:
             file.write(data.name_zone + '\n')
@@ -881,7 +881,7 @@ def download(request):
     file.truncate()
 
     all_ = []
-    datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date)
+    datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).order_by('-id')
     for data in datas:
         if data.name_zone not in all_:
             file.write(data.name_zone + '\n')
