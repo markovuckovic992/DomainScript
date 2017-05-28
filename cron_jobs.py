@@ -328,6 +328,11 @@ class CronJobs:
 
     def vpn_reconnect(self):
         vpn_count = Setting.objects.get(id=1).vpn_count
+        if vpn_count == 1:
+            vpn_count_1 = 3
+        else:
+            vpn_count_1 = vpn_count - 1
+        tube = popen("nmcli con down id 'VPN connection " + unicode(vpn_count_1) + "'")
         tube = popen("nmcli con up id 'VPN connection " + unicode(vpn_count) + "'")
         tube.close()
         vpn_count += 1
