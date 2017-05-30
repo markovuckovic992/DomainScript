@@ -8,7 +8,7 @@ from urllib import unquote
 from domain.models import *
 from domain.apps import *
 from domain.lib import removeStuff
-from whois_domain import main, main_period, main_submit, whois_he_net
+from whois_domain import main, main_period, main_submit
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import connection
@@ -1235,11 +1235,10 @@ def Chart(request):
 @csrf_exempt
 def whoisHeNet(request):
     if 'date' in request.POST.keys():
-        date = request.POST['date']
-        date = datetime.strptime(date, '%d-%m-%Y').date()
-        datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).order_by('-id')
+        arg = request.POST['date']
     else:
-        datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True).order_by('-id')
+        arg = 'none'
 
-    whois_he_net(datas)
+    file = popen('python whois_man.py ' + arg)
+    file.close()
     return HttpResponse('{"status": "success"}', content_type="application/json")
