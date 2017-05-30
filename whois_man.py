@@ -23,7 +23,7 @@ def whois_he_net(datas):
     # browser = webdriver.Chrome('/home/marko/Linux/chromedriver')
     
     for data in datas:
-        # try:
+        try:
             link = 'http://bgp.he.net/dns/' + data.name_zone + '#_whois'
             browser.get(link)
 
@@ -41,10 +41,7 @@ def whois_he_net(datas):
                     email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
 
                 if '@' in email:
-                    r = RawLeads.objects.get(name_zone=data.name_zone)
-                    r.mail = email
-                    r.save()
-
+                    r = RawLeads.objects.filter(name_zone=data.name_zone).update(mail=email)
  
                     email = "".join(email.split())
                     blacklisted = BlackList.objects.filter(email__iexact=email)
@@ -114,23 +111,23 @@ def whois_he_net(datas):
             else:
                 delete = True
 
-        # except:
-            # time.sleep(1)
-            # if vpn_count == 1:
-            #     vpn_count_1 = 3
-            # else:
-            #     vpn_count_1 = vpn_count - 1
+        except:
+            time.sleep(1)
+            if vpn_count == 1:
+                vpn_count_1 = 3
+            else:
+                vpn_count_1 = vpn_count - 1
 
-            # if not first:
-            #     tube = popen("nmcli con down id 'VPN connection " + unicode(vpn_count_1) + "'")
-            #     tube.close()
-            # tube = popen("nmcli con up id 'VPN connection " + unicode(vpn_count) + "'")
-            # tube.close()
-            # vpn_count += 1
-            # if vpn_count > 3:
-            #     vpn_count = 1
+            if not first:
+                tube = popen("nmcli con down id 'VPN connection " + unicode(vpn_count_1) + "'")
+                tube.close()
+            tube = popen("nmcli con up id 'VPN connection " + unicode(vpn_count) + "'")
+            tube.close()
+            vpn_count += 1
+            if vpn_count > 3:
+                vpn_count = 1
 
-            # first = False
+            first = False
 
     browser.close()
 
