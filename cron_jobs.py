@@ -161,6 +161,7 @@ class CronJobs:
                             (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:|No match for'",
                                      'r')
                         response = tube.read()
+                        tube.close()
                         if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
                             record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
                             record.save()
@@ -333,6 +334,7 @@ class CronJobs:
         else:
             vpn_count_1 = vpn_count - 1
         tube = popen("nmcli con down id 'VPN connection " + unicode(vpn_count_1) + "'")
+        tube.close()
         tube = popen("nmcli con up id 'VPN connection " + unicode(vpn_count) + "'")
         tube.close()
         vpn_count += 1

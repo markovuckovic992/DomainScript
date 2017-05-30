@@ -483,4 +483,43 @@ function send_mails() {
         }
     });
 };
-//
+
+function whois_he_net() {
+    var date = $("#datepicker").val();
+    $("#cover").fadeIn(100);
+    $.ajax({
+        type: "POST",
+        url: "/whois_he_net/",
+        headers: {
+            'X-CSRFToken': csrftoken,
+        },
+        data: "date=" + date,
+        success: function(msg){
+            $("#cover").fadeOut(100);
+            alert("Done!");
+        },
+        error: function(ts) {
+            alert(ts.responseText)
+        },
+        statusCode: {
+            400: function() {
+              alert('400 status code! user error, reload page');
+            },
+            404: function() {
+              alert('404 error, reload the page');
+            },
+            403: function() {
+              alert('403 error, reload the page');
+            },
+            500: function() {
+              alert('500 status code! server error, reload page');
+            },
+            502: function() {
+                alert('gateway timeout!');
+            },
+            504: function() {
+                alert('gateway timeout!');
+            }
+        }
+    });
+}

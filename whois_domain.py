@@ -137,6 +137,7 @@ def main(date, mode):
                             (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:|No match for'",
                                      'r')
                         response = tube.read()
+                        tube.close()
                         if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
                             record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
                             record.save()
@@ -293,6 +294,7 @@ def main_period(dates, mode):
                                 (data.name_zone).replace('\n', '').replace('\r', '')) + "' | egrep -i 'Registrant Email|Status:|No match for'",
                                          'r')
                             response = tube.read()
+                            tube.close()
                             if ('pendingDelete' in response) or ('redemptionPeriod' in response) or ('No match for' in response):
                                 record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
                                 record.save()
