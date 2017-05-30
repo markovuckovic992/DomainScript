@@ -8,7 +8,7 @@ from urllib import unquote
 from domain.models import *
 from domain.apps import *
 from domain.lib import removeStuff
-from whois_domain import main, main_period, main_submit
+from whois_domain import main, main_period, main_submit, whois_he_net
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import connection
@@ -1234,56 +1234,12 @@ def Chart(request):
 
 @csrf_exempt
 def whoisHeNet(request):
-    vpn_count = 1
-    first = True
-
-    browser = webdriver.Chrome('/home/dabset/domains2/Linux/chromedriver')
-
     if 'date' in request.POST.keys():
+        date = request.POST['date']
+        date = datetime.strptime(date, '%d-%m-%Y').date()
         datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).order_by('-id')
     else:
         datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True).order_by('-id')
 
-    for data in datas:
-        try:
-            link = 'http://bgp.he.net/dns/' + data + '#_whois'
-            browser.get(link)
-
-            time.sleep(1)
-            tree = lxml.html.fromstring(browser.page_source)
-            time.sleep(1)
-
-            if 'Not Found' not in browser.page_source:
-                response = tree.xpath("//div[@id='content']//div[@id='whois']")[0].text_content()
-
-                index = response.find('Registrant Email')
-                if index != -1:
-                    new = response[index:]
-                    response = new.splitlines()[0]
-                    email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
-
-                if '@' in email:
-                    r = RawLeads.objects.get(name_zone=data)
-                    r.mail = email
-                    r.save()
-
-            else:
-                delete = True
-
-        except:
-            time.sleep(1)
-            if vpn_count == 1:
-                vpn_count_1 = 3
-            else:
-                vpn_count_1 = vpn_count - 1
-
-            if not first:
-                tube = popen("nmcli con down id 'VPN connection " + unicode(vpn_count_1) + "'")
-                tube.close()
-            tube = popen("nmcli con up id 'VPN connection " + unicode(vpn_count) + "'")
-            tube.close()
-            vpn_count += 1
-            if vpn_count > 3:
-                vpn_count = 1
-
-            first = False
+    whois_he_net(datas)
+    return HttpResponse('{"status": "success"}', content_type="application/json")

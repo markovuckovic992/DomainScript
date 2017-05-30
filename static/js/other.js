@@ -324,6 +324,7 @@ function whois_he_net() {
         success: function(msg){
             $("#cover").fadeOut(100);
             alert("Done!");
+            location.reload();
         },
         error: function(ts) {
             alert(ts.responseText)
