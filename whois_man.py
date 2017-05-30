@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys, os, django
+from os import popen
 os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
