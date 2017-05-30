@@ -4,7 +4,7 @@ from os import popen
 os.environ['DISPLAY'] = ':0'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
-from domain.models import RawLeads, ProcessTracker, SuperBlacklist, DeletedInfo, Emails
+from domain.models import *
 from datetime import datetime
 
 
