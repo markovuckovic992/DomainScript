@@ -96,7 +96,7 @@ class Setting(models.Model):
     max_length = models.SmallIntegerField(default=11)
     redempion_row = models.SmallIntegerField(default=1)
     vpn_count = models.SmallIntegerField(default=1)
-    date = models.CharField(max_length=8)
+    date = models.CharField(max_length=10)
     run = models.SmallIntegerField(default=0)
 
     class Meta:
