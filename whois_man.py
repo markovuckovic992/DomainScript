@@ -21,9 +21,9 @@ def whois_he_net(datas):
     vpn_count = 1
     first = True
 
-    display = Display(visible=0, size=(800, 800))
-    display.start()
-    browser = webdriver.Chrome('/home/dabset/domains2/Linux/chromedriver')
+    # display = Display(visible=0, size=(800, 800))
+    # display.start()
+    browser = webdriver.Chrome()
     # browser = webdriver.Chrome('/home/marko/Linux/chromedriver')
 
     for data in datas:
