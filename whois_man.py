@@ -1,4 +1,6 @@
 #!/usr/bin/python
+from pyvirtualdisplay import Display
+
 import sys, os, django
 from os import popen
 os.environ['DISPLAY'] = ':0'
@@ -19,9 +21,11 @@ def whois_he_net(datas):
     vpn_count = 1
     first = True
 
+    display = Display(visible=0, size=(800, 800))
+    display.start()
     browser = webdriver.Chrome('/home/dabset/domains2/Linux/chromedriver')
     # browser = webdriver.Chrome('/home/marko/Linux/chromedriver')
-    
+
     for data in datas:
         try:
             link = 'http://bgp.he.net/dns/' + data.name_zone + '#_whois'
@@ -42,7 +46,7 @@ def whois_he_net(datas):
 
                 if '@' in email:
                     r = RawLeads.objects.filter(name_zone=data.name_zone).update(mail=email)
- 
+
                     email = "".join(email.split())
                     blacklisted = BlackList.objects.filter(email__iexact=email)
                     same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
@@ -140,6 +144,6 @@ if __name__ == '__main__':
         datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True).order_by('-id')
 
 
-    
+
 
     whois_he_net(datas)
