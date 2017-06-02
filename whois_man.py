@@ -1,6 +1,4 @@
 #!/usr/bin/python
-from pyvirtualdisplay import Display
-
 import sys, os, django
 from os import popen
 os.environ['DISPLAY'] = ':0'
@@ -21,9 +19,7 @@ def whois_he_net(datas):
     vpn_count = 1
     first = True
 
-    # display = Display(visible=0, size=(800, 800))
-    # display.start()
-    browser = webdriver.Firefox(executable_path='/home/marko/Linux/geckodriver')
+    browser = webdriver.Chrome('/home/dabset/domains2/Linux/chromedriver')
     # browser = webdriver.Chrome('/home/marko/Linux/chromedriver')
 
     for data in datas:
