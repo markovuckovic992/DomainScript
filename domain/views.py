@@ -1239,6 +1239,9 @@ def whoisHeNet(request):
     else:
         arg = 'none'
 
-    file = popen('python whois_man.py ' + arg)
-    file.close()
+    s = Setting.objects.get(id=1)
+    s.run = 1
+    s.date = arg
+    s.save()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")
