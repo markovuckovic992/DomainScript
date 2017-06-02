@@ -23,7 +23,7 @@ def whois_he_net(datas):
 
     # display = Display(visible=0, size=(800, 800))
     # display.start()
-    browser = webdriver.FirefoxDriver()
+    browser = webdriver.Firefox()
     # browser = webdriver.Chrome('/home/marko/Linux/chromedriver')
 
     for data in datas:
