@@ -496,7 +496,7 @@ function whois_he_net() {
         data: "date=" + date,
         success: function(msg){
             $("#cover").fadeOut(100);
-            alert("Done!");
+            alert("Whois will start soon!");
             location.reload();
         },
         error: function(ts) {
