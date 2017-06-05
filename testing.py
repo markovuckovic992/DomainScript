@@ -181,7 +181,7 @@ def fcn2(domain_dict, pt, path, date):
     matched_lines_copy = []
 
     # searching = ''
-    # for keyword in keywords: 
+    # for keyword in keywords:
     #     searching += ' ' + keyword
 
     tube = popen('./getLines.sh ' + path + ' ' + keywords[0])
@@ -191,7 +191,7 @@ def fcn2(domain_dict, pt, path, date):
 
     for keyword in keywords[1:]:
         matched_lines_copy = [line for line in matched_lines_copy if keyword in line[0]]
-    
+
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
@@ -260,7 +260,7 @@ def fcn3(domain_dict, pt, path, date):
         condition = False
     else:
         matched_lines_copy = [line for line in matched_lines_copy if line[0].startswith(keyword) or line[0].endswith(keyword)]
-    
+
     matched_lines = [line[1] for line in matched_lines_copy]
     if len(matched_lines) and ready_to_write:
         for matched_domain in matched_lines:
@@ -340,7 +340,7 @@ all_domains = set()
 iterno = -1
 
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
-    global result_list, result_list_b, all_domains, link
+    global result_list, result_list_b, all_domains, link, master_data
 
     file = open('filtered_domains.txt', 'a')
     file.truncate()
@@ -379,6 +379,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, org_path, date)
         for result in result_list_b:
             fcn3(result, pt2, org_path, date)
+
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -390,6 +393,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, net_path, date)
         for result in result_list_b:
             fcn3(result, pt2, net_path, date)
+
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -401,6 +407,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, info_path, date)
         for result in result_list_b:
             fcn3(result, pt2, info_path, date)
+
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -412,6 +421,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, com_path, date)
         for result in result_list_b:
             fcn3(result, pt2, com_path, date)
+
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -423,6 +435,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, us_path, date)
         for result in result_list_b:
             fcn3(result, pt2, us_path, date)
+
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -434,6 +449,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, e1_path, date)
         for result in result_list_b:
             fcn3(result, pt2, e1_path, date)
+
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -445,6 +463,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, e2_path, date)
         for result in result_list_b:
             fcn3(result, pt2, e2_path, date)
+
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -456,6 +477,9 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, e3_path, date)
         for result in result_list_b:
             fcn3(result, pt2, e3_path, date)
+
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
@@ -467,12 +491,13 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             fcn2(result, pt2, e4_path, date)
         for result in result_list_b:
             fcn3(result, pt2, e4_path, date)
+
+        saveDate(master_data)
+        master_data = []
         pt2 = None
         gc.collect()
     else:
         pass
-
-    saveDate(master_data)
 
 if __name__ == '__main__':
     if not Log.objects.filter(date=sys.argv[11]).exists():
