@@ -276,12 +276,15 @@ def reverse_state(request):
             mark = 0
         rls = RawLeads.objects.filter(id__in=ids)
         for rl in rls:
-            rl.mark=mark
+            rl.mark = mark
             rl.save()
         action = 'Marked ' if mark == 1 else 'Unmarked '
 
         ip = get_client_ip(request)
-        el = EventLogger(ip=ip, action=(action + str(ids) + ""))
+        msg = str(ids)[0:9950]
+        if len(str(ids)) > 10000:
+            msg += '...'
+        el = EventLogger(ip=ip, action=(action + msg + ""))
         el.save()
 
     else:
@@ -299,8 +302,11 @@ def reverse_state(request):
         action = 'Marked ' if mark == 1 else 'Unmarked '
 
         ip = get_client_ip(request)
-        el = EventLogger(ip=ip, action=(action + str(raw_leads_id) + ""))
-        el = EventLogger(ip=ip, action=(action + str(raw_leads_id) + ""))
+        msg = str(raw_leads_id)[0:9950]
+        if len(str(raw_leads_id)) > 10000:
+            msg += '...'
+        el = EventLogger(ip=ip, action=(action + msg + ""))
+        el = EventLogger(ip=ip, action=(action + msg + ""))
         el.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -332,7 +338,11 @@ def add_this_name(request):
         rl.save()
 
     ip = get_client_ip(request)
-    el = EventLogger(ip=ip, action="Marked " + str(ids) + " as good(1) ")
+    msg = str(ids)[0:9950]
+    if len(str(ids)) > 10000:
+        msg += '...'
+
+    el = EventLogger(ip=ip, action="Marked " + msg + " as good(1) ")
     el.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
@@ -352,7 +362,11 @@ def rem_this_name(request):
         rl.save()
 
     ip = get_client_ip(request)
-    el = EventLogger(ip=ip, action="Unmarked " + str(ids) + "")
+    msg = str(ids)[0:9950]
+    if len(str(ids)) > 10000:
+        msg += '...'
+
+    el = EventLogger(ip=ip, action="Unmarked " + msg + "")
     el.save()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
