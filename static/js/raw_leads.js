@@ -111,6 +111,10 @@ function changestate(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
+            success: function (msg) {
+                var count = $(":checkbox:checked").length;
+                $("#counter").html(count);
+            },
             error: function(ts) {
                 alert(ts.responseText)
             },
@@ -123,6 +127,10 @@ function changestate(id, e) {
                 'X-CSRFToken': csrftoken
             },
             data: "id=" + id,
+            success: function (msg) {
+                var count = $(":checkbox:checked").length;
+                $("#counter").html(count);
+            },
         });
     }
     lastChecked = e.target;
@@ -153,6 +161,8 @@ function add_this_name(name_redemption, page) {
         	for (i = 0; i < items.length; i += 1) {
     			items[i].checked = true;
         	}
+            var count = $(":checkbox:checked").length;
+            $("#counter").html(count);
         },
         error: function(ts) {
             alert(ts.responseText)
@@ -185,6 +195,8 @@ function rem_this_name(name_redemption, page) {
             for (i = 0; i < items.length; i += 1) {
                 items[i].checked = false;
             }
+            var count = $(":checkbox:checked").length;
+            $("#counter").html(count);
         },
         error: function(ts) {
             alert(ts.responseText)
