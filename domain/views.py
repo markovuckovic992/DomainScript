@@ -227,7 +227,7 @@ def rawLeads(request, template='raw_leads.html', extra_context=None):
     else:
         page = 1
     if 'list_no' in request.GET.keys():
-        page = int(request.GET['list_no'])
+        list_no = int(request.GET['list_no'])
     else:
         list_no = 1
 
@@ -264,7 +264,7 @@ def rawLeadsAll(request):
     else:
         page = 1
     if 'list_no' in request.GET.keys():
-        page = int(request.GET['list_no'])
+        list_no = int(request.GET['list_no'])
     else:
         list_no = 1
 
@@ -282,6 +282,7 @@ def rawLeadsAll(request):
             "raw_leads": raw_leads,
             'range': range(1, number_of_pages + 1),
             'page': page,
+            'list_no': list_no,
             'total_raw': len(RawLeads.objects.filter(date=date, page=page, activated=0, list_no=list_no)),
         })
 
@@ -1270,29 +1271,31 @@ def whoisHeNet(request):
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt
-def mark_to_active(requests):
-    if 'date' in request.GET.keys():
-        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
+def mark_to_active(request):
+    if 'date' in request.POST.keys():
+        date = datetime.strptime(request.POST['date'], '%d-%m-%Y').date()
     else:
         date = datetime.now().date()
+        
+    if 'list_no' in request.POST.keys():
+        list_no = int(request.POST['list_no'])
+    else:
+        list_no = 1
 
-    leads = RawLeads.objects.filter(date=date)
-    for lead in leads:
-        lead.mark = 1
-        lead.save()
-
+    RawLeads.objects.filter(date=date, list_no=list_no).update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt
-def un_mark_to_active(requests):
-    if 'date' in request.GET.keys():
-        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
+def un_mark_to_active(request):
+    if 'date' in request.POST.keys():
+        date = datetime.strptime(request.POST['date'], '%d-%m-%Y').date()
     else:
         date = datetime.now().date()
 
-    leads = RawLeads.objects.filter(date=date)
-    for lead in leads:
-        lead.mark = 0
-        lead.save()
+    if 'list_no' in request.POST.keys():
+        list_no = int(request.POST['list_no'])
+    else:
+        list_no = 1
 
+    RawLeads.objects.filter(date=date, list_no=list_no).update(mark=0)
     return HttpResponse('{"status": "success"}', content_type="application/json")
