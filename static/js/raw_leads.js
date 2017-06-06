@@ -2,8 +2,9 @@ var csrftoken = getCookie('csrftoken');
 var lastChecked = null;
 
 function load() {
+    var list_no = $("#filter_by_list_no").val();
     var date = $("#datepicker").val();
-    window.location.href=('/raw_leads/?date=' + date);
+    window.location.href=('/raw_leads/?date=' + date + '&pages=1&list_no=' + list_no);
 };
 
 function truncate_raw() {
@@ -36,6 +37,12 @@ function show (i) {
     var date = $("#datepicker").val();
     window.location.href=('/raw_leads/?date=' + date + '&pages=' + i);
 };
+
+function filter_by_list_no() {
+    var list_no = $("#filter_by_list_no").val();
+    var date = $("#datepicker").val();
+    window.location.href=('/raw_leads/?date=' + date + '&pages=1&list_no=' + list_no);
+}
 
 function filter_by_dom() {
     var rows = $('#mytable tbody tr');

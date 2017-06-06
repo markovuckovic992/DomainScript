@@ -20,6 +20,11 @@
       <option value=".com">.COM</option>
       <option value=".net">.NET</option>
     </select>
+    <select id="filter_by_list_no" onclick="filter_by_list_no()">
+      <option value="1">Redemption List One</option>
+      <option value="2">Redemption List Two</option>
+      <option value="3">Redemption List Three</option>
+    </select>
     <button onclick="find_active()">find active</button>
    <table id="mytable" class="sortable" >
       <thead>
@@ -64,14 +69,14 @@
         </tr>
       </tbody>
     </table>
-    <script type="text/javascript">      
+    <script type="text/javascript">
       $( document ).ready(function() {
           var count = $(":checkbox:checked").length;
           $("#counter").html(count);
-          document.body.addEventListener('click', function() { 
+          document.body.addEventListener('click', function() {
             var count = $(":checkbox:checked").length;
             $("#counter").html(count);
-          }, true); 
+          }, true);
       });
     </script>
     <script type="text/javascript">

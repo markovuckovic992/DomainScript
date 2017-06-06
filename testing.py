@@ -106,6 +106,7 @@ words = set(list(wd.words()) + list(brown.words()) + word_man + list(udhr.words(
 some_variable = 0
 
 def fcn(domain_data, pt):
+    list_no = domain_data[1]
     forbids = ['[', '`', '\\', '-', '=', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\\', '[', '\\', ']', '{', '}', ';', "'", '\\', ':', '"', '|', '<', ',', '.', '/', '<', '>', '?', ']']
     file = open('filtered_domains.txt', 'a')
     global words, link, some_variable, result_list, result_list_b
@@ -152,7 +153,7 @@ def fcn(domain_data, pt):
                 bad_keywords = super_tmp.split()
 
         if len(keywords) and len(bad_keywords) <= 0:
-            result_list.append({'domain': domain, 'keywords': keywords})
+            result_list.append({'domain': domain, 'keywords': keywords, 'list_no': list_no})
             file.write(str({'domain': domain, 'keywords': keywords}) + '\n')
         elif allow_bad_keywords:
             domain = domain_data[0]
@@ -164,13 +165,13 @@ def fcn(domain_data, pt):
                 tmp = temp.split(".")[0]
 
                 if (min_length < len(tmp) < max_length):
-                    result_list_b.append({'domain': domain, 'keywords': [tmp]})
+                    result_list_b.append({'domain': domain, 'keywords': [tmp], 'list_no': list_no})
                     file.write(str({'domain': domain, 'keywords': [tmp]}) + '\n')
     pt.update()
 
 
 def fcn2(domain_dict, pt, path, date):
-    global some_variable, link, iterno, master_data
+    global some_variable, link, iterno1, iterno2, iterno3, master_data
     domain = domain_dict['domain']
     keywords = domain_dict['keywords']
     some_variable += 1
@@ -210,8 +211,15 @@ def fcn2(domain_dict, pt, path, date):
                 activateds = [activated, ]
 
                 if activated == 0:
-                    iterno += 1
-                    page = floor(iterno / 5000) + 1
+                    if list_no == 1:
+                        iterno1 += 1
+                        page = floor(iterno1 / 5000) + 1
+                    elif list_no == 2:
+                        iterno2 += 1
+                        page = floor(iterno2 / 5000) + 1
+                    elif list_no == 3:
+                        iterno3 += 1
+                        page = floor(iterno3 / 5000) + 1
                 else:
                     page = 1
                     # TLDs
@@ -232,7 +240,8 @@ def fcn2(domain_dict, pt, path, date):
                         "name_redemption": (domain).replace('\n', '').replace('\r', ''),
                         "date": date,
                         "page": page,
-                        "activated": activateds[indx]
+                        "activated": activateds[indx],
+                        "list_no": domain_dict['list_no']
                     })
                     indx += 1
 
@@ -240,7 +249,7 @@ def fcn2(domain_dict, pt, path, date):
 
 
 def fcn3(domain_dict, pt, path, date):
-    global some_variable, link, iterno, master_data
+    global some_variable, link, iterno1, iterno2, iterno3, master_data
     domain = domain_dict['domain']
     keyword = domain_dict['keywords'][0]
     some_variable += 1
@@ -279,8 +288,15 @@ def fcn3(domain_dict, pt, path, date):
                 activateds = [activated, ]
 
                 if activated == 0:
-                    iterno += 1
-                    page = floor(iterno / 5000) + 1
+                    if list_no == 1:
+                        iterno1 += 1
+                        page = floor(iterno1 / 5000) + 1
+                    elif list_no == 2:
+                        iterno2 += 1
+                        page = floor(iterno2 / 5000) + 1
+                    elif list_no == 3:
+                        iterno3 += 1
+                        page = floor(iterno3 / 5000) + 1
                 else:
                     page = 1
                     # TLDs
@@ -301,7 +317,8 @@ def fcn3(domain_dict, pt, path, date):
                         "name_redemption": (domain).replace('\n', '').replace('\r', ''),
                         "date": date,
                         "page": page,
-                        "activated": activateds[indx]
+                        "activated": activateds[indx],
+                        "list_no": domain_dict['list_no']
                     })
                     indx += 1
 
@@ -315,7 +332,8 @@ def saveDate(master_data):
             name_redemption=data['name_redemption'],
             date=data['date'],
             page=data['page'],
-            activated=data['activated']
+            activated=data['activated'],
+            list_no=data['list_no']
         )
         entry.save()
 
@@ -337,9 +355,11 @@ def saveDate(master_data):
 result_list = []
 result_list_b = []
 all_domains = set()
-iterno = -1
+iterno1 = -1
+iterno2 = -1
+iterno3 = -1
 
-def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, date):
+def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, r2, r3, date):
     global result_list, result_list_b, all_domains, link, master_data
 
     file = open('filtered_domains.txt', 'a')
@@ -351,8 +371,24 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             domain = row[redempion_row].strip('"').lower()
-            teemp = (domain, )
+            teemp = (domain, 1)
             usefull_data.append(teemp)
+
+    if r2 and r2 != 'none':
+        with open(r2, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in spamreader:
+                domain = row[redempion_row].strip('"').lower()
+                teemp = (domain, 2)
+                usefull_data.append(teemp)
+
+    if r3 and r3 != 'none':
+        with open(r3, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in spamreader:
+                domain = row[redempion_row].strip('"').lower()
+                teemp = (domain, 3)
+                usefull_data.append(teemp)
 
     l = Log.objects.get(date=date)
     l.number_of_all = len(usefull_data)
@@ -372,7 +408,6 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     pt = None
     gc.collect()
 
-    threads = []
     if org_path and org_path != 'none':
         pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list + result_list_b))
         for result in result_list:
@@ -500,8 +535,8 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
         pass
 
 if __name__ == '__main__':
-    if not Log.objects.filter(date=sys.argv[11]).exists():
-        entry = Log(date=sys.argv[11])
+    if not Log.objects.filter(date=sys.argv[13]).exists():
+        entry = Log(date=sys.argv[13])
         entry.save()
     main_filter(
         sys.argv[1],
@@ -515,9 +550,11 @@ if __name__ == '__main__':
         sys.argv[9],
         sys.argv[10],
         sys.argv[11],
+        sys.argv[12],
+        sys.argv[13],
     )
     duration = int(time.time() - start_time)
 
-    l = Log.objects.get(date=sys.argv[11])
+    l = Log.objects.get(date=sys.argv[13])
     l.duration = duration
     l.save()

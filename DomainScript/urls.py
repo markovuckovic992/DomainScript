@@ -31,7 +31,6 @@ urlpatterns = [
     url(r'^reverse_state/', domain.views.reverse_state),
     url(r'^find_mails/', domain.views.find_mails),
     url(r'^truncate/', domain.views.truncate),
-    url(r'^select_all/', domain.views.select_all),
     url(r'^add_this_name/', domain.views.add_this_name),
     url(r'^rem_this_name/', domain.views.rem_this_name),
     url(r'^find_active/', domain.views.find_active),

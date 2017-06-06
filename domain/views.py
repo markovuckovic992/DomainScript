@@ -196,6 +196,16 @@ def runEditing(request):
 
         argument += (redempt + " ")
 
+        if redempt2:
+            argument += (redempt2 + " ")
+        else:
+            argument += "none "
+
+        if redempt3:
+            argument += (redempt3 + " ")
+        else:
+            argument += "none "
+
         argument += str(date)
         # print argument
         popen(argument)
@@ -216,10 +226,15 @@ def rawLeads(request, template='raw_leads.html', extra_context=None):
         page = int(request.GET['pages'])
     else:
         page = 1
-    raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page).order_by('name_redemption')
+    if 'list_no' in request.GET.keys():
+        page = int(request.GET['list_no'])
+    else:
+        list_no = 1
+
+    raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page, list_no=list_no).order_by('name_redemption')
     numbers = [1]
     try:
-        numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
+        numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date, list_no=list_no))
     except:
         pass
     number_of_pages = max(set(numbers))
@@ -231,7 +246,7 @@ def rawLeads(request, template='raw_leads.html', extra_context=None):
         'offset': (int(request.GET['page']) - 1) * 1000 if 'page' in request.GET.keys() else 0,
         'date': datetime.strftime(date, '%d-%m-%Y'),
         'page_template': page_template,
-        'total_raw': len(RawLeads.objects.filter(date=date, page=page, activated=0)),
+        'total_raw': len(RawLeads.objects.filter(date=date, page=page, activated=0, list_no=list_no)),
     }
     if extra_context is not None:
         context.update(extra_context)
@@ -247,10 +262,15 @@ def rawLeadsAll(request):
         page = int(request.GET['pages'])
     else:
         page = 1
-    raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page)
+    if 'list_no' in request.GET.keys():
+        page = int(request.GET['list_no'])
+    else:
+        list_no = 1
+
+    raw_leads = RawLeads.objects.filter(date=date, activated=0, page=page, list_no=list_no)
     numbers = [1]
     try:
-        numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date))
+        numbers += map(attrgetter('page'), RawLeads.objects.filter(date=date, list_no=list_no))
     except:
         pass
     number_of_pages = max(set(numbers))
@@ -261,7 +281,7 @@ def rawLeadsAll(request):
             "raw_leads": raw_leads,
             'range': range(1, number_of_pages + 1),
             'page': page,
-            'total_raw': len(RawLeads.objects.filter(date=date, page=page, activated=0)),
+            'total_raw': len(RawLeads.objects.filter(date=date, page=page, activated=0, list_no=list_no)),
         })
 
 @csrf_exempt
@@ -308,18 +328,6 @@ def reverse_state(request):
         el = EventLogger(ip=ip, action=(action + msg + ""))
         el = EventLogger(ip=ip, action=(action + msg + ""))
         el.save()
-    return HttpResponse('{"status": "success"}', content_type="application/json")
-
-@csrf_exempt
-def select_all(request):
-    page = request.POST['page']
-    date = request.POST['date']
-    date = datetime.strptime(date, '%d-%m-%Y').date()
-    raw_leads = RawLeads.objects.filter(page=page, date=date)
-    for rl in raw_leads:
-        rl.mark = 1
-        rl.save()
-    # raw_leads.update(mark=1)
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
 @csrf_exempt

@@ -33,6 +33,7 @@ class RawLeads(models.Model):
     name_redemption = models.CharField(max_length=100)
     mail = models.CharField(max_length=320, blank=True, null=True)
     page = models.SmallIntegerField(default=1)
+    list_no = models.SmallIntegerField(default=1)
 
     activated = models.SmallIntegerField(default=0)
     mark = models.SmallIntegerField(default=0)
