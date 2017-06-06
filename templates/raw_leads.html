@@ -11,6 +11,8 @@
     {% csrf_token %}
    Date: <input type="text" id="datepicker" onchange="load()">
    <button onclick="truncate_raw()">Truncate</button>
+   <button onclick="select_all()">Select All</button>
+   <button onclick="un_select_all()">Un Select All</button>
    Show page:
    {% for i in range %}
         <button id="button_{{i}}" class="buttons" onclick="show({{i}})">{{ i }}</button>
@@ -26,7 +28,7 @@
       <option value="3">Redemption List Three</option>
     </select>
     <button onclick="find_active()">find active</button>
-    <a href="/raw_leads_all/?date={{date}}&pages={{page}}">Show All</a>
+    <a href="/raw_leads_all/?date={{date}}&pages={{page}}&list_no={{list_no}}">Show All</a>
     {% if raw_leads|length > 0 %}
     <table id="mytable" class="sortable">
   <thead>

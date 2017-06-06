@@ -34,8 +34,9 @@ function truncate_raw() {
 };
 
 function show (i) {
+    var list_no = $("#filter_by_list_no").val();
     var date = $("#datepicker").val();
-    window.location.href=('/raw_leads/?date=' + date + '&pages=' + i);
+    window.location.href=('/raw_leads/?date=' + date + '&pages=' + i + '&list_no=' + list_no);
 };
 
 function filter_by_list_no() {
@@ -57,6 +58,7 @@ function filter_by_dom() {
 
 function find_active() {
     var date = $("#datepicker").val();
+    var list_no = $("#filter_by_list_no").val();
     $("#cover").fadeIn(100);
     $.ajax({
         type: "POST",
@@ -67,7 +69,7 @@ function find_active() {
         },
         success: function(msg){
             $("#cover").fadeOut(100);
-            window.location.href=('/raw_leads/?date=' + date);
+            window.location.href=('/raw_leads/?date=' + date + '&list_no=' + list_no);
         },
         error: function(ts) {
             alert(ts.responseText)
@@ -252,5 +254,45 @@ function find_mails() {
                 alert('gateway timeout!');
             }
         }
+    });
+};
+
+function select_all() {
+    var date = $("#datepicker").val()
+    $.ajax({
+        type: "POST",
+        url: "/mark_to_active/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: "date=" + date,
+        success: function(msg){
+            $('input:checkbox').prop('checked', true);
+            var count = $(":checkbox:checked").length;
+            $("#counter").html(count);
+        },
+        error: function(ts) {
+            alert(ts.responseText)
+        },
+    });
+};
+
+function un_select_all() {
+    var date = $("#datepicker").val()
+    $.ajax({
+        type: "POST",
+        url: "/un_mark_to_active/",
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        data: "date=" + date,
+        success: function(msg){
+            $('input:checkbox').prop('checked', false);
+            var count = $(":checkbox:checked").length;
+            $("#counter").html(count);
+        },
+        error: function(ts) {
+            alert(ts.responseText)
+        },
     });
 };

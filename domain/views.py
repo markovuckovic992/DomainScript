@@ -243,6 +243,7 @@ def rawLeads(request, template='raw_leads.html', extra_context=None):
         "raw_leads": raw_leads,
         'range': range(1, number_of_pages + 1),
         'page': page,
+        'list_no': list_no,
         'offset': (int(request.GET['page']) - 1) * 1000 if 'page' in request.GET.keys() else 0,
         'date': datetime.strftime(date, '%d-%m-%Y'),
         'page_template': page_template,
@@ -1265,5 +1266,33 @@ def whoisHeNet(request):
     s.run = 1
     s.date = arg
     s.save()
+
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+@csrf_exempt
+def mark_to_active(requests):
+    if 'date' in request.GET.keys():
+        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
+    else:
+        date = datetime.now().date()
+
+    leads = RawLeads.objects.filter(date=date)
+    for lead in leads:
+        lead.mark = 1
+        lead.save()
+
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+@csrf_exempt
+def un_mark_to_active(requests):
+    if 'date' in request.GET.keys():
+        date = datetime.strptime(request.GET['date'], '%d-%m-%Y').date()
+    else:
+        date = datetime.now().date()
+
+    leads = RawLeads.objects.filter(date=date)
+    for lead in leads:
+        lead.mark = 0
+        lead.save()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")

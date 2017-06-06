@@ -34,6 +34,8 @@ urlpatterns = [
     url(r'^add_this_name/', domain.views.add_this_name),
     url(r'^rem_this_name/', domain.views.rem_this_name),
     url(r'^find_active/', domain.views.find_active),
+    url(r'^mark_to_active/', domain.views.mark_to_active),
+    url(r'^un_mark_to_active/', domain.views.un_mark_to_active),
     #  active leads
     url(r'^active_leads/', domain.views.activeLeads),
     url(r'^active_leads_tld/', domain.views.activeLeadsTld),

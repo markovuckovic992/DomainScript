@@ -11,6 +11,8 @@
     {% csrf_token %}
    Date: <input type="text" id="datepicker" onchange="load()">
    <button onclick="truncate_raw()">Truncate</button>
+   <button onclick="select_all()">Select All</button>
+   <button onclick="un_select_all()">Un Select All</button>
    Show page:
    {% for i in range %}
         <button id="button_{{i}}" class="buttons" onclick="show({{i}})">{{ i }}</button>
