@@ -358,7 +358,7 @@ def rem_this_name(request):
     raw_leads = RawLeads.objects.filter(name_redemption=redemption, page=page, date=date, id__in=ids)
     # raw_leads.update(mark=0)
     for rl in raw_leads:
-        rl.mark = 1
+        rl.mark = 0
         rl.save()
 
     ip = get_client_ip(request)
