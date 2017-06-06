@@ -207,7 +207,7 @@ def runEditing(request):
             argument += "none "
 
         argument += str(date)
-        # print argument
+        print argument
         popen(argument)
         return HttpResponse('{"status": "success"}', content_type="application/json")
     except:
