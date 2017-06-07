@@ -316,19 +316,20 @@ def main_period(dates, mode):
                             else:
                                 i += 1
                 else:
-                    try:
-                        r = requests.get('http://api.whoxy.com/?key=3d28dc0e398efe01dp7caa9f21e7b4fdf&whois=' + data.name_zone + '&format=json')
-                        resp_data = r.json()
-                        status = resp_data['domain_status'] if 'domain_status' in resp_data.keys() else 0
-                        email = resp_data['registrant_contact']['email_address']
+                    if data.no_email_found == 0:
+                        try:
+                            r = requests.get('http://api.whoxy.com/?key=3d28dc0e398efe01dp7caa9f21e7b4fdf&whois=' + data.name_zone + '&format=json')
+                            resp_data = r.json()
+                            status = resp_data['domain_status'] if 'domain_status' in resp_data.keys() else 0
+                            email = resp_data['registrant_contact']['email_address']
 
-                        domain_registrar
-                        if ('pendingDelete' in status) or ('redemptionPeriod' in status) or ('No match for' in status):
-                            record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
-                            record.save()
-                            RawLeads.objects.filter(id=data.id).delete()
-                    except:
-                        pass
+                            domain_registrar
+                            if ('pendingDelete' in status) or ('redemptionPeriod' in status) or ('No match for' in status):
+                                record = DeletedInfo(name_zone=data.name_zone, name_redemption=data.name_redemption, date=data.date, reason='domain has bad status')
+                                record.save()
+                                RawLeads.objects.filter(id=data.id).delete()
+                        except:
+                            pass
 
             if email and '@' in email:
                 email = "".join(email.split())

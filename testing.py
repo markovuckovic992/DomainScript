@@ -153,7 +153,17 @@ def fcn(domain_data, pt):
                 bad_keywords = super_tmp.split()
 
         if len(keywords) and len(bad_keywords) <= 0:
-            result_list.append({'domain': domain, 'keywords': keywords, 'list_no': list_no})
+            result_list.append({'domain': domain, 'keywords': keywords, 'list_no': list_no, 'act': 1})
+            # TLDs
+            for tld in tlds:
+                try:
+                    base2 = domain.split(".", 1)[0]
+                    request = requests.get('http://www.' + base2 + '.' + tld)
+                    if request.status_code == 200:
+                        matched_domains.append(base2 + '.' + tld)
+                        result_list.append({'domain': base2 + '.' + tld, 'keywords': keywords, 'list_no': list_no, 'act': 2})
+                except:
+                    pass
             file.write(str({'domain': domain, 'keywords': keywords}) + '\n')
         elif allow_bad_keywords:
             domain = domain_data[0]
@@ -165,7 +175,18 @@ def fcn(domain_data, pt):
                 tmp = temp.split(".")[0]
 
                 if (min_length < len(tmp) < max_length):
-                    result_list_b.append({'domain': domain, 'keywords': [tmp], 'list_no': list_no})
+                    result_list_b.append({'domain': domain, 'keywords': [tmp], 'list_no': list_no,  'act': 1})
+                    # TLDs
+                    for tld in tlds:
+                        try:
+                            base2 = domain.split(".", 1)[0]
+                            request = requests.get('http://www.' + base2 + '.' + tld)
+                            if request.status_code == 200:
+                                matched_domains.append(base2 + '.' + tld)
+                                result_list_b.append({'domain': base2 + '.' + tld, 'keywords': [tmp], 'list_no': list_no, 'act': 2})
+                        except:
+                            pass
+
                     file.write(str({'domain': domain, 'keywords': [tmp]}) + '\n')
     pt.update()
     file.close()
@@ -181,10 +202,6 @@ def fcn2(domain_dict, pt, path, date):
     condition = True
     matched_lines = []
     matched_lines_copy = []
-
-    # searching = ''
-    # for keyword in keywords:
-    #     searching += ' ' + keyword
 
     tube = popen('./getLines.sh ' + path + ' ' + keywords[0])
     matched_lines = tube.read().split()
@@ -202,14 +219,11 @@ def fcn2(domain_dict, pt, path, date):
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
                     if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                        activated = 1
+                        activated = 1 if domain_dict['list_no'] == 1 else 2
                     else:
                         activated = 0
                 except:
                     activated = 0
-
-                matched_domains = [matched_domain, ]
-                activateds = [activated, ]
 
                 if activated == 0:
                     if domain_dict['list_no'] == 1:
@@ -223,28 +237,15 @@ def fcn2(domain_dict, pt, path, date):
                         page = floor(iterno3 / 5000) + 1
                 else:
                     page = 1
-                    # TLDs
-                    for tld in tlds:
-                        try:
-                            base2 = domain.split(".", 1)[0]
-                            request = requests.get('http://www.' + base2 + '.' + tld)
-                            if request.status_code == 200:
-                                matched_domains.append(base2 + '.' + tld)
-                                activateds.append(2)
-                        except:
-                            pass
 
-                indx = 0
-                for matched_domain in matched_domains:
-                    master_data.append({
-                        "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
-                        "name_redemption": (domain).replace('\n', '').replace('\r', ''),
-                        "date": date,
-                        "page": page,
-                        "activated": activateds[indx],
-                        "list_no": domain_dict['list_no']
-                    })
-                    indx += 1
+                master_data.append({
+                    "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
+                    "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                    "date": date,
+                    "page": page,
+                    "activated": activated,
+                    "list_no": domain_dict['list_no']
+                })
 
     pt.update()
 
@@ -279,14 +280,11 @@ def fcn3(domain_dict, pt, path, date):
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
                     if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                        activated = 1
+                        activated = 1 if domain_dict['list_no'] == 1 else 2
                     else:
                         activated = 0
                 except:
                     activated = 0
-
-                matched_domains = [matched_domain, ]
-                activateds = [activated, ]
 
                 if activated == 0:
                     if domain_dict['list_no'] == 1:
@@ -300,28 +298,15 @@ def fcn3(domain_dict, pt, path, date):
                         page = floor(iterno3 / 5000) + 1
                 else:
                     page = 1
-                    # TLDs
-                    for tld in tlds:
-                        try:
-                            base2 = domain.split(".", 1)[0]
-                            request = requests.get('http://www.' + base2 + '.' + tld)
-                            if request.status_code == 200:
-                                matched_domains.append(base2 + '.' + tld)
-                                activateds.append(2)
-                        except:
-                            pass
 
-                indx = 0
-                for matched_domain in matched_domains:
-                    master_data.append({
-                        "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
-                        "name_redemption": (domain).replace('\n', '').replace('\r', ''),
-                        "date": date,
-                        "page": page,
-                        "activated": activateds[indx],
-                        "list_no": domain_dict['list_no']
-                    })
-                    indx += 1
+                master_data.append({
+                    "name_zone": (matched_domain).replace('\n', '').replace('\r', ''),
+                    "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                    "date": date,
+                    "page": page,
+                    "activated": activated,
+                    "list_no": domain_dict['list_no']
+                })
 
     pt.update()
 
