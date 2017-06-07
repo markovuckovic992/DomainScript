@@ -167,7 +167,7 @@ def fcn(domain_data, pt):
                 if (min_length < len(tmp) < max_length):
                     result_list_b.append({'domain': domain, 'keywords': [tmp], 'list_no': list_no})
                     file.write(str({'domain': domain, 'keywords': [tmp]}) + '\n')
-    pt.update()    
+    pt.update()
     file.close()
 
 
@@ -223,16 +223,16 @@ def fcn2(domain_dict, pt, path, date):
                         page = floor(iterno3 / 5000) + 1
                 else:
                     page = 1
-                # TLDs
-                for tld in tlds:
-                    try:
-                        base2 = domain.split(".", 1)[0]
-                        request = requests.get('http://www.' + base2 + '.' + tld)
-                        if request.status_code == 200:
-                            matched_domains.append(base2 + '.' + tld)
-                            activateds.append(2)
-                    except:
-                        pass
+                    # TLDs
+                    for tld in tlds:
+                        try:
+                            base2 = domain.split(".", 1)[0]
+                            request = requests.get('http://www.' + base2 + '.' + tld)
+                            if request.status_code == 200:
+                                matched_domains.append(base2 + '.' + tld)
+                                activateds.append(2)
+                        except:
+                            pass
 
                 indx = 0
                 for matched_domain in matched_domains:
@@ -300,16 +300,16 @@ def fcn3(domain_dict, pt, path, date):
                         page = floor(iterno3 / 5000) + 1
                 else:
                     page = 1
-                # TLDs
-                for tld in tlds:
-                    try:
-                        base2 = domain.split(".", 1)[0]
-                        request = requests.get('http://www.' + base2 + '.' + tld)
-                        if request.status_code == 200:
-                            matched_domains.append(base2 + '.' + tld)
-                            activateds.append(2)
-                    except:
-                        pass
+                    # TLDs
+                    for tld in tlds:
+                        try:
+                            base2 = domain.split(".", 1)[0]
+                            request = requests.get('http://www.' + base2 + '.' + tld)
+                            if request.status_code == 200:
+                                matched_domains.append(base2 + '.' + tld)
+                                activateds.append(2)
+                        except:
+                            pass
 
                 indx = 0
                 for matched_domain in matched_domains:
