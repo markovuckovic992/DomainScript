@@ -258,6 +258,8 @@ function find_mails() {
 };
 
 function select_all() {
+    $("#cover").fadeIn(100);
+    var list_no = $("#filter_by_list_no").val();
     var date = $("#datepicker").val()
     $.ajax({
         type: "POST",
@@ -265,11 +267,12 @@ function select_all() {
         headers: {
             'X-CSRFToken': csrftoken
         },
-        data: "date=" + date,
+        data: "date=" + date + "&list_no=" + list_no,
         success: function(msg){
             $('input:checkbox').prop('checked', true);
             var count = $(":checkbox:checked").length;
             $("#counter").html(count);
+            $("#cover").fadeOut(100);
         },
         error: function(ts) {
             alert(ts.responseText)
@@ -278,6 +281,8 @@ function select_all() {
 };
 
 function un_select_all() {
+    $("#cover").fadeIn(100);
+    var list_no = $("#filter_by_list_no").val();
     var date = $("#datepicker").val()
     $.ajax({
         type: "POST",
@@ -285,11 +290,12 @@ function un_select_all() {
         headers: {
             'X-CSRFToken': csrftoken
         },
-        data: "date=" + date,
+        data: "date=" + date + "&list_no=" + list_no,
         success: function(msg){
             $('input:checkbox').prop('checked', false);
             var count = $(":checkbox:checked").length;
             $("#counter").html(count);
+            $("#cover").fadeOut(100);
         },
         error: function(ts) {
             alert(ts.responseText)

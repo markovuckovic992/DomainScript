@@ -167,7 +167,8 @@ def fcn(domain_data, pt):
                 if (min_length < len(tmp) < max_length):
                     result_list_b.append({'domain': domain, 'keywords': [tmp], 'list_no': list_no})
                     file.write(str({'domain': domain, 'keywords': [tmp]}) + '\n')
-    pt.update()
+    pt.update()    
+    file.close()
 
 
 def fcn2(domain_dict, pt, path, date):
@@ -211,13 +212,13 @@ def fcn2(domain_dict, pt, path, date):
                 activateds = [activated, ]
 
                 if activated == 0:
-                    if list_no == 1:
+                    if domain_dict['list_no'] == 1:
                         iterno1 += 1
                         page = floor(iterno1 / 5000) + 1
-                    elif list_no == 2:
+                    elif domain_dict['list_no'] == 2:
                         iterno2 += 1
                         page = floor(iterno2 / 5000) + 1
-                    elif list_no == 3:
+                    elif domain_dict['list_no'] == 3:
                         iterno3 += 1
                         page = floor(iterno3 / 5000) + 1
                 else:
@@ -288,13 +289,13 @@ def fcn3(domain_dict, pt, path, date):
                 activateds = [activated, ]
 
                 if activated == 0:
-                    if list_no == 1:
+                    if domain_dict['list_no'] == 1:
                         iterno1 += 1
                         page = floor(iterno1 / 5000) + 1
-                    elif list_no == 2:
+                    elif domain_dict['list_no'] == 2:
                         iterno2 += 1
                         page = floor(iterno2 / 5000) + 1
-                    elif list_no == 3:
+                    elif domain_dict['list_no'] == 3:
                         iterno3 += 1
                         page = floor(iterno3 / 5000) + 1
                 else:
@@ -349,6 +350,7 @@ def saveDate(master_data):
 
         entry.hash_base_id = hash_base_id
         entry.save()
+        time.sleep(0.05)
 
     cursor.execute("COMMIT;")
 

@@ -22,10 +22,10 @@
       <option value=".com">.COM</option>
       <option value=".net">.NET</option>
     </select>
-    <select id="filter_by_list_no" onclick="filter_by_list_no()">
-      <option value="1">Redemption List One</option>
-      <option value="2">Redemption List Two</option>
-      <option value="3">Redemption List Three</option>
+    <select id="filter_by_list_no" onchange="filter_by_list_no()">
+      <option value="1" {%if list_no == 1 %} selected {%endif%}>Redemption List One</option>
+      <option value="2" {%if list_no == 2 %} selected {%endif%}>Redemption List Two</option>
+      <option value="3" {%if list_no == 3 %} selected {%endif%}>Redemption List Three</option>
     </select>
     <button onclick="find_active()">find active</button>
     <a href="/raw_leads_all/?date={{date}}&pages={{page}}&list_no={{list_no}}">Show All</a>
