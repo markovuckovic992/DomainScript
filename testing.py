@@ -1,6 +1,6 @@
 #!/usr/bin/pypy
 import requests
-requests.adapters.DEFAULT_RETRIES = 3
+requests.adapters.DEFAULT_RETRIES = 1
 from os import popen
 from copy import deepcopy
 from nltk.corpus import brown, words as wd, cess_esp as cess, udhr
@@ -12,6 +12,7 @@ from django.db import connection
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 import binascii
+import traceback
 from domain.models import RawLeads, Log, AllHash, Setting, Tlds
 
 master_data = []
@@ -105,11 +106,11 @@ link = set()
 words = set(list(wd.words()) + list(brown.words()) + word_man + list(udhr.words()) + list(cess.words()))
 some_variable = 0
 
-def fcn(domain_data, pt):
+def fcn(domain_data, pt, date):
     list_no = domain_data[1]
     forbids = ['[', '`', '\\', '-', '=', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\\', '[', '\\', ']', '{', '}', ';', "'", '\\', ':', '"', '|', '<', ',', '.', '/', '<', '>', '?', ']']
     file = open('filtered_domains.txt', 'a')
-    global words, link, some_variable, result_list, result_list_b
+    global words, link, some_variable, result_list, result_list_b, master_data
     domain = domain_data[0]
     inter = list(set(forbids) & set(domain.split(".")[0]))
     # FILTER 1
@@ -153,41 +154,66 @@ def fcn(domain_data, pt):
                 bad_keywords = super_tmp.split()
 
         if len(keywords) and len(bad_keywords) <= 0:
-            result_list.append({'domain': domain, 'keywords': keywords, 'list_no': list_no, 'act': 1})
-            # TLDs
-            for tld in tlds:
-                try:
-                    base2 = domain.split(".", 1)[0]
-                    request = requests.get('http://www.' + base2 + '.' + tld)
-                    if request.status_code == 200:
-                        matched_domains.append(base2 + '.' + tld)
-                        result_list.append({'domain': base2 + '.' + tld, 'keywords': keywords, 'list_no': list_no, 'act': 2})
-                except:
-                    pass
-            file.write(str({'domain': domain, 'keywords': keywords}) + '\n')
+            if {'domain': domain, 'keywords': keywords, 'list_no': list_no} not in result_list:
+                result_list.append({'domain': domain, 'keywords': keywords, 'list_no': list_no})
+                file.write(str({'domain': domain, 'keywords': keywords}) + '\n')
+            tmp = domain.split(".")[1]           
+            if tmp in ["com\n", "com\r\n", "com"]:
+                # TLDs
+                for tld in tlds:
+                    try:
+                        base2 = domain.split(".", 1)[0]
+                        request = requests.get('http://www.' + base2 + '.' + tld)
+                        if request.status_code == 200:
+                            if {'domain': base2 + '.' + tld, 'keywords': keywords, 'list_no': list_no, 'act': 2} not in result_list:
+                                master_data.append({
+                                    "name_zone": base2 + '.' + tld,
+                                    "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                                    "date": date,
+                                    "page": 1,
+                                    "activated": 2,
+                                    "list_no": 1
+                                })
+                    except requests.ConnectionError:
+                        pass
+                    except:
+                        print traceback.format_exc()
+
+            
         elif allow_bad_keywords:
             domain = domain_data[0]
-            if domain.split(".")[1] not in ["com\n", "com\r\n", "com"]:
+            tmp = domain.split(".")[1]
+            if tmp not in ["com\n", "com\r\n", "com"]:
                 pass
             else:
-                tmp = domain.split(".")[0]
                 temp = str(domain).lstrip('.')
                 tmp = temp.split(".")[0]
 
                 if (min_length < len(tmp) < max_length):
-                    result_list_b.append({'domain': domain, 'keywords': [tmp], 'list_no': list_no,  'act': 1})
+                    if {'domain': domain, 'keywords': [tmp], 'list_no': list_no} not in result_list_b:
+                        result_list_b.append({'domain': domain, 'keywords': [tmp], 'list_no': list_no,  'act': 1})
+                        file.write(str({'domain': domain, 'keywords': [tmp]}) + '\n')
                     # TLDs
                     for tld in tlds:
                         try:
                             base2 = domain.split(".", 1)[0]
-                            request = requests.get('http://www.' + base2 + '.' + tld)
+                            request = requests.get('http://www.' + base2 + '.' + tld, allow_redirects=False, timeout=0.01, verify=False)
                             if request.status_code == 200:
-                                matched_domains.append(base2 + '.' + tld)
-                                result_list_b.append({'domain': base2 + '.' + tld, 'keywords': [tmp], 'list_no': list_no, 'act': 2})
-                        except:
+                                if {'domain': base2 + '.' + tld, 'keywords': [tmp], 'list_no': list_no} not in result_list_b:
+                                    file.write(str({'domain': base2 + '.' + tld, 'keywords': keywords}) + '\n')
+                                    master_data.append({
+                                        "name_zone": base2 + '.' + tld,
+                                        "name_redemption": (domain).replace('\n', '').replace('\r', ''),
+                                        "date": date,
+                                        "page": 1,
+                                        "activated": 2,
+                                        "list_no": 1
+                                    })
+                        except requests.ConnectionError:
                             pass
-
-                    file.write(str({'domain': domain, 'keywords': [tmp]}) + '\n')
+                        except:
+                            print traceback.format_exc()
+                    
     pt.update()
     file.close()
 
@@ -219,9 +245,9 @@ def fcn2(domain_dict, pt, path, date):
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
                     if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                        activated = 1 if domain_dict['list_no'] == 1 else 2
+                        activated = 1 
                     else:
-                        activated = 0
+                        activated = 0 
                 except:
                     activated = 0
 
@@ -280,7 +306,7 @@ def fcn3(domain_dict, pt, path, date):
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
                     if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                        activated = 1 if domain_dict['list_no'] == 1 else 2
+                        activated = 1 
                     else:
                         activated = 0
                 except:
@@ -349,8 +375,7 @@ iterno3 = -1
 def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path, redemption_path, r2, r3, date):
     global result_list, result_list_b, all_domains, link, master_data
 
-    file = open('filtered_domains.txt', 'a')
-    file.truncate()
+    file = open('filtered_domains.txt', 'w')
     file.close()
 
     usefull_data = []
@@ -386,7 +411,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     pt = progress_timer(description='phase 1: ', n_iter=len(usefull_data))
     threads = []
     for domain_data in usefull_data:
-        fcn(domain_data, pt)
+        fcn(domain_data, pt, date)
     l = Log.objects.get(date=date)
     l.number_of_redemption = len(result_list + result_list_b)
     l.save()
