@@ -157,7 +157,7 @@ def fcn(domain_data, pt, date):
             if {'domain': domain, 'keywords': keywords, 'list_no': list_no} not in result_list:
                 result_list.append({'domain': domain, 'keywords': keywords, 'list_no': list_no})
                 file.write(str({'domain': domain, 'keywords': keywords}) + '\n')
-            tmp = domain.split(".")[1]           
+            tmp = domain.split(".")[1]
             if tmp in ["com\n", "com\r\n", "com"]:
                 # TLDs
                 for tld in tlds:
@@ -179,7 +179,7 @@ def fcn(domain_data, pt, date):
                     except:
                         print traceback.format_exc()
 
-            
+
         elif allow_bad_keywords:
             domain = domain_data[0]
             tmp = domain.split(".")[1]
@@ -213,7 +213,7 @@ def fcn(domain_data, pt, date):
                             pass
                         except:
                             print traceback.format_exc()
-                    
+
     pt.update()
     file.close()
 
@@ -247,9 +247,9 @@ def fcn2(domain_dict, pt, path, date):
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
                     if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                        activated = 1 
+                        activated = 1
                     else:
-                        activated = 0 
+                        activated = 0
                 except:
                     activated = 0
 
@@ -308,7 +308,7 @@ def fcn3(domain_dict, pt, path, date):
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
                     if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
-                        activated = 1 
+                        activated = 1
                     else:
                         activated = 0
                 except:
@@ -423,131 +423,163 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     pt = None
     gc.collect()
 
-    if org_path and org_path != 'none':
-        pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, org_path, date)
-        for result in result_list_b:
-            fcn3(result, pt2, org_path, date)
+    n = 2
+    paths = [com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path]
+    for path in paths:
+        if path and path != 'none' and 'com' not in path:
+            pt2 = progress_timer(description='phase ' + n + ': ', n_iter=len(result_list + result_list_b))
+            for result in result_list:
+                fcn2(result, pt2, org_path, date)
+            for result in result_list_b:
+                fcn3(result, pt2, org_path, date)
 
-        saveDate(master_data)
-        master_data = []
-        pt2 = None
-        gc.collect()
-    else:
-        pass
+            saveDate(master_data)
+            master_data = []
+            pt2 = None
+            gc.collect()
+        elif 'com' in path:
+            n_iter = 9 * len(result_list + result_list_b)
+            pt2 = progress_timer(description='phase ' + n + ': ', n_iter=n_iter)
+            com_paths = ['com_pt1', 'com_pt2', 'com_pt3', 'com_pt4', 'com_pt5', 'com_pt6', 'com_pt7', 'com_pt8', 'com_pt9']
+            for com_path in com_paths:
+                for result in result_list:
+                    fcn2(result, pt2, org_path, date)
+                for result in result_list_b:
+                    fcn3(result, pt2, org_path, date)
 
-    if net_path and net_path != 'none':
-        pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, net_path, date)
-        for result in result_list_b:
-            fcn3(result, pt2, net_path, date)
+                saveDate(master_data)
+                master_data = []
+                gc.collect()
 
-        saveDate(master_data)
-        master_data = []
-        pt2 = None
-        gc.collect()
-    else:
-        pass
+            pt2 = None
+            gc.collect()
+        n += 1
 
-    if info_path and info_path != 'none':
-        pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, info_path, date)
-        for result in result_list_b:
-            fcn3(result, pt2, info_path, date)
+    # if org_path and org_path != 'none':
+    #     pt2 = progress_timer(description='phase 2: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, org_path, date)
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, org_path, date)
 
-        saveDate(master_data)
-        master_data = []
-        pt2 = None
-        gc.collect()
-    else:
-        pass
+    #     saveDate(master_data)
+    #     master_data = []
+    #     pt2 = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if com_path and com_path != 'none':
-        pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, com_path, date)
-        for result in result_list_b:
-            fcn3(result, pt2, com_path, date)
+    # if net_path and net_path != 'none':
+    #     pt2 = progress_timer(description='phase 3: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, net_path, date)
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, net_path, date)
 
-        saveDate(master_data)
-        master_data = []
-        pt2 = None
-        gc.collect()
-    else:
-        pass
+    #     saveDate(master_data)
+    #     master_data = []
+    #     pt2 = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if us_path and us_path != 'none':
-        pt2 = progress_timer(description='phase 6: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, us_path, date)
-        for result in result_list_b:
-            fcn3(result, pt2, us_path, date)
+    # if info_path and info_path != 'none':
+    #     pt2 = progress_timer(description='phase 4: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, info_path, date)
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, info_path, date)
 
-        saveDate(master_data)
-        master_data = []
-        pt2 = None
-        gc.collect()
-    else:
-        pass
+    #     saveDate(master_data)
+    #     master_data = []
+    #     pt2 = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if e1_path and e1_path != 'none':
-        pt2 = progress_timer(description='phase 7: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, e1_path, date)
-        for result in result_list_b:
-            fcn3(result, pt2, e1_path, date)
+    # if com_path and com_path != 'none':
+    #     pt2 = progress_timer(description='phase 5: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, com_path, date)
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, com_path, date)
 
-        saveDate(master_data)
-        master_data = []
-        pt2 = None
-        gc.collect()
-    else:
-        pass
+    #     saveDate(master_data)
+    #     master_data = []
+    #     pt2 = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if e2_path and e2_path != 'none':
-        pt2 = progress_timer(description='phase 8: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, e2_path, date)
-        for result in result_list_b:
-            fcn3(result, pt2, e2_path, date)
+    # if us_path and us_path != 'none':
+    #     pt2 = progress_timer(description='phase 6: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, us_path, date)
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, us_path, date)
 
-        saveDate(master_data)
-        master_data = []
-        pt2 = None
-        gc.collect()
-    else:
-        pass
+    #     saveDate(master_data)
+    #     master_data = []
+    #     pt2 = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if e3_path and e3_path != 'none':
-        pt2 = progress_timer(description='phase 9: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, e3_path, date)
-        for result in result_list_b:
-            fcn3(result, pt2, e3_path, date)
+    # if e1_path and e1_path != 'none':
+    #     pt2 = progress_timer(description='phase 7: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, e1_path, date)
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, e1_path, date)
 
-        saveDate(master_data)
-        master_data = []
-        pt2 = None
-        gc.collect()
-    else:
-        pass
+    #     saveDate(master_data)
+    #     master_data = []
+    #     pt2 = None
+    #     gc.collect()
+    # else:
+    #     pass
 
-    if e4_path and e4_path != 'none':
-        pt2 = progress_timer(description='phase 10: ', n_iter=len(result_list + result_list_b))
-        for result in result_list:
-            fcn2(result, pt2, e4_path, date)
-        for result in result_list_b:
-            fcn3(result, pt2, e4_path, date)
+    # if e2_path and e2_path != 'none':
+    #     pt2 = progress_timer(description='phase 8: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, e2_path, date)
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, e2_path, date)
 
-        saveDate(master_data)
-        master_data = []
-        pt2 = None
-        gc.collect()
-    else:
-        pass
+    #     saveDate(master_data)
+    #     master_data = []
+    #     pt2 = None
+    #     gc.collect()
+    # else:
+    #     pass
+
+    # if e3_path and e3_path != 'none':
+    #     pt2 = progress_timer(description='phase 9: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, e3_path, date)
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, e3_path, date)
+
+    #     saveDate(master_data)
+    #     master_data = []
+    #     pt2 = None
+    #     gc.collect()
+    # else:
+    #     pass
+
+    # if e4_path and e4_path != 'none':
+    #     pt2 = progress_timer(description='phase 10: ', n_iter=len(result_list + result_list_b))
+    #     for result in result_list:
+    #         fcn2(result, pt2, e4_path, date)
+    #     for result in result_list_b:
+    #         fcn3(result, pt2, e4_path, date)
+
+    #     saveDate(master_data)
+    #     master_data = []
+    #     pt2 = None
+    #     gc.collect()
+    # else:
+    #     pass
 
 if __name__ == '__main__':
     if not Log.objects.filter(date=sys.argv[13]).exists():
