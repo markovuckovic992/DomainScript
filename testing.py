@@ -427,7 +427,7 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
     paths = [com_path, net_path, org_path, info_path, us_path, e1_path, e2_path, e3_path, e4_path]
     for path in paths:
         if path and path != 'none' and 'com' not in path:
-            pt2 = progress_timer(description='phase ' + n + ': ', n_iter=len(result_list + result_list_b))
+            pt2 = progress_timer(description='phase ' + str(n) + ': ', n_iter=len(result_list + result_list_b))
             for result in result_list:
                 fcn2(result, pt2, org_path, date)
             for result in result_list_b:
@@ -438,14 +438,14 @@ def main_filter(com_path, net_path, org_path, info_path, us_path, e1_path, e2_pa
             pt2 = None
             gc.collect()
         elif 'com' in path:
-            n_iter = 9 * len(result_list + result_list_b)
-            pt2 = progress_timer(description='phase ' + n + ': ', n_iter=n_iter)
+            n_iter = 10 * len(result_list + result_list_b)
+            pt2 = progress_timer(description='phase ' + str(n) + ': ', n_iter=n_iter)
             com_paths = ['com_pt1', 'com_pt2', 'com_pt3', 'com_pt4', 'com_pt5', 'com_pt6', 'com_pt7', 'com_pt8', 'com_pt9', 'com_pt10']
             for com_path in com_paths:
                 for result in result_list:
-                    fcn2(result, pt2, org_path, date)
+                    fcn2(result, pt2, com_path, date)
                 for result in result_list_b:
-                    fcn3(result, pt2, org_path, date)
+                    fcn3(result, pt2, com_path, date)
 
                 saveDate(master_data)
                 master_data = []
