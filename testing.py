@@ -329,13 +329,14 @@ def saveDate(master_data):
 
         while AllHash.objects.filter(hash_base_id=hash_base_id).exists():
             hash_base_id = binascii.hexlify(os.urandom(16))
+            time.sleep(0.01)
 
         new_entry = AllHash(hash_base_id=hash_base_id)
         new_entry.save()
 
         entry.hash_base_id = hash_base_id
         entry.save()
-        time.sleep(0.05)
+        time.sleep(0.01)
 
     cursor.execute("COMMIT;")
 
