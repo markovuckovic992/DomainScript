@@ -100,7 +100,7 @@ def main_submit(date):
     RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=0)
 
 def main(date, mode):
-    new_analytics = WhoisAnalytics(source=mode)
+    master_of_index = 0
     # hashes
     non_hashed_leads = RawLeads.objects.filter(activated__gte=1, hash_base_id__isnull=True, no_email_found=0)
     for non_hashed_lead in non_hashed_leads:
@@ -121,11 +121,8 @@ def main(date, mode):
     # endhashes
     datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True, whois=0)
     RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=1)
-    # ANALYTICS
-    new_analytics.total = len(datas)
-    new_analytics.save()
-    master_of_index = 0
-    # END
+
+    ttotal = len(datas)
     for data in datas:
         uslov = True
         i = 0
@@ -252,13 +249,17 @@ def main(date, mode):
                     new = Emails(name_zone=data.name_zone, email=email)
                     new.save()
 
+
+    # ANALYTICS
+    new_analytics = WhoisAnalytics(source=mode)   
+    new_analytics.total = ttotal
     new_analytics.succeeded = master_of_index
     new_analytics.save()
+    # END
 
     RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=0)
 
 def main_period(dates, mode):
-    new_analytics = WhoisAnalytics(source=mode)
     master_of_index = 0
     for date in dates:
         # hashes
@@ -283,8 +284,7 @@ def main_period(dates, mode):
         RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=1)
         # ANALYTICS
         ttls = new_analytics.total
-        new_analytics.total = len(datas) + ttls
-        new_analytics.save()
+        ttotal = len(datas) + ttls
         # END
         for data in datas:
             uslov = True
@@ -404,9 +404,13 @@ def main_period(dates, mode):
                     else:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
-
+   
+    # ANALYTICS
+    new_analytics = WhoisAnalytics(source=mode)   
+    new_analytics.total = ttotal
     new_analytics.succeeded = master_of_index
     new_analytics.save()
+    # END
 
     RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=0)
 

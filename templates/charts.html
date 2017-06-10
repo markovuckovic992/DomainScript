@@ -6,6 +6,8 @@
   var succeeded = {{ succeeded|safe }};
   var total2 = {{ total2|safe }};
   var succeeded2 = {{ succeeded2|safe }};
+  var total3 = {{ total3|safe }};
+  var succeeded3 = {{ succeeded3|safe }};
 
   window.onload = function () {
     var chart = new CanvasJS.Chart("chartContainer",
@@ -44,6 +46,24 @@
     });
     chart2.render();
 
+    var chart3 = new CanvasJS.Chart("chartContainer3",
+    {
+        title:{
+            text: "bgp.he.net Whois Analytics"
+        },
+        data: [
+            {
+                totalype: "column",
+                dataPoints: total3
+            },
+            {
+                type: "column",
+                dataPoints: succeeded3
+            },
+        ]
+    });
+    chart3.render();
+
     $("#Chart").addClass('active');
     $("#Base").removeClass();
   }
@@ -52,4 +72,5 @@
 {% block content %}
   <div id="chartContainer" style="height: 300px; width: 100%;"></div>
   <div id="chartContainer2" style="height: 300px; width: 100%;"></div>
+  <div id="chartContainer3" style="height: 300px; width: 100%;"></div>
 {% endblock %}

@@ -21,7 +21,8 @@ def whois_he_net(datas):
 
     browser = webdriver.Chrome('/home/dabset/domains2/Linux/chromedriver')
     # browser = webdriver.Chrome('/home/marko/Linux/chromedriver')
-
+    ttotal = len(datas)
+    master_of_index = 0
     for data in datas:
         try:
             link = 'http://bgp.he.net/dns/' + data.name_zone + '#_whois'
@@ -41,8 +42,6 @@ def whois_he_net(datas):
                     email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
 
                 if '@' in email:
-                    r = RawLeads.objects.filter(name_zone=data.name_zone).update(mail=email)
-
                     email = "".join(email.split())
                     blacklisted = BlackList.objects.filter(email__iexact=email)
                     same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
@@ -93,6 +92,7 @@ def whois_he_net(datas):
                         record.save()
                         RawLeads.objects.filter(id=data.id).delete()
                     else:
+                        master_of_index += 1
                         rl = RawLeads.objects.get(id=data.id)
                         rl.mail = email
                         rl.save()
@@ -133,6 +133,15 @@ def whois_he_net(datas):
     s.run = 0
     s.save()
     browser.close()
+
+
+    # ANALYTICS
+    new_analytics = WhoisAnalytics(source='he_net')   
+    new_analytics.total = ttotal
+    new_analytics.succeeded = master_of_index
+    new_analytics.save()
+    # END
+
 
 if __name__ == '__main__':
     s = Setting.objects.get(id=1)

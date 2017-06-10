@@ -1219,6 +1219,8 @@ def Chart(request):
     succeeded = []
     total2 = []
     succeeded2 = []
+    total3 = []
+    succeeded3 = []
 
     master_of_indexes = 1
     who_analytics = WhoisAnalytics.objects.filter(source="internal").order_by('-id')[0:100]
@@ -1248,12 +1250,27 @@ def Chart(request):
         })
         master_of_indexes += 1
 
+    master_of_indexes = 1
+    who_analytics = WhoisAnalytics.objects.filter(source="he_net").order_by('-id')[0:100]
+    for entry in who_analytics:
+        total3.append({
+            "x": int(master_of_indexes),
+            "y": int(entry.total)
+        })
+
+        succeeded3.append({
+            "x": int(master_of_indexes),
+            "y": int(entry.succeeded)
+        })
+        master_of_indexes += 1
+
     return render(
         request,
         'charts.html',
         {
             "total": total,  "succeeded": succeeded,
             "total2": total2,  "succeeded2": succeeded2,
+            "total3": total3,  "succeeded3": succeeded3,
         })
 
 @csrf_exempt
