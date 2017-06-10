@@ -8,7 +8,7 @@ import os, pytz
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 
-from domain.models import BlackList, AllHash, RawLeads, Setting, SuperBlacklist, Emails, ProcessTracker, DeletedInfo, WhoisAnalytics
+from domain.models import BlackList, AllHash, RawLeads, Setting, SuperBlacklist, Emails, ProcessTracker, DeletedInfo, WhoisAnalytics, DomainException
 from django.core import mail
 from django.conf import settings
 from os import popen
