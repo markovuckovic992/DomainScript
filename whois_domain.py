@@ -24,7 +24,8 @@ def main_submit(date):
         for rl in rls:
             rl.hash_base_id = hash_base_id
             rl.save()
-    datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True)
+    datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True, whois=0)
+    RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=1)
 
     for data in datas:
         uslov = True
@@ -95,6 +96,8 @@ def main_submit(date):
 
                 new = ProcessTracker(email=email, name_redemption=data.name_redemption)
                 new.save()
+    
+    RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=0)
 
 def main(date, mode):
     new_analytics = WhoisAnalytics(source=mode)
@@ -116,7 +119,8 @@ def main(date, mode):
             rl.hash_base_id = hash_base_id
             rl.save()
     # endhashes
-    datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True)
+    datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True, whois=0)
+    RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=1)
     # ANALYTICS
     new_analytics.total = len(datas)
     new_analytics.save()
@@ -251,6 +255,8 @@ def main(date, mode):
     new_analytics.succeeded = master_of_index
     new_analytics.save()
 
+    RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=0)
+
 def main_period(dates, mode):
     new_analytics = WhoisAnalytics(source=mode)
     master_of_index = 0
@@ -273,7 +279,8 @@ def main_period(dates, mode):
                 rl.save()
         # endhashes
 
-        datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True)
+        datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True, whois=0)
+        RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=1)
         # ANALYTICS
         ttls = new_analytics.total
         new_analytics.total = len(datas) + ttls
@@ -401,7 +408,7 @@ def main_period(dates, mode):
     new_analytics.succeeded = master_of_index
     new_analytics.save()
 
-
+    RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=0)
 
 
 # if __name__ == "__main__":

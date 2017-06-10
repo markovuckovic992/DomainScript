@@ -34,6 +34,7 @@ class RawLeads(models.Model):
     mail = models.CharField(max_length=320, blank=True, null=True)
     page = models.SmallIntegerField(default=1)
     list_no = models.SmallIntegerField(default=1)
+    whois = models.SmallIntegerField(default=0)
 
     activated = models.SmallIntegerField(default=0)
     mark = models.SmallIntegerField(default=0)

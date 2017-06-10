@@ -136,15 +136,21 @@ def whois_he_net(datas):
 
 if __name__ == '__main__':
     s = Setting.objects.get(id=1)
+    tmp = 1
     if s.run == 1:
         if s.date != 'none':
+            tmp = 1
             date = s.date
             date = datetime.strptime(date, '%d-%m-%Y').date()
-            datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).order_by('-id')
+            datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date, whois=0).order_by('-id')
+            RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).update(whois=1)
         else:
-            datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True).order_by('-id')
-
-
-
+            tmp = 2
+            datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, whois=0).order_by('-id')
+            RawLeads.objects.filter(activated__gte=1, mail__isnull=True).update(whois=1)
 
     whois_he_net(datas)
+    if tmp == 1:
+        RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).update(whois=0)
+    else:
+        RawLeads.objects.filter(activated__gte=1, mail__isnull=True).update(whois=0)
