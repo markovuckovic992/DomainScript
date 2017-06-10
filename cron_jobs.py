@@ -255,11 +255,6 @@ class CronJobs:
                 rl.no_email_found = 1
                 rl.save()
 
-
-        file = open('zone_with_no_emails.txt', 'w')
-        file.seek(0)
-        file.truncate()
-
         datas = RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True)
         for data in datas:
             file.write(data.name_zone + '\n')
