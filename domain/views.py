@@ -130,11 +130,11 @@ def runEditing(request):
         path = settings.BASE_DIR
         arg = request.POST['arg']
         if int(arg) == 1:
-            script = 'testing'
+            script = '_basic_editing'
             language = 'python '
         else:
             script = 'testing'
-            language = 'python '        
+            language = 'pypy '        
 
         redempt = request.POST['redempt'].replace('C:\\fakepath\\', '')
         redempt2 = request.POST['redempt2'].replace('C:\\fakepath\\', '')
