@@ -6,7 +6,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'DomainScript.settings'
 django.setup()
 from domain.models import *
 from datetime import datetime
-
+from operator import attrgetter
 
 import time, traceback
 import lxml.html
@@ -15,15 +15,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-def whois_he_net(datas):
+def whois_he_net(ids):
     vpn_count = 1
     first = True
 
     browser = webdriver.Chrome('/home/dabset/domains2/Linux/chromedriver')
     # browser = webdriver.Chrome('/home/marko/Linux/chromedriver')
-    ttotal = len(datas)
+    ttotal = len(ids)
     master_of_index = 0
-    for data in datas:
+    for id in ids:
+        data = RawLeads.objects.get(id=id)
         try:
             link = 'http://bgp.he.net/dns/' + data.name_zone + '#_whois'
             browser.get(link)
@@ -157,8 +158,8 @@ if __name__ == '__main__':
             tmp = 2
             datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, whois=0).order_by('-id')
             RawLeads.objects.filter(activated__gte=1, mail__isnull=True).update(whois=1)
-
-    whois_he_net(datas)
+    ids = map(attrgetter('id'), datas)
+    whois_he_net(ids)
     if tmp == 1:
         RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).update(whois=0)
     else:

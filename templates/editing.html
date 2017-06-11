@@ -10,46 +10,7 @@
         <thead>
           <tr><td>
             Date: <input type="text" id="datepicker">
-          </td></tr>
-          <tr>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='com_file_name'  name=".com file"/></td>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          </tr>
-          <tr>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='org_file_name' name=".org file"/></td>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          </tr>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='net_file_name'  name=".net file"/></td>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          <tr>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='info_file_name'  name=".info file"/></td>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          </tr>
-
-          <tr>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='us_file_name'  name=".us file"/></td>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          </tr>
-
-          <tr>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='extra1_file_name'  name=".extra1 file"/></td>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          </tr>
-
-          <tr>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='extra2_file_name'  name=".extra2 file"/></td>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          </tr>
-
-          <tr>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='extra3_file_name'  name=".extra3 file"/></td>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          </tr>
-
-          <tr>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);"><input type="file" id='extra4_file_name'  name=".extra4 file"/></td>
-            <td style="text-align: center; background: rgba(0,255,0,0.4);">zone</td>
-          </tr>
+          </td></tr>          
           <tr>
             <td style="text-align: center; background: rgba(0,0,255,0.4);">
                 <input type="file" id='red_file_name'  name="red file" style="float: left;"/>
@@ -94,6 +55,89 @@
           <tr>
         </thead>
       </table>
+      <table border="1px solid">
+        <tr>
+            <td>
+              {{zone_data.com}}
+            </td>
+            <td>
+              <input type="file" id='com_file_name'  name=".com file"/>
+            </td>
+            <td>
+              com zone file name
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{zone_data.org}}
+            </td>
+            <td>
+              <input type="file" id='org_file_name' name=".org file"/>
+            </td>
+            <td>
+              org zone file name
+            </td>
+          </tr>
+            <td>
+              {{zone_data.net}}
+            </td>
+            <td>
+              <input type="file" id='net_file_name'  name=".net file"/>
+            </td>
+            <td>
+             net zone file name</td>
+          <tr>
+            <td>
+              {{zone_data.info}}
+            </td>
+            <td>
+              <input type="file" id='info_file_name'  name=".info file"/>
+            </td>
+            <td>
+              info zone file name
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              {{zone_data.us}}
+            </td>
+            <td>
+              <input type="file" id='us_file_name'  name=".us file"/>
+            </td>
+            <td>
+              us zone file name
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              {{zone_data.mobi}}
+            </td>
+            <td>
+              <input type="file" id='mobi_file_name'  name=".mobi file"/>
+            </td>
+            <td>
+              mobi zone file name
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              {{zone_data.biz}}
+            </td>
+            <td>
+              <input type="file" id='biz_file_name'  name=".biz file"/>
+            </td>
+            <td>
+              biz zone file name
+            </td>
+          </tr>
+
+          <button onclick="save_zone_files()">Save</button>
+
+      </table>
+
     </div>
     <div style="float: left; width: 40%;">
         <table border="1" cellspacing="0">

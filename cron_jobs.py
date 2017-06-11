@@ -1,4 +1,5 @@
 #!/usr/bin/pypy
+from operator import attrgetter
 import django
 import sys, requests, json, hashlib, traceback
 from datetime import datetime, timedelta
@@ -138,16 +139,17 @@ class CronJobs:
 
 
     def whois(self):
-        new_analytics = WhoisAnalytics(source='internal')
         number_of_days = Setting.objects.get(id=1).number_of_days
         margin = (datetime.now() - timedelta(days=number_of_days))
-        datas = RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True, no_email_found=0)[0:2100]
+        datas = RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True, no_email_found=0, whois=0)[0:2100]
+        ids = map(attrgetter('id'), datas)
+        RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True, no_email_found=0, whois=0).update(whois=1)
         # ANALYTICS
-        new_analytics.total = len(datas)
-        new_analytics.save()
+        ttotal = len(datas)
         master_of_index = 0
         # END
-        for data in datas:
+        for id in ids:
+            data = RawLeads.objects.get(id=id)
             uslov = True
             i = 0
             email = None
@@ -255,12 +257,14 @@ class CronJobs:
                 rl.no_email_found = 1
                 rl.save()
 
-        datas = RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True)
-        for data in datas:
-            file.write(data.name_zone + '\n')
-
+        # ANALYTICS
+        new_analytics = WhoisAnalytics(source='internal')   
+        new_analytics.total = ttotal
         new_analytics.succeeded = master_of_index
         new_analytics.save()
+        # END
+        if ttotal > 0:
+            RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True, no_email_found=0, whois=1).update(whois=0)
 
     def check(self):
         req = requests.post("http://www.webdomainexpert.pw/check_for_offers/")

@@ -1,4 +1,3 @@
-#!/usr/bin/pypy
 import requests
 requests.adapters.DEFAULT_RETRIES = 1
 from os import popen
@@ -472,16 +471,3 @@ def close(date, duration):
     l = Log.objects.get(date=date)
     l.duration = duration
     l.save()
-
-if __name__ == '__main__':
-    start_time = time.time()
-    init(sys.argv[4])
-
-    main_filter(
-        sys.argv[1],
-        sys.argv[2],
-        sys.argv[3],
-        sys.argv[4],
-    )
-    duration = int(time.time() - start_time)
-    close(sys.argv[4], duration)

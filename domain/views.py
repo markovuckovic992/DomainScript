@@ -106,7 +106,16 @@ def add_manual(request):
 @user_passes_test(lambda u: any(u.has_perm(perm) for perm in ["domain.user", "domain.admin"]))
 def editing(request):
     sett = Setting.objects.get(id=1)
-    return render(request, 'editing.html', {'sett': sett})
+    zone_data = {
+        'com': ZoneFiles.objects.get(zone_type='com').zone_name,
+        'net': ZoneFiles.objects.get(zone_type='net').zone_name,
+        'org': ZoneFiles.objects.get(zone_type='org').zone_name,
+        'info': ZoneFiles.objects.get(zone_type='info').zone_name,
+        'us': ZoneFiles.objects.get(zone_type='us').zone_name,
+        'biz': ZoneFiles.objects.get(zone_type='biz').zone_name,
+        'mobi': ZoneFiles.objects.get(zone_type='mobi').zone_name,
+    }
+    return render(request, 'editing.html', {'sett': sett, 'zone_data': zone_data})
 
 @csrf_exempt
 def changeSetting(request):
@@ -122,21 +131,10 @@ def runEditing(request):
         arg = request.POST['arg']
         if int(arg) == 1:
             script = 'testing'
-            language = 'pypy '
+            language = 'python '
         else:
             script = 'testing'
-            language = 'pypy '
-
-        com = request.POST['com'].replace('C:\\fakepath\\', '')
-        net = request.POST['net'].replace('C:\\fakepath\\', '')
-        org = request.POST['org'].replace('C:\\fakepath\\', '')
-        info = request.POST['info'].replace('C:\\fakepath\\', '')
-        us = request.POST['us'].replace('C:\\fakepath\\', '')
-
-        e1 = request.POST['extra1'].replace('C:\\fakepath\\', '')
-        e2 = request.POST['extra2'].replace('C:\\fakepath\\', '')
-        e3 = request.POST['extra3'].replace('C:\\fakepath\\', '')
-        e4 = request.POST['extra4'].replace('C:\\fakepath\\', '')
+            language = 'python '        
 
         redempt = request.POST['redempt'].replace('C:\\fakepath\\', '')
         redempt2 = request.POST['redempt2'].replace('C:\\fakepath\\', '')
@@ -153,47 +151,7 @@ def runEditing(request):
             RawLeads.objects.filter(date=date).delete()
             AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
-        argument = language + path + "/" + script + ".py "
-
-        if com:
-            argument += (com + " ")
-        else:
-            argument += "none "
-        if net:
-            argument += (net + " ")
-        else:
-            argument += "none "
-        if org:
-            argument += (org + " ")
-        else:
-            argument += "none "
-        if info:
-            argument += (info + " ")
-        else:
-            argument += "none "
-
-
-        if us:
-            argument += (us + " ")
-        else:
-            argument += "none "
-        if e1:
-            argument += (e1 + " ")
-        else:
-            argument += "none "
-        if e2:
-            argument += (e2 + " ")
-        else:
-            argument += "none "
-        if e3:
-            argument += (e3 + " ")
-        else:
-            argument += "none "
-        if e4:
-            argument += (e4 + " ")
-        else:
-            argument += "none "
-
+        argument = language + path + "/" + script + ".py "   
         argument += (redempt + " ")
 
         if redempt2:
@@ -1315,4 +1273,33 @@ def un_mark_to_active(request):
         list_no = 1
 
     RawLeads.objects.filter(date=date, list_no=list_no).update(mark=0)
+    return HttpResponse('{"status": "success"}', content_type="application/json")
+
+
+def saveZoneFiles(request):
+    com = request.POST['com'].replace('C:\\fakepath\\', '')
+    net = request.POST['net'].replace('C:\\fakepath\\', '')
+    org = request.POST['org'].replace('C:\\fakepath\\', '')
+    info = request.POST['info'].replace('C:\\fakepath\\', '')
+    us = request.POST['us'].replace('C:\\fakepath\\', '')
+    biz = request.POST['biz'].replace('C:\\fakepath\\', '')
+    mobi = request.POST['mobi'].replace('C:\\fakepath\\', '')
+
+    zones = [
+        {'com': com},
+        {'net': net},
+        {'org': org},
+        {'info': info},
+        {'us': us},
+        {'biz': biz},
+        {'mobi': mobi},
+    ]
+
+    for zone in zones:
+        keys = zone.keys()
+        for key in keys:
+            z = ZoneFiles.objects.get(zone_type=key)
+            z.zone_name = zone[key]
+            z.save()
+
     return HttpResponse('{"status": "success"}', content_type="application/json")

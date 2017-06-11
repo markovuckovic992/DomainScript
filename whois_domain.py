@@ -25,9 +25,11 @@ def main_submit(date):
             rl.hash_base_id = hash_base_id
             rl.save()
     datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True, whois=0)
+    ids = map(attrgetter('id'), datas)
     RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=1)
 
-    for data in datas:
+    for id in ids:
+        data = RawLeads.objects.get(id=id)
         uslov = True
         i = 0
         email = None
@@ -120,10 +122,12 @@ def main(date, mode):
             rl.save()
     # endhashes
     datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True, whois=0)
+    ids = map(attrgetter('id'), datas)
     RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=1)
 
-    ttotal = len(datas)
-    for data in datas:
+    ttotal = len(ids)
+    for id in ids:
+        data = RawLeads.objects.get(id=id)
         uslov = True
         i = 0
         email = None
@@ -281,12 +285,14 @@ def main_period(dates, mode):
         # endhashes
 
         datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True, whois=0)
+        ids = map(attrgetter('id'), datas)
         RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=1)
         # ANALYTICS
         ttls = new_analytics.total
-        ttotal = len(datas) + ttls
+        ttotal = len(ids) + ttls
         # END
-        for data in datas:
+        for id in ids:
+            data = RawLeads.objects.get(id=id)
             uslov = True
             i = 0
             email = None

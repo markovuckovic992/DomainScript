@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^$', domain.views.editing),
     url(r'^run_script/', domain.views.runEditing),
     url(r'^change_setting/', domain.views.changeSetting),
+    url(r'^save_zone_files/', domain.views.saveZoneFiles),
     #  raw leads
     url(r'^raw_leads/', domain.views.rawLeads),
     url(r'^raw_leads_all/', domain.views.rawLeadsAll),
