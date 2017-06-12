@@ -130,9 +130,6 @@ def whois_he_net(ids):
 
             first = False
 
-    s = Setting.objects.get(id=1)
-    s.run = 0
-    s.save()
     browser.close()
 
 
@@ -160,8 +157,13 @@ if __name__ == '__main__':
             datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, whois=0).order_by('-id')
             ids = map(attrgetter('id'), datas)
             RawLeads.objects.filter(activated__gte=1, mail__isnull=True).update(whois=1)
-    whois_he_net(ids)
-    if tmp == 1:
-        RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).update(whois=0)
-    else:
-        RawLeads.objects.filter(activated__gte=1, mail__isnull=True).update(whois=0)
+    
+        s = Setting.objects.get(id=1)
+        s.run = 0
+        s.save()
+
+        whois_he_net(ids)
+        if tmp == 1:
+            RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).update(whois=0)
+        else:
+            RawLeads.objects.filter(activated__gte=1, mail__isnull=True).update(whois=0)

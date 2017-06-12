@@ -6,6 +6,7 @@ django.setup()
 import binascii
 import requests
 from domain.models import *
+from operator import attrgetter
 
 
 def main_submit(date):
