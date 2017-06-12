@@ -71,7 +71,7 @@ class CronJobs:
         ProcessTracker.objects.filter(date__lte=margin).delete()
 
     def send(self):
-        potential_profits = RawLeads.objects.filter(mail__isnull=False, activated__gte=1, reminder=0).order_by('id')[:8]
+        potential_profits = RawLeads.objects.filter(mail__isnull=False, activated=1, reminder=0).order_by('id')[:8]
         connection = mail.get_connection()
         connection.open()
 
