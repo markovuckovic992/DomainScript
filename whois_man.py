@@ -153,12 +153,13 @@ if __name__ == '__main__':
             date = s.date
             date = datetime.strptime(date, '%d-%m-%Y').date()
             datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date, whois=0).order_by('-id')
+            ids = map(attrgetter('id'), datas)
             RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).update(whois=1)
         else:
             tmp = 2
             datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, whois=0).order_by('-id')
+            ids = map(attrgetter('id'), datas)
             RawLeads.objects.filter(activated__gte=1, mail__isnull=True).update(whois=1)
-    ids = map(attrgetter('id'), datas)
     whois_he_net(ids)
     if tmp == 1:
         RawLeads.objects.filter(activated__gte=1, mail__isnull=True, date=date).update(whois=0)
