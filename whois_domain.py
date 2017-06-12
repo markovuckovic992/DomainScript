@@ -266,6 +266,7 @@ def main(date, mode):
 
 def main_period(dates, mode):
     master_of_index = 0
+    ttotal = 0
     for date in dates:
         # hashes
         non_hashed_leads = RawLeads.objects.filter(activated__gte=1, hash_base_id__isnull=True)
@@ -289,8 +290,7 @@ def main_period(dates, mode):
         ids = map(attrgetter('id'), datas)
         RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=1)
         # ANALYTICS
-        ttls = new_analytics.total
-        ttotal = len(ids) + ttls
+        ttotal += len(ids)
         # END
         for id in ids:
             data = RawLeads.objects.get(id=id)
