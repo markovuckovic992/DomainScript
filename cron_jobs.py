@@ -71,7 +71,7 @@ class CronJobs:
         ProcessTracker.objects.filter(date__lte=margin).delete()
 
     def send(self):
-        potential_profits = RawLeads.objects.filter(mail__isnull=False, activated__gte=1, reminder=0).order_by('id')[:8]
+        potential_profits = RawLeads.objects.filter(mail__isnull=False, activated=1, reminder=0).order_by('id')[:8]
         connection = mail.get_connection()
         connection.open()
 
@@ -141,7 +141,7 @@ class CronJobs:
     def whois(self):
         number_of_days = Setting.objects.get(id=1).number_of_days
         margin = (datetime.now() - timedelta(days=number_of_days))
-        datas = RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True, no_email_found=0, whois=0)[0:2100]
+        datas = RawLeads.objects.filter(date__gte=margin, activated__gte=1, mail__isnull=True, no_email_found=0, whois=0).order_by('-id')[0:2100]
         ids = map(attrgetter('id'), datas)
         # ANALYTICS
         ttotal = len(datas)
@@ -259,7 +259,7 @@ class CronJobs:
                 rl.save()
 
         # ANALYTICS
-        new_analytics = WhoisAnalytics(source='internal')   
+        new_analytics = WhoisAnalytics(source='internal')
         new_analytics.total = ttotal
         new_analytics.succeeded = master_of_index
         new_analytics.save()
