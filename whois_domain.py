@@ -157,7 +157,7 @@ def main(date, mode):
                                 break
                             new = response[index:]
                             response = new.splitlines()[0]
-                            email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
+                            email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '').replace('RegistrantEmail:', '')
                         break
                     except:
                         if i > 5:
@@ -322,7 +322,7 @@ def main_period(dates, mode):
                                     break
                                 new = response[index:]
                                 response = new.splitlines()[0]
-                                email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
+                                email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '').replace('RegistrantEmail:', '')
                             break
                         except:
                             if i > 5:
