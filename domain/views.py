@@ -130,7 +130,7 @@ def runEditing(request):
         path = settings.BASE_DIR
         arg = request.POST['arg']
         if int(arg) == 1:
-            script = '_basic_editing'
+            script = 'testing'
             language = 'python '
         else:
             script = 'testing'
