@@ -271,7 +271,7 @@ def fcn2(domain_dict, pt, path, date):
                 try:
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
-                    if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
+                    if base1 == base2:
                         activated = 1
                     else:
                         activated = 0
@@ -332,7 +332,7 @@ def fcn3(domain_dict, pt, path, date):
                 try:
                     base1 = matched_domain.split(".", 1)[0]
                     base2 = domain.split(".", 1)[0]
-                    if '.com' in domain and base1 == base2 and '.com' not in matched_domain:
+                    if base1 == base2:
                         activated = 1
                     else:
                         activated = 0

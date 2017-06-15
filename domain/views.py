@@ -922,11 +922,9 @@ def find_active(request):
         drop = raw_lead.name_redemption.split('.')[0]
         zone = raw_lead.name_zone.split('.')[0]
         if drop == zone:
-                # RawLeads.objects.filter(id=raw_lead.id).update(activated=1)
-            rls = RawLeads.objects.filter(id=raw_lead.id)
-            for rl in rls:
-                rl.activated = 1
-                rl.save()
+            rl = RawLeads.objects.get(id=raw_lead.id)
+            rl.activated = 1
+            rl.save()
 
     return HttpResponse('{"status": "success"}', content_type="application/json")
 
