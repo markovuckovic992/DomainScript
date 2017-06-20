@@ -730,7 +730,7 @@ def send_mails(request):
                     connection.send_messages(emails)
                     asdi += 1
         except:
-            print traceback.format_exc()
+            return HttpResponse(traceback.format_exc(), content_type='application/json')
     connection.close()
 
     if not Log.objects.filter(date=datetime.now().date()).exists():
@@ -1047,7 +1047,7 @@ def send_pending(request):
                     connection.open()
                     connection.send_messages(emails)
         except:
-            print traceback.format_exc()
+            return HttpResponse(traceback.format_exc(), content_type='application/json')
     connection.close()
 
     if not Log.objects.filter(date=datetime.now().date()).exists():
