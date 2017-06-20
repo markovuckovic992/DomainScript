@@ -241,6 +241,7 @@ function send_pending(argument) {
             }
         },
         error: function(ts) {
+            $("#cover").fadeOut(100);
             alert(ts.responseText)
         },
     });

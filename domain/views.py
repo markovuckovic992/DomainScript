@@ -964,6 +964,7 @@ def search_results(request):
 
 @csrf_exempt
 def send_pending(request):
+    int('asdasda')
     potential_profits = RawLeads.objects.filter(activated__gte=1, mail__isnull=False, reminder=0)
 
     connection = mail.get_connection()
