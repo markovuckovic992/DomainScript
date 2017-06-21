@@ -11,7 +11,7 @@ function load_send2() {
     window.location.href=('/active_leads_tld/?date=' + date);
 };
 
-function confirm () {
+function Confirm () {
     var defer = $.Deferred();
     $('<div>Internal or External?</div>').dialog({
             close: function () {
@@ -36,7 +36,7 @@ function confirm () {
 };
 
 function find_mails_again() {
-    confirm().then(function (mode) {
+    Confirm().then(function (mode) {
         if (mode !== "cancel") {
             $("#cover").fadeIn(100);
             var date = $("#datepicker").val();
