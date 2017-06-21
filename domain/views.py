@@ -134,7 +134,7 @@ def runEditing(request):
             language = 'python '
         else:
             script = 'testing'
-            language = 'pypy '        
+            language = 'pypy '
 
         redempt = request.POST['redempt'].replace('C:\\fakepath\\', '')
         redempt2 = request.POST['redempt2'].replace('C:\\fakepath\\', '')
@@ -151,7 +151,7 @@ def runEditing(request):
             RawLeads.objects.filter(date=date).delete()
             AllHash.objects.filter(hash_base_id__in=hash_base_ids).delete()
 
-        argument = language + path + "/" + script + ".py "   
+        argument = language + path + "/" + script + ".py "
         argument += (redempt + " ")
 
         if redempt2:
@@ -285,7 +285,6 @@ def reverse_state(request):
         msg = str(raw_leads_id)[0:9950]
         if len(str(raw_leads_id)) > 10000:
             msg += '...'
-        el = EventLogger(ip=ip, action=(action + msg + ""))
         el = EventLogger(ip=ip, action=(action + msg + ""))
         el.save()
     return HttpResponse('{"status": "success"}', content_type="application/json")
@@ -516,6 +515,7 @@ def delete(request):
 
 @csrf_exempt
 def mark_to_send(request):
+    activated = request.POST.get('activated')
     if 'ids' in request.POST:
         ids = request.POST.get('ids')
         jd = json.dumps(ids)
@@ -525,7 +525,7 @@ def mark_to_send(request):
         else:
             mark_to_send = 0
         # RawLeads.objects.filter(id__in=ids, activated=1).update(mark_to_send=mark_to_send)
-        rls = RawLeads.objects.filter(id__in=ids, activated__gte=1)
+        rls = RawLeads.objects.filter(id__in=ids,  activated=activated)
         for rl in rls:
             rl.mark_to_send = mark_to_send
             rl.save()
@@ -536,7 +536,7 @@ def mark_to_send(request):
             mark_to_send += 1
             mark_to_send %= 2
             # RawLeads.objects.filter(id=leads_id, activated=1).update(mark_to_send=mark_to_send)
-            rls = RawLeads.objects.filter(id=leads_id, activated__gte=1)
+            rls = RawLeads.objects.filter(id=leads_id,  activated=activated)
             for rl in rls:
                 rl.mark_to_send = mark_to_send
                 rl.save()
@@ -544,7 +544,7 @@ def mark_to_send(request):
             date = request.POST['date']
             date = datetime.strptime(date, '%d-%m-%Y').date()
             # RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=1)
-            rls = RawLeads.objects.filter(date=date, activated__gte=1)
+            rls = RawLeads.objects.filter(date=date, activated=activated)
             for rl in rls:
                 rl.mark_to_send = 1
                 rl.save()
@@ -553,9 +553,10 @@ def mark_to_send(request):
 @csrf_exempt
 def un_mark_to_send(request):
     date = request.POST['date']
+    date = request.POST['activated']
     date = datetime.strptime(date, '%d-%m-%Y').date()
     # RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=0)
-    rls = RawLeads.objects.filter(date=date, activated__gte=1)
+    rls = RawLeads.objects.filter(date=date,  activated=activated)
     for rl in rls:
         rl.mark_to_send = 0
         rl.save()
@@ -1249,7 +1250,7 @@ def mark_to_active(request):
         date = datetime.strptime(request.POST['date'], '%d-%m-%Y').date()
     else:
         date = datetime.now().date()
-        
+
     if 'list_no' in request.POST.keys():
         list_no = int(request.POST['list_no'])
     else:

@@ -13,8 +13,8 @@
     {% csrf_token %}
     Date: <input type="text" id="datepicker" onchange="load_send()">
     <button onclick="find_mails_again()">Run whois scipt again</button>
-    <button onclick="select_all()">Select all</button>
-    <button onclick="un_select_all()">Unselect all</button>
+    <button onclick="select_all(1)">Select all</button>
+    <button onclick="un_select_all(1)">Unselect all</button>
     <button onclick="blacklist_selected()">Blacklist</button>
     <select id="filter_by_dom" onclick="filter_by_dom()">
       <option value="">-All-</option>

@@ -84,7 +84,7 @@ function find_mails_again() {
 
 };
 
-function select_all() {
+function select_all(activated) {
     var date = $("#datepicker").val()
     $.ajax({
         type: "POST",
@@ -92,7 +92,7 @@ function select_all() {
         headers: {
             'X-CSRFToken': csrftoken
         },
-        data: "date=" + date,
+        data: "date=" + date + "&activated=" + activated,
         success: function(msg){
             $('input:checkbox.prim').prop('checked', true);
         },
@@ -102,7 +102,7 @@ function select_all() {
     });
 };
 
-function un_select_all() {
+function un_select_all(activated) {
     var date = $("#datepicker").val()
     $.ajax({
         type: "POST",
@@ -110,7 +110,7 @@ function un_select_all() {
         headers: {
             'X-CSRFToken': csrftoken
         },
-        data: "date=" + date,
+        data: "date=" + date + "&activated=" + activated,
         success: function(msg){
             $('input:checkbox.prim').prop('checked', false);
         },
@@ -250,7 +250,7 @@ function send_pending(argument) {
     }
 };
 
-function mark_to_send(id, e) {
+function mark_to_send(id, e, activated) {
     var $chkboxes = $(':checkbox.prim');
 
     if(e.shiftKey) {
@@ -268,7 +268,7 @@ function mark_to_send(id, e) {
             headers: {
                 'X-CSRFToken': csrftoken
             },
-            data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked},
+            data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked} + "&activated=" + activated,
             error: function(ts) {
                 alert(ts.responseText)
             },
@@ -280,7 +280,7 @@ function mark_to_send(id, e) {
             headers: {
                 'X-CSRFToken': csrftoken
             },
-            data: "id=" + id,
+            data: "id=" + id + "&activated=" + activated,
             error: function(ts) {
                 alert(ts.responseText)
             },
