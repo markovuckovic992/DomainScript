@@ -52,7 +52,7 @@ function find_mails_again() {
                     location.reload();
                 },
                 error: function(ts) {
-                    alert(ts.responseText)
+                    location.reload();
                 },
                 statusCode: {
                     200: function() {
@@ -242,7 +242,7 @@ function send_pending(argument) {
         },
         error: function(ts) {
             $("#cover").fadeOut(100);
-            alert(ts.responseText)
+            // alert(ts.responseText)
         },
     });
     } else {
@@ -389,7 +389,7 @@ function blacklist(id) {
             }
         },
         error: function(ts) {
-            alert(ts.responseText)
+            alert(ts.responseText);
         },
     });
 };
@@ -448,7 +448,7 @@ function send_mails() {
             $('input:checkbox').removeAttr('checked');
         },
         error: function(ts) {
-            alert(ts.responseText);
+            // alert(ts.responseText);
             $("#cover").fadeOut(100);
         },
         statusCode: {
@@ -501,7 +501,8 @@ function whois_he_net() {
             location.reload();
         },
         error: function(ts) {
-            alert(ts.responseText)
+            $("#cover").fadeOut(100);
+            // alert(ts.responseText)
         },
         statusCode: {
             400: function() {
