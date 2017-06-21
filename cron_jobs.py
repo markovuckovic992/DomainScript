@@ -179,7 +179,7 @@ class CronJobs:
                                 break
                             new = response[index:]
                             response = new.splitlines()[0]
-                            email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
+                            email = response.replace('RegistrantEmail:', '').replace('\n', '').replace('\r', '')
                         break
                     except:
                         if i > 5:
