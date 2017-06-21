@@ -268,7 +268,7 @@ function mark_to_send(id, e, activated) {
             headers: {
                 'X-CSRFToken': csrftoken
             },
-            data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked} + "&activated=" + activated,
+            data: {'ids': JSON.stringify(ids), 'foo': lastChecked.checked, 'activated': activated},
             error: function(ts) {
                 alert(ts.responseText)
             },
