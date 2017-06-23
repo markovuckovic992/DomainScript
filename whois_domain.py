@@ -41,6 +41,7 @@ def main_submit(date):
             pass
 
         if email and '@' in email:
+            email = email.replace('RegistrantEmail:', '')
             email = "".join(email.split())
             blacklisted = BlackList.objects.filter(email__iexact=email)
             same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
@@ -99,7 +100,7 @@ def main_submit(date):
 
                 new = ProcessTracker(email=email, name_redemption=data.name_redemption)
                 new.save()
-    
+
     RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True).update(whois=0)
 
 def main(date, mode):
@@ -157,7 +158,7 @@ def main(date, mode):
                                 break
                             new = response[index:]
                             response = new.splitlines()[0]
-                            email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '').replace('RegistrantEmail:', '')
+                            email = response.replace('RegistrantEmail:', '')
                         break
                     except:
                         if i > 5:
@@ -180,6 +181,7 @@ def main(date, mode):
                     pass
 
         if email and '@' in email:
+            email = email.replace('RegistrantEmail:', '')
             email = "".join(email.split())
             blacklisted = BlackList.objects.filter(email__iexact=email)
             same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
@@ -256,7 +258,7 @@ def main(date, mode):
 
 
     # ANALYTICS
-    new_analytics = WhoisAnalytics(source=mode)   
+    new_analytics = WhoisAnalytics(source=mode)
     new_analytics.total = ttotal
     new_analytics.succeeded = master_of_index
     new_analytics.save()
@@ -322,7 +324,7 @@ def main_period(dates, mode):
                                     break
                                 new = response[index:]
                                 response = new.splitlines()[0]
-                                email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '').replace('RegistrantEmail:', '')
+                                email = response.replace('RegistrantEmail:', '')
                             break
                         except:
                             if i > 5:
@@ -346,6 +348,7 @@ def main_period(dates, mode):
                             pass
 
             if email and '@' in email:
+                email = email.replace('RegistrantEmail:', '')
                 email = "".join(email.split())
                 blacklisted = BlackList.objects.filter(email__iexact=email)
                 same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
@@ -411,9 +414,9 @@ def main_period(dates, mode):
                     else:
                         new = Emails(name_zone=data.name_zone, email=email)
                         new.save()
-   
+
     # ANALYTICS
-    new_analytics = WhoisAnalytics(source=mode)   
+    new_analytics = WhoisAnalytics(source=mode)
     new_analytics.total = ttotal
     new_analytics.succeeded = master_of_index
     new_analytics.save()

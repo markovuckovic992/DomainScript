@@ -43,6 +43,7 @@ def whois_he_net(ids):
                     email = response.replace('Registrant Email: ', '').replace('\n', '').replace('\r', '')
 
                 if '@' in email:
+                    email = email.replace('RegistrantEmail:', '')
                     email = "".join(email.split())
                     blacklisted = BlackList.objects.filter(email__iexact=email)
                     same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
@@ -134,7 +135,7 @@ def whois_he_net(ids):
 
 
     # ANALYTICS
-    new_analytics = WhoisAnalytics(source='he_net')   
+    new_analytics = WhoisAnalytics(source='he_net')
     new_analytics.total = ttotal
     new_analytics.succeeded = master_of_index
     new_analytics.save()
@@ -157,7 +158,7 @@ if __name__ == '__main__':
             datas = RawLeads.objects.filter(activated__gte=1, mail__isnull=True, whois=0).order_by('-id')
             ids = map(attrgetter('id'), datas)
             RawLeads.objects.filter(activated__gte=1, mail__isnull=True).update(whois=1)
-    
+
         s = Setting.objects.get(id=1)
         s.run = 0
         s.save()

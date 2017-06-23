@@ -187,6 +187,7 @@ class CronJobs:
                         else:
                             i += 1
             if email and '@' in email:
+                email = email.replace('RegistrantEmail:', '')
                 email = "".join(email.split())
                 blacklisted = BlackList.objects.filter(email__iexact=email)
                 same_shit = ProcessTracker.objects.filter(name_redemption=data.name_redemption, email=email)
