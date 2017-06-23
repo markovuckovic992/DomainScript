@@ -553,7 +553,7 @@ def mark_to_send(request):
 @csrf_exempt
 def un_mark_to_send(request):
     date = request.POST['date']
-    date = request.POST['activated']
+    activated = request.POST['activated']
     date = datetime.strptime(date, '%d-%m-%Y').date()
     # RawLeads.objects.filter(date=date, activated=1).update(mark_to_send=0)
     rls = RawLeads.objects.filter(date=date,  activated=activated)

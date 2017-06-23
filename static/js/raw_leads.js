@@ -72,7 +72,8 @@ function find_active() {
             window.location.href=('/raw_leads/?date=' + date + '&list_no=' + list_no);
         },
         error: function(ts) {
-            alert(ts.responseText)
+            location.reload();
+            // alert(ts.responseText)
         },
         statusCode: {
             200: function() {
@@ -228,7 +229,8 @@ function find_mails() {
             window.location='/active_leads/'
         },
         error: function(ts) {
-            alert(ts.responseText)
+            location.reload();
+            // alert(ts.responseText)
         },
         statusCode: {
             200: function() {
