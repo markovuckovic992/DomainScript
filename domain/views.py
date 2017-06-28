@@ -67,6 +67,8 @@ def add_manual(request):
             if len(row) > 1:
                 name_zone = row[0].strip('"').replace(" ", "")
                 email = row[1].strip('"').replace(" ", "")
+
+                email = email.replace('RegistrantEmail:', '')
                 if email and '@' in email:
                     if not Emails.objects.filter(name_zone=name_zone, email=email).exists():
                         new = Emails(name_zone=name_zone, email=email)
@@ -571,6 +573,7 @@ def add_mail_man(request):
     # RawLeads.objects.filter(name_zone=name_zone).update(mail=mail)
     rls = RawLeads.objects.filter(name_zone=name_zone)
     for rl in rls:
+        mail = mail.replace('RegistrantEmail:', '')
         rl.mail = mail
         rl.save()
 

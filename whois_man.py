@@ -94,6 +94,7 @@ def whois_he_net(ids):
                         record.save()
                         RawLeads.objects.filter(id=data.id).delete()
                     else:
+                        email = email.replace('RegistrantEmail:', '')
                         master_of_index += 1
                         rl = RawLeads.objects.get(id=data.id)
                         rl.mail = email

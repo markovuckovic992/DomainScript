@@ -240,6 +240,7 @@ def main(date, mode):
                 record.save()
                 RawLeads.objects.filter(id=data.id).delete()
             else:
+                email = email.replace('RegistrantEmail:', '')
                 master_of_index += 1
                 rl = RawLeads.objects.get(id=data.id)
                 rl.mail = email
@@ -399,6 +400,7 @@ def main_period(dates, mode):
                     record.save()
                     RawLeads.objects.filter(id=data.id).delete()
                 else:
+                    email = email.replace('RegistrantEmail:', '')
                     master_of_index += 1
                     rl = RawLeads.objects.get(id=data.id)
                     rl.mail = email
