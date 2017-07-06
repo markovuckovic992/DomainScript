@@ -411,7 +411,7 @@ def main_filter(redemption_path, r2, r3, date):
     with open(redemption_path, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-            domain = row[redempion_row].strip('"').lower()
+            domain = row[redempion_row_1].strip('"').lower()
             teemp = (domain, 1)
             usefull_data.append(teemp)
 
@@ -419,7 +419,7 @@ def main_filter(redemption_path, r2, r3, date):
         with open(r2, 'r') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
             for row in spamreader:
-                domain = row[redempion_row].strip('"').lower()
+                domain = row[redempion_row_2].strip('"').lower()
                 teemp = (domain, 2)
                 usefull_data.append(teemp)
 
