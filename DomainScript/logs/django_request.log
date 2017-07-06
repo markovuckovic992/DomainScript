@@ -576,3 +576,138 @@ Traceback (most recent call last):
   File "/usr/lib/python2.7/dist-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
     raise errorvalue
 DataError: (1406, "Data too long for column 'action' at row 1")
+2017-06-11 11:40:45,358 [ERROR] django.request: Internal Server Error: /
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "./domain/views.py", line 110, in editing
+    'com': ZoneFiles.objects.get(zone_type='com').zone_name,
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 122, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 387, in get
+    self.model._meta.object_name
+DoesNotExist: ZoneFiles matching query does not exist.
+2017-06-11 11:41:28,012 [ERROR] django.request: Internal Server Error: /
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "./domain/views.py", line 110, in editing
+    'com': ZoneFiles.objects.get(zone_type='com').zone_name,
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 122, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 387, in get
+    self.model._meta.object_name
+DoesNotExist: ZoneFiles matching query does not exist.
+2017-06-12 19:26:30,264 [ERROR] django.request: Internal Server Error: /find_mails/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "./domain/views.py", line 378, in find_mails
+    main(date, mode)
+  File "./whois_domain.py", line 125, in main
+    ids = map(attrgetter('id'), datas)
+NameError: global name 'attrgetter' is not defined
+2017-06-12 19:27:50,333 [ERROR] django.request: Internal Server Error: /find_mails/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "./domain/views.py", line 378, in find_mails
+    main(date, mode)
+  File "./whois_domain.py", line 125, in main
+    ids = map(attrgetter('id'), datas)
+NameError: global name 'attrgetter' is not defined
+2017-06-12 19:35:45,579 [ERROR] django.request: Internal Server Error: /find_mails/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "./domain/views.py", line 378, in find_mails
+    main(date, mode)
+  File "./whois_domain.py", line 125, in main
+    ids = map(attrgetter('id'), datas)
+NameError: global name 'attrgetter' is not defined
+2017-06-12 19:50:00,453 [ERROR] django.request: Internal Server Error: /find_mails/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "./domain/views.py", line 378, in find_mails
+    main(date, mode)
+  File "./whois_domain.py", line 125, in main
+    datas = RawLeads.objects.filter(date=date, activated__gte=1, mail__isnull=True, whois=0)
+NameError: global name 'attrgetter' is not defined
+2017-06-13 21:20:38,542 [ERROR] django.request: Internal Server Error: /find_mails/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "./domain/views.py", line 378, in find_mails
+    main(date, mode)
+  File "./whois_domain.py", line 131, in main
+    data = RawLeads.objects.get(id=id)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 122, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 387, in get
+    self.model._meta.object_name
+DoesNotExist: RawLeads matching query does not exist.
+2017-06-20 12:51:42,703 [ERROR] django.request: Internal Server Error: /send_pending/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "./domain/views.py", line 970, in send_pending
+    connection.open()
+  File "/usr/local/lib/python2.7/dist-packages/django/core/mail/backends/smtp.py", line 64, in open
+    self.connection.starttls(keyfile=self.ssl_keyfile, certfile=self.ssl_certfile)
+  File "/usr/lib/python2.7/smtplib.py", line 644, in starttls
+    raise SMTPException("STARTTLS extension not supported by server.")
+SMTPException: STARTTLS extension not supported by server.
+2017-06-21 09:41:28,764 [ERROR] django.request: Internal Server Error: /send_mails/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/views/decorators/csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "./domain/views.py", line 661, in send_mails
+    connection.open()
+  File "/usr/local/lib/python2.7/dist-packages/django/core/mail/backends/smtp.py", line 64, in open
+    self.connection.starttls(keyfile=self.ssl_keyfile, certfile=self.ssl_certfile)
+  File "/usr/lib/python2.7/smtplib.py", line 649, in starttls
+    self.sock = ssl.wrap_socket(self.sock, keyfile, certfile)
+  File "/usr/lib/python2.7/ssl.py", line 933, in wrap_socket
+    ciphers=ciphers)
+  File "/usr/lib/python2.7/ssl.py", line 601, in __init__
+    self.do_handshake()
+  File "/usr/lib/python2.7/ssl.py", line 830, in do_handshake
+    self._sslobj.do_handshake()
+SSLError: [SSL: TLSV1_ALERT_DECRYPT_ERROR] tlsv1 alert decrypt error (_ssl.c:590)
