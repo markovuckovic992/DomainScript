@@ -401,7 +401,7 @@ iterno1 = -1
 iterno2 = -1
 iterno3 = -1
 
-def main_filter(redemption_path, r2, r3, date):
+def main_filter(redemption_path, r2, date):
     global result_list, result_list_b, all_domains, link, master_data
 
     file = open('filtered_domains.txt', 'w')
@@ -423,13 +423,6 @@ def main_filter(redemption_path, r2, r3, date):
                 teemp = (domain, 2)
                 usefull_data.append(teemp)
 
-    if r3 and r3 != 'none':
-        with open(r3, 'r') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-            for row in spamreader:
-                domain = row[redempion_row].strip('"').lower()
-                teemp = (domain, 3)
-                usefull_data.append(teemp)
 
     l = Log.objects.get(date=date)
     l.number_of_all = len(usefull_data)
@@ -482,7 +475,6 @@ if __name__ == '__main__':
         sys.argv[1],
         sys.argv[2],
         sys.argv[3],
-        sys.argv[4],
     )
     duration = int(time.time() - start_time)
     close(sys.argv[4], duration)

@@ -81,7 +81,6 @@ function save_zone_files() {
 function run_script(arg) {
     var redempt = $("#red_file_name").val()
     var redempt2 = $("#red_file_name2").val()
-    var redempt3 = $("#red_file_name3").val()
     var date = $("#datepicker").val()
     var len  = date.split("-").length;
     if (redempt && (len === 3)) {
@@ -93,7 +92,6 @@ function run_script(arg) {
                     url: "/run_script/",
                     data: "redempt=" + redempt +
                     "&redempt2=" + redempt2 +
-                    "&redempt3=" + redempt3 +
                     "&answer=" + answer +
                     "&date=" + date + "&arg=" + arg,
                     headers: {

@@ -161,11 +161,6 @@ def runEditing(request):
         else:
             argument += "none "
 
-        if redempt3:
-            argument += (redempt3 + " ")
-        else:
-            argument += "none "
-
         argument += str(date)
         print argument
         popen(argument)
