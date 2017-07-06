@@ -469,7 +469,7 @@ def close(date, duration):
 
 if __name__ == '__main__':
     start_time = time.time()
-    init(sys.argv[4])
+    init(sys.argv[3])
 
     main_filter(
         sys.argv[1],
@@ -477,4 +477,4 @@ if __name__ == '__main__':
         sys.argv[3],
     )
     duration = int(time.time() - start_time)
-    close(sys.argv[4], duration)
+    close(sys.argv[3], duration)
