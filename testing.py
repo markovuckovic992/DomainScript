@@ -34,7 +34,8 @@ number_of_keywords = sett.number_of_keywords if sett.number_of_keywords < 3 else
 allow_bad_keywords = sett.allow_bad_keywords
 min_length = sett.min_length
 max_length = sett.max_length
-redempion_row = sett.redempion_row - 1
+redempion_row_1 = sett.redempion_row_1 - 1
+redempion_row_2 = sett.redempion_row_2 - 1
 # END!
 # TLDs
 tlds = []
@@ -45,24 +46,24 @@ for TLD in TLDS:
 # zone paths
 
 com_paths = [
-    'com_pt1.txt', 
-    'com_pt2.txt', 
-    'com_pt3.txt', 
-    'com_pt4.txt', 
-    'com_pt5.txt', 
-    'com_pt6.txt', 
-    'com_pt7.txt', 
-    'com_pt8.txt', 
-    'com_pt9.txt', 
+    'com_pt1.txt',
+    'com_pt2.txt',
+    'com_pt3.txt',
+    'com_pt4.txt',
+    'com_pt5.txt',
+    'com_pt6.txt',
+    'com_pt7.txt',
+    'com_pt8.txt',
+    'com_pt9.txt',
     'com_pt10.txt'
 ]
 
-paths = com_paths + [ 
-    ZoneFiles.objects.get(zone_type='net').zone_name, 
-    ZoneFiles.objects.get(zone_type='org').zone_name, 
-    ZoneFiles.objects.get(zone_type='info').zone_name, 
-    ZoneFiles.objects.get(zone_type='us').zone_name, 
-    ZoneFiles.objects.get(zone_type='biz').zone_name, 
+paths = com_paths + [
+    ZoneFiles.objects.get(zone_type='net').zone_name,
+    ZoneFiles.objects.get(zone_type='org').zone_name,
+    ZoneFiles.objects.get(zone_type='info').zone_name,
+    ZoneFiles.objects.get(zone_type='us').zone_name,
+    ZoneFiles.objects.get(zone_type='biz').zone_name,
     ZoneFiles.objects.get(zone_type='mobi').zone_name
 ]
 # end

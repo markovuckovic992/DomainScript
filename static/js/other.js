@@ -75,7 +75,7 @@ function save_zone_files() {
                 alert('gateway timeout!');
             }
         }
-    });   
+    });
 }
 
 function run_script(arg) {
@@ -152,6 +152,7 @@ function changeSetting(id, value) {
         },
     });
 };
+
 //SEARCH
 function restore_lead(id) {
     var r = confirm("Are you sure that you want to restore this deleted lead?");
